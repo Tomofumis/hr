@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/colors.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/typography.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/base.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/components.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/styles.css">
+<link rel="stylesheet" href="app-theme.css">
+</helmet>
+
+<div data-theme="{{ themeAttr }}" style="min-height:100vh;background:var(--bg-page);color:var(--text-1);font-family:var(--font-sans);display:flex;flex-direction:column;align-items:center">
+
+  <div style="width:100%;max-width:760px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 28px">
+    <div style="display:flex;align-items:center;gap:11px">
+      <span style="width:34px;height:34px;border-radius:9px;background:var(--accent);display:grid;place-items:center;color:var(--accent-on)">{{ brandEl }}</span>
+      <div style="display:flex;flex-direction:column;line-height:1.25">
+        <span style="font-size:16px;font-weight:500">給与デスク 打刻</span>
+        <span style="font-size:12px;color:var(--text-3)">{{ companyName }}</span>
+      </div>
+    </div>
+    <button onClick="{{ toggleTheme }}" aria-label="表示テーマ" style="width:40px;height:40px;border-radius:11px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);display:grid;place-items:center;cursor:pointer">{{ themeEl }}</button>
+  </div>
+
+  <div style="width:100%;max-width:640px;flex:1;display:flex;flex-direction:column;gap:18px;padding:8px 28px 40px">
+
+    <section style="background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:34px 32px 30px;display:flex;flex-direction:column;align-items:center;gap:18px">
+      <span style="font-size:18px;color:var(--text-2);font-weight:500;letter-spacing:0.01em;white-space:nowrap">{{ dateStr }}</span>
+      <div style="text-align:center;white-space:nowrap;line-height:1">
+        <span style="font-size:66px;font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:0.02em">{{ timeBig }}</span><span style="font-size:30px;font-weight:500;color:var(--text-3);font-variant-numeric:tabular-nums">{{ secondsSuffix }}</span>
+      </div>
+      <span style="{{ statusStyle }}"><span style="{{ statusDotStyle }}"></span>{{ statusLabel }}</span>
+
+      <div style="width:100%;display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px">
+        <sc-for list="{{ buttons }}" as="b" hint-placeholder-count="4">
+          <button onClick="{{ b.onClick }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button>
+        </sc-for>
+      </div>
+      <span style="font-size:13px;color:var(--text-3);text-align:center;text-wrap:pretty">{{ hint }}</span>
+    </section>
+
+    <section style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:15px;font-weight:500">本日の打刻</span>
+        <span style="font-size:13px;color:var(--text-3);font-variant-numeric:tabular-nums">{{ punchCount }} 件</span>
+      </div>
+      <sc-if value="{{ hasPunches }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column">
+          <sc-for list="{{ punches }}" as="p" hint-placeholder-count="2">
+            <div style="display:flex;align-items:center;gap:16px;padding:13px 0;border-top:1px solid var(--border-hairline)">
+              <span style="{{ p.tagStyle }}">{{ p.label }}</span>
+              <span style="font-size:22px;font-weight:500;font-family:var(--font-mono);font-variant-numeric:tabular-nums">{{ p.time }}</span>
+              <span style="margin-left:auto;font-size:12px;color:var(--text-4)">打刻済</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ noPunches }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:18px 0;text-align:center;color:var(--text-3);font-size:14px">まだ打刻はありません。「出勤」から始めましょう。</div>
+      </sc-if>
+    </section>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 820, &quot;height&quot;: 1160 },
+  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;株式会社 山田製作所 ・ 本社&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
+}">
+class Component extends DCLogic {
+  state = { themeAttr: '', now: new Date(), status: '勤務外', punches: [] };
+  dows = ['日', '月', '火', '水', '木', '金', '土'];
+
+  componentDidMount() { this._t = setInterval(() => this.setState({ now: new Date() }), 1000); }
+  componentWillUnmount() { clearInterval(this._t); }
+
+  toggleTheme = () => this.setState(s => ({ themeAttr: s.themeAttr === 'dark' ? 'light' : 'dark' }));
+
+  _icon(defs, size, sw) {
+    return React.createElement('svg', { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: sw || 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      defs.map((d, i) => React.createElement(d[0], { key: i, ...d[1] })));
+  }
+
+  pad(n) { return String(n).padStart(2, '0'); }
+
+  punch(type) {
+    const d = this.state.now;
+    const time = `${this.pad(d.getHours())}:${this.pad(d.getMinutes())}`;
+    const next = type === '出勤' ? '勤務中' : type === '退勤' ? '退勤済' : type === '休憩開始' ? '休憩中' : '勤務中';
+    this.setState(s => ({ status: next, punches: [{ label: type, time }, ...s.punches] }));
+  }
+
+  renderVals() {
+    const p = this.props || {};
+    const d = this.state.now;
+    const st = this.state.status;
+
+    const statusMap = {
+      '勤務外': { dot: 'var(--text-4)', bg: 'var(--surface-sunken)', fg: 'var(--text-2)', bd: 'var(--border)' },
+      '勤務中': { dot: 'var(--ok-fg)', bg: 'var(--ok-bg)', fg: 'var(--ok-fg)', bd: 'var(--ok-border)' },
+      '休憩中': { dot: 'var(--sev-warn-fg)', bg: 'var(--sev-warn-bg)', fg: 'var(--sev-warn-fg)', bd: 'var(--sev-warn-border)' },
+      '退勤済': { dot: 'var(--text-4)', bg: 'var(--surface-sunken)', fg: 'var(--text-3)', bd: 'var(--border)' },
+    };
+    const sm = statusMap[st];
+
+    // [label, enabledStatuses, primaryStatuses]
+    const btnDefs = [
+      ['出勤', ['勤務外'], ['勤務外']],
+      ['退勤', ['勤務中', '休憩中'], ['勤務中']],
+      ['休憩開始', ['勤務中'], []],
+      ['休憩終了', ['休憩中'], ['休憩中']],
+    ];
+    const buttons = btnDefs.map(([label, en, pr]) => {
+      const enabled = en.includes(st);
+      const primary = pr.includes(st);
+      let style = 'min-height:108px;border-radius:18px;font-family:inherit;font-size:23px;font-weight:500;cursor:pointer;transition:transform 120ms,background 120ms;';
+      if (!enabled) style += 'background:var(--surface-sunken);color:var(--text-4);border:1px solid transparent;cursor:not-allowed;';
+      else if (primary) style += 'background:var(--accent);color:var(--accent-on);border:1px solid var(--accent);';
+      else style += 'background:var(--surface);color:var(--accent);border:1.5px solid var(--accent-soft-border);';
+      return { label, disabled: !enabled, onClick: enabled ? () => this.punch(label) : () => {}, style };
+    });
+
+    const punches = this.state.punches.map(pn => {
+      const teal = pn.label === '出勤';
+      const warn = pn.label === '休憩開始' || pn.label === '休憩終了';
+      return { ...pn,
+        tagStyle: `display:inline-flex;align-items:center;justify-content:center;min-width:88px;padding:6px 12px;border-radius:10px;font-size:14px;font-weight:500;${teal ? 'background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-soft-border)' : warn ? 'background:var(--sev-warn-bg);color:var(--sev-warn-fg);border:1px solid var(--sev-warn-border)' : 'background:var(--surface-sunken);color:var(--text-2);border:1px solid var(--border)'}`,
+      };
+    });
+
+    const hintMap = {
+      '勤務外': 'ボタンをタップして出勤を記録してください。',
+      '勤務中': '退勤、または休憩を記録できます。',
+      '休憩中': '休憩中です。休憩終了をタップして勤務に戻ります。',
+      '退勤済': '本日の勤務は終了しました。お疲れさまでした。',
+    };
+
+    return {
+      themeAttr: this.state.themeAttr,
+      toggleTheme: this.toggleTheme,
+      companyName: p.companyName ?? '株式会社 山田製作所 ・ 本社',
+      brandEl: this._icon([['circle', { cx: 12, cy: 12, r: 9 }], ['polyline', { points: '12 7 12 12 15 14' }]], 19, 2),
+      themeEl: this.state.themeAttr === 'dark'
+        ? this._icon([['circle', { cx: 12, cy: 12, r: 4 }], ['path', { d: 'M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4' }]], 19, 2)
+        : this._icon([['path', { d: 'M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z' }]], 19, 2),
+      dateStr: `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日（${this.dows[d.getDay()]}）`,
+      timeBig: `${this.pad(d.getHours())}:${this.pad(d.getMinutes())}`,
+      secondsSuffix: ':' + this.pad(d.getSeconds()),
+      statusLabel: st,
+      statusStyle: `display:inline-flex;align-items:center;gap:9px;padding:8px 18px;border-radius:999px;font-size:16px;font-weight:500;background:${sm.bg};color:${sm.fg};border:1px solid ${sm.bd}`,
+      statusDotStyle: `width:10px;height:10px;border-radius:50%;background:${sm.dot}`,
+      buttons,
+      hint: hintMap[st],
+      punches, punchCount: punches.length, hasPunches: punches.length > 0, noPunches: punches.length === 0,
+    };
+  }
+}
+</script>
+</body>
+</html>

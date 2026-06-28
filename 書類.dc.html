@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/colors.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/typography.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/base.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/components.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/styles.css">
+<script src="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/_ds_bundle.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="app-theme.css">
+</helmet>
+
+<div data-theme="{{ themeAttr }}" style="min-height:100vh;background:var(--bg-page);color:var(--text-1);font-family:var(--font-sans);font-size:var(--text-base);line-height:1.5">
+<div style="display:flex;min-height:100vh;background:var(--bg-page)">
+
+  <aside class="app-side" style="width:236px;flex:0 0 236px;border-right:1px solid var(--border-hairline);background:var(--surface);display:flex;flex-direction:column;position:sticky;top:0;height:100vh">
+    <div style="display:flex;align-items:center;gap:10px;padding:20px 20px 18px">
+      <span style="width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center"><i data-lucide="square-stack" width="17" height="17" style="color:var(--accent-on)"></i></span>
+      <span style="font-size:17px;font-weight:500;letter-spacing:-0.01em">給与デスク</span>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:2px;padding:6px 12px;flex:1;overflow:auto">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="9">
+        <a href="{{ item.href }}" class="nav-link" style="{{ item.style }}">
+          <i data-lucide="{{ item.icon }}" width="18" height="18" style="flex:0 0 auto"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px;border-top:1px solid var(--border-hairline);display:flex;align-items:center;gap:10px">
+      <span style="width:30px;height:30px;border-radius:50%;background:var(--surface-sunken);border:1px solid var(--border);display:grid;place-items:center;font-size:12px;color:var(--text-2)">経</span>
+      <div style="display:flex;flex-direction:column;line-height:1.3"><span style="font-size:13px">経理 担当</span><span style="font-size:11px;color:var(--text-3)">管理者</span></div>
+    </div>
+  </aside>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+    <header style="position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 28px;border-bottom:1px solid var(--border-hairline);background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(8px)">
+      <div style="display:flex;align-items:center;gap:14px;min-width:0">
+        <span style="font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ companyName }}</span>
+        <button onClick="{{ cycleMonth }}" style="display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;cursor:pointer;white-space:nowrap;flex:0 0 auto">
+          <i data-lucide="calendar" width="15" height="15" style="color:var(--text-3)"></i>
+          <span style="font-variant-numeric:tabular-nums">{{ monthLabel }}</span>
+          <i data-lucide="chevron-down" width="14" height="14" style="color:var(--text-3)"></i>
+        </button>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button aria-label="通知" style="position:relative;width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text-2);display:grid;place-items:center;cursor:pointer">
+          <i data-lucide="bell" width="19" height="19"></i>
+          <span style="position:absolute;top:8px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:1.5px solid var(--surface)"></span>
+        </button>
+        <button onClick="{{ toggleTheme }}" aria-label="表示テーマ" style="width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text-2);display:grid;place-items:center;cursor:pointer">
+          <i data-lucide="{{ themeIcon }}" width="19" height="19"></i>
+        </button>
+      </div>
+    </header>
+
+    <main style="flex:1;padding:26px 28px 56px;max-width:1240px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:18px">
+
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <h1 style="margin:0;font-size:24px;font-weight:500;letter-spacing:-0.01em">書類</h1>
+          <p style="margin:0;font-size:14px;color:var(--text-3)">手続きを選んで、提出・保管用の書類を出力します。</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <a href="#" class="ghost-link" style="display:inline-flex;align-items:center;gap:5px;color:var(--accent);font-size:13px;font-weight:500;text-decoration:none">従業員項目選択出力<i data-lucide="chevron-right" width="14" height="14"></i></a>
+          <a href="#" class="ghost-link" style="display:inline-flex;align-items:center;gap:5px;color:var(--accent);font-size:13px;font-weight:500;text-decoration:none">文書一覧<i data-lucide="chevron-right" width="14" height="14"></i></a>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div style="position:relative;display:flex;align-items:center;flex:1 1 300px;min-width:220px">
+          <i data-lucide="search" width="16" height="16" style="position:absolute;left:12px;color:var(--text-4)"></i>
+          <input value="{{ query }}" onInput="{{ onSearch }}" placeholder="手続き名、書類名" style="width:100%;padding:10px 12px 10px 36px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:14px;outline:none">
+        </div>
+        <select value="{{ category }}" onChange="{{ onCategory }}" style="padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;cursor:pointer;min-height:42px">
+          <sc-for list="{{ catOptions }}" as="o" hint-placeholder-count="6"><option value="{{ o }}">{{ o }}</option></sc-for>
+        </select>
+        <select value="{{ format }}" onChange="{{ onFormat }}" style="padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;cursor:pointer;min-height:42px">
+          <sc-for list="{{ fmtOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+        </select>
+        <button onClick="{{ onClear }}" style="display:inline-flex;align-items:center;gap:6px;padding:10px 12px;border:none;background:transparent;color:var(--text-2);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer"><i data-lucide="circle-x" width="16" height="16"></i>条件をクリア</button>
+      </div>
+
+      <div style="font-size:12px;color:var(--text-3)">{{ count }} 件の手続き</div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <sc-if value="{{ hasRows }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ rows }}" as="d" hint-placeholder-count="8">
+              <div class="row-hover" style="display:flex;align-items:center;gap:18px;padding:18px 20px;background:var(--surface);border:1px solid var(--border);border-radius:14px;cursor:pointer">
+                <span style="width:46px;height:46px;border-radius:11px;background:var(--accent-soft);display:grid;place-items:center;flex:0 0 auto"><i data-lucide="{{ d.icon }}" width="22" height="22" style="color:var(--accent)"></i></span>
+                <div style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:10px">
+                  <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+                    <span style="font-size:16px;font-weight:500">{{ d.title }}</span>
+                    <sc-for list="{{ d.badges }}" as="b" hint-placeholder-count="2">
+                      <span style="display:inline-flex;align-items:center;padding:1px 7px;border:1px solid var(--border-strong);border-radius:6px;font-size:11px;font-weight:500;color:var(--text-3);font-family:var(--font-mono);letter-spacing:0.03em">{{ b }}</span>
+                    </sc-for>
+                  </div>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px">
+                    <sc-for list="{{ d.metas }}" as="m" hint-placeholder-count="3">
+                      <span style="display:inline-flex;align-items:baseline;gap:6px;padding:4px 11px;border:1px solid var(--border-hairline);border-radius:999px;font-size:12px">
+                        <span style="color:var(--text-3);white-space:nowrap;flex:0 0 auto">{{ m.label }}</span>
+                        <span style="color:var(--text-2);white-space:nowrap">{{ m.value }}</span>
+                      </span>
+                    </sc-for>
+                  </div>
+                </div>
+                <i data-lucide="{{ d.actionIcon }}" width="20" height="20" style="color:var(--text-3);flex:0 0 auto"></i>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:60px 20px;text-align:center;color:var(--text-3);font-size:14px;background:var(--surface);border:1px solid var(--border);border-radius:14px">条件に一致する手続きがありません。<br>検索条件を変更してください。</div>
+        </sc-if>
+      </div>
+
+    </main>
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 900 },
+  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;株式会社 山田製作所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
+}">
+class Component extends DCLogic {
+  state = { themeAttr: '', monthIndex: 1, query: '', category: 'すべて', format: 'all' };
+  months = ['2026年5月度', '2026年6月度', '2026年7月度'];
+
+  nav = [
+    ['ダッシュボード', 'layout-dashboard', '給与ダッシュボード.dc.html', false],
+    ['従業員', 'users', '従業員.dc.html', false],
+    ['勤怠', 'clock', '勤怠.dc.html', false],
+    ['休暇・有給', 'palmtree', '休暇・有給.dc.html', false],
+    ['給与計算', 'calculator', '給与計算.dc.html', false],
+    ['賞与', 'gift', '賞与.dc.html', false],
+    ['年末調整', 'file-text', '年末調整.dc.html', false],
+    ['書類', 'folder', '書類.dc.html', true],
+    ['設定', 'settings', '設定.dc.html', false],
+  ];
+
+  catOptions = ['すべて', '労働保険', '社会保険', '雇用保険', '税', '労務'];
+  fmtOptions = [{ value: 'all', label: 'すべての書式' }, { value: 'PDF', label: 'PDF' }, { value: 'CSV', label: 'CSV' }];
+
+  // [title, badges, cat, icon, action, metas]
+  docs = [
+    ['年度更新', [], '労働保険', 'calculator', 'chevron', [['提出先', '所轄都道府県労働局または労働基準監督署'], ['提出期限', '毎年7月10日まで'], ['書類名', '労働保険 概算・増加概算・確定保険料申告書']]],
+    ['定時決定', ['PDF', 'CSV'], '社会保険', 'calculator', 'chevron', [['提出先', '年金事務所'], ['提出期限', '毎年7月10日まで'], ['書類名', '算定基礎届']]],
+    ['随時改定', ['PDF', 'CSV'], '社会保険', 'calculator', 'chevron', [['提出先', '年金事務所'], ['提出期限', '速やかに'], ['書類名', '月額変更届']]],
+    ['賞与支払届', ['PDF', 'CSV'], '社会保険', 'calculator', 'chevron', [['提出先', '年金事務所'], ['提出期限', '支給日より5日以内'], ['書類名', '健康保険・厚生年金保険 被保険者賞与支払届']]],
+    ['所得税の納付', [], '税', 'banknote', 'chevron', [['提出先', '税務署'], ['提出期限', '給与支払翌月10日まで'], ['書類名', '給与所得・退職所得等の所得税徴収高計算書']]],
+    ['住民税の納付', ['CSV'], '税', 'banknote', 'chevron', [['提出先', '市区町村'], ['提出期限', '給与支払翌月10日まで'], ['書類名', '住民税納入書']]],
+    ['住民税の特別徴収への切替', ['PDF'], '税', 'banknote', 'chevron', [['提出先', '市区町村'], ['提出期限', '発生日の翌月10日まで'], ['書類名', '特別徴収への切替申請書']]],
+    ['扶養異動届', ['PDF'], '社会保険', 'users', 'chevron', [['提出先', '年金事務所または健康組合'], ['提出期限', '事由発生から5日以内'], ['書類名', '健康保険被扶養者（異動）届及び国民年金第3号被保険者関係届']]],
+    ['社会保険の資格取得届', ['PDF'], '社会保険', 'user-round-plus', 'chevron', [['提出先', '年金事務所または健康組合'], ['提出期限', '入社5日以内'], ['書類名', '健康保険・厚生年金保険 被保険者資格取得届']]],
+    ['雇用保険の資格取得届', ['PDF', 'CSV'], '雇用保険', 'user-round-plus', 'chevron', [['提出先', 'ハローワーク'], ['提出期限', '入社翌月10日まで'], ['書類名', '雇用保険 被保険者資格取得届']]],
+    ['保険者資格証明の交付', ['PDF'], '社会保険', 'id-card', 'chevron', [['提出先', '年金事務所'], ['有効期限', '証明日から20日以内'], ['書類名', '健康保険被保険者資格証明書交付申請書']]],
+    ['社会保険の資格喪失届', ['PDF'], '社会保険', 'user-round-minus', 'chevron', [['提出先', '年金事務所または健康組合'], ['提出期限', '退職日の翌日から5日以内'], ['書類名', '健康保険・厚生年金保険 被保険者資格喪失届']]],
+    ['雇用保険の資格喪失届', ['PDF', 'CSV'], '雇用保険', 'user-round-minus', 'chevron', [['提出先', 'ハローワーク'], ['提出期限', '退職日の翌々日から10日以内'], ['書類名', '雇用保険被保険者資格喪失届']]],
+    ['離職証明書', ['PDF', 'CSV'], '雇用保険', 'user-round-minus', 'chevron', [['提出先', 'ハローワーク'], ['提出期限', '退職日の翌々日から10日以内'], ['書類名', '雇用保険被保険者離職証明書']]],
+    ['就労証明書', ['PDF'], '労務', 'file-text', 'chevron', [['提出先', '従業員が自治体へ'], ['有効期限', '3ヶ月'], ['書類名', '就労証明書']]],
+    ['給与・賞与の振込', [], '労務', 'file-text', 'chevron', [['提出先', '振込元のオンラインバンキング']]],
+    ['労働者名簿', ['PDF'], '労務', 'file-text', 'external', [['保管義務', '3年間'], ['書類名', '労働者名簿']]],
+    ['賃金台帳', ['PDF', 'CSV'], '労務', 'file-text', 'chevron', [['保管義務', '3年間'], ['書類名', '賃金台帳']]],
+    ['出勤簿', ['PDF'], '労務', 'file-text', 'chevron', [['保管義務', '3年間'], ['書類名', '出勤簿']]],
+    ['所得税の定額減税（2024年分）', ['CSV'], '税', 'calculator', 'chevron', [['書類名', '定額減税実績表']]],
+  ];
+
+  componentDidMount() { this._icons(); }
+  componentDidUpdate() { this._icons(); }
+  _icons() { if (!window.lucide || !window.lucide.createIcons) { setTimeout(() => this._icons(), 140); return; } try { window.lucide.createIcons(); } catch (e) {} }
+
+  toggleTheme = () => this.setState(s => ({ themeAttr: s.themeAttr === 'dark' ? 'light' : 'dark' }));
+  cycleMonth = () => this.setState(s => ({ monthIndex: (s.monthIndex + 1) % this.months.length }));
+  onSearch = (e) => this.setState({ query: e.target.value });
+  onCategory = (e) => this.setState({ category: e.target.value });
+  onFormat = (e) => this.setState({ format: e.target.value });
+  onClear = () => this.setState({ query: '', category: 'すべて', format: 'all' });
+
+  renderVals() {
+    const p = this.props || {};
+    const navItems = this.nav.map(([label, icon, href, active]) => ({
+      label, icon, href,
+      style: `display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;text-decoration:none;font-size:14px;cursor:pointer;${active ? 'background:var(--accent-soft);color:var(--accent);font-weight:500' : 'color:var(--text-2);font-weight:400'}`,
+    }));
+
+    const q = (this.state.query || '').trim();
+    const cat = this.state.category;
+    const fmt = this.state.format;
+
+    const rows = this.docs.filter(([title, badges, dcat, icon, action, metas]) => {
+      if (cat !== 'すべて' && dcat !== cat) return false;
+      if (fmt !== 'all' && !badges.includes(fmt)) return false;
+      if (q) {
+        const hay = title + ' ' + metas.map(m => m[1]).join(' ');
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    }).map(([title, badges, dcat, icon, action, metas]) => ({
+      title, badges, icon,
+      actionIcon: action === 'external' ? 'external-link' : 'chevron-right',
+      metas: metas.map(([label, value]) => ({ label, value })),
+    }));
+
+    return {
+      themeAttr: this.state.themeAttr,
+      themeIcon: this.state.themeAttr === 'dark' ? 'sun' : 'moon',
+      toggleTheme: this.toggleTheme,
+      companyName: p.companyName ?? '株式会社 山田製作所',
+      monthLabel: this.months[this.state.monthIndex],
+      cycleMonth: this.cycleMonth,
+      navItems,
+      query: this.state.query, category: this.state.category, format: this.state.format,
+      catOptions: this.catOptions, fmtOptions: this.fmtOptions,
+      onSearch: this.onSearch, onCategory: this.onCategory, onFormat: this.onFormat, onClear: this.onClear,
+      rows, count: rows.length, hasRows: rows.length > 0, isEmpty: rows.length === 0,
+    };
+  }
+}
+</script>
+</body>
+</html>

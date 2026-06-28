@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/colors.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/typography.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/base.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/components.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/styles.css">
+<script src="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/_ds_bundle.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="app-theme.css">
+</helmet>
+
+<div data-theme="{{ themeAttr }}" style="min-height:100vh;background:var(--bg-page);color:var(--text-1);font-family:var(--font-sans);font-size:var(--text-base);line-height:1.5">
+<div style="display:flex;min-height:100vh;background:var(--bg-page)">
+
+  <aside class="app-side" style="width:236px;flex:0 0 236px;border-right:1px solid var(--border-hairline);background:var(--surface);display:flex;flex-direction:column;position:sticky;top:0;height:100vh">
+    <div style="display:flex;align-items:center;gap:10px;padding:20px 20px 18px">
+      <span style="width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center"><i data-lucide="square-stack" width="17" height="17" style="color:var(--accent-on)"></i></span>
+      <span style="font-size:17px;font-weight:500;letter-spacing:-0.01em">給与デスク</span>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:2px;padding:6px 12px;flex:1;overflow:auto">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="9">
+        <a href="{{ item.href }}" class="nav-link" style="{{ item.style }}">
+          <i data-lucide="{{ item.icon }}" width="18" height="18" style="flex:0 0 auto"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px;border-top:1px solid var(--border-hairline);display:flex;align-items:center;gap:10px">
+      <span style="width:30px;height:30px;border-radius:50%;background:var(--surface-sunken);border:1px solid var(--border);display:grid;place-items:center;font-size:12px;color:var(--text-2)">経</span>
+      <div style="display:flex;flex-direction:column;line-height:1.3"><span style="font-size:13px">経理 担当</span><span style="font-size:11px;color:var(--text-3)">管理者</span></div>
+    </div>
+  </aside>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+    <header style="position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 28px;border-bottom:1px solid var(--border-hairline);background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(8px)">
+      <div style="display:flex;align-items:center;gap:14px;min-width:0">
+        <span style="font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ companyName }}</span>
+        <button onClick="{{ cycleMonth }}" style="display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;cursor:pointer;white-space:nowrap;flex:0 0 auto">
+          <i data-lucide="calendar" width="15" height="15" style="color:var(--text-3)"></i>
+          <span style="font-variant-numeric:tabular-nums">{{ monthLabel }}</span>
+          <i data-lucide="chevron-down" width="14" height="14" style="color:var(--text-3)"></i>
+        </button>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button aria-label="通知" style="position:relative;width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text-2);display:grid;place-items:center;cursor:pointer">
+          <i data-lucide="bell" width="19" height="19"></i>
+          <span style="position:absolute;top:8px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:1.5px solid var(--surface)"></span>
+        </button>
+        <button onClick="{{ toggleTheme }}" aria-label="表示テーマ" style="width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text-2);display:grid;place-items:center;cursor:pointer">
+          <i data-lucide="{{ themeIcon }}" width="19" height="19"></i>
+        </button>
+      </div>
+    </header>
+
+    <main style="flex:1;padding:22px 28px 56px;max-width:1080px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:18px">
+
+      <a href="給与ダッシュボード.dc.html" class="ghost-link" style="display:inline-flex;align-items:center;gap:6px;color:var(--text-3);font-size:13px;text-decoration:none;width:fit-content"><i data-lucide="arrow-left" width="15" height="15"></i>ダッシュボードへ戻る</a>
+
+      <!-- CONFIRMED SUMMARY -->
+      <section style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:14px">
+            <span style="width:44px;height:44px;border-radius:12px;background:var(--ok-bg);border:1px solid var(--ok-border);display:grid;place-items:center;flex:0 0 auto"><i data-lucide="badge-check" width="22" height="22" style="color:var(--ok-fg)"></i></span>
+            <div style="display:flex;flex-direction:column;gap:2px">
+              <h1 style="margin:0;font-size:21px;font-weight:500;letter-spacing:-0.01em">6月25日支払い分 給与を確定しました</h1>
+              <span style="font-size:13px;color:var(--text-3)">確定 2026/06/23 10:21 ・ 賃金計算期間 2026/05/16〜2026/06/15</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+            <a href="給与明細一覧.dc.html" class="ghost-link" style="display:inline-flex;align-items:center;gap:5px;color:var(--text-2);font-size:13px;text-decoration:none">給与明細一覧<i data-lucide="chevron-right" width="14" height="14"></i></a>
+            <a href="書類.dc.html" class="ghost-link" style="display:inline-flex;align-items:center;gap:5px;color:var(--text-2);font-size:13px;text-decoration:none">賃金台帳の出力<i data-lucide="chevron-right" width="14" height="14"></i></a>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;border-top:1px solid var(--border-hairline);padding-top:16px">
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:var(--text-3)">対象人数</span><span style="font-size:17px;font-weight:500;font-variant-numeric:tabular-nums">12 名</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:var(--text-3)">差引支給 合計</span><span style="font-size:17px;font-weight:500;font-family:var(--font-mono);font-variant-numeric:tabular-nums">¥2,966,028</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:var(--text-3)">支払日</span><span style="font-size:17px;font-weight:500;font-variant-numeric:tabular-nums">2026/06/25</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:var(--text-3)">明細の公開</span><span style="font-size:17px;font-weight:500;color:var(--sev-warn-fg)">未公開</span></div>
+        </div>
+      </section>
+
+      <!-- PROGRESS HEADER -->
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <h2 style="margin:0;font-size:17px;font-weight:500">確定後の手続き</h2>
+          <span style="font-size:13px;color:var(--text-3)">支払・納付・届出を期限内に済ませましょう</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;min-width:200px">
+          <div style="flex:1;height:8px;border-radius:999px;background:var(--surface-sunken);overflow:hidden;min-width:120px"><div style="{{ progressStyle }}"></div></div>
+          <span style="font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap">{{ doneCount }} / {{ totalCount }} 完了</span>
+        </div>
+      </div>
+
+      <!-- TASK CHECKLIST -->
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ tasks }}" as="t" hint-placeholder-count="5">
+          <div style="{{ t.cardStyle }}">
+            <button onClick="{{ t.onToggle }}" aria-label="完了切替" style="{{ t.checkStyle }}"><sc-if value="{{ t.done }}" hint-placeholder-val="{{ false }}">{{ t.checkEl }}</sc-if></button>
+            <span style="width:42px;height:42px;border-radius:11px;background:var(--accent-soft);display:grid;place-items:center;flex:0 0 auto"><i data-lucide="{{ t.icon }}" width="20" height="20" style="color:var(--accent)"></i></span>
+            <div style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px">
+              <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+                <span style="{{ t.titleStyle }}">{{ t.title }}</span>
+                <sc-if value="{{ t.hasDue }}" hint-placeholder-val="{{ true }}"><span style="{{ t.dueStyle }}">{{ t.dueIconEl }}{{ t.due }}</span></sc-if>
+                <sc-if value="{{ t.done }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:500;background:var(--ok-bg);color:var(--ok-fg);border:1px solid var(--ok-border)">{{ t.badgeCheckEl }}完了</span></sc-if>
+              </div>
+              <span style="font-size:13px;color:var(--text-2)">{{ t.desc }}</span>
+            </div>
+            <div style="flex:0 0 auto">
+              <sc-if value="{{ t.pending }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="ToriokiDesignSystem_4ced92.Button" variant="secondary" size="sm" onClick="{{ t.onToggle }}" hint-size="auto,34px">{{ t.action }}</x-import></sc-if>
+              <sc-if value="{{ t.done }}" hint-placeholder-val="{{ false }}"><button class="ghost-link" onClick="{{ t.onToggle }}" style="display:inline-flex;align-items:center;gap:5px;background:transparent;border:none;color:var(--text-3);font-family:inherit;font-size:13px;cursor:pointer;padding:6px 8px">{{ t.undoEl }}取消</button></sc-if>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ allDone }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:12px;padding:16px 18px;background:var(--ok-bg);border:1px solid var(--ok-border);border-radius:12px">
+          <span style="width:34px;height:34px;border-radius:50%;background:var(--surface);border:1px solid var(--ok-border);display:grid;place-items:center;flex:0 0 auto;color:var(--ok-fg)">{{ doneIconEl }}</span>
+          <span style="font-size:14px;font-weight:500;color:var(--ok-fg)">確定後の手続きはすべて完了しました。お疲れさまでした。</span>
+        </div>
+      </sc-if>
+
+    </main>
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1120, &quot;height&quot;: 920 },
+  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;株式会社 山田製作所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
+}">
+class Component extends DCLogic {
+  state = { themeAttr: '', monthIndex: 1, done: {} };
+  months = ['2026年5月度', '2026年6月度', '2026年7月度'];
+
+  nav = [
+    ['ダッシュボード', 'layout-dashboard', '給与ダッシュボード.dc.html', false],
+    ['従業員', 'users', '従業員.dc.html', false],
+    ['勤怠', 'clock', '勤怠.dc.html', false],
+    ['休暇・有給', 'palmtree', '休暇・有給.dc.html', false],
+    ['給与計算', 'calculator', '給与計算.dc.html', true],
+    ['賞与', 'gift', '賞与.dc.html', false],
+    ['年末調整', 'file-text', '年末調整.dc.html', false],
+    ['書類', 'folder', '書類.dc.html', false],
+    ['設定', 'settings', '設定.dc.html', false],
+  ];
+
+  // [id, icon, title, desc, action, due, dueTone]   dueTone: '' | 'soon' | 'warn'
+  taskDefs = [
+    ['pay', 'landmark', '給与の振込', '総合振込依頼ファイル（FBデータ）を作成し、給与をまとめて振り込みます。', '振込ファイルを作成', '', ''],
+    ['payslip', 'eye', '給与明細の公開', '従業員ごとに給与明細を公開し、Web・アプリで閲覧できるようにします。', '明細を公開', '', ''],
+    ['resident', 'receipt', '住民税の納付', '従業員から徴収した住民税額を確認し、納入書・振込データで納付します。', '住民税を納付', '7月10日まで', 'warn'],
+    ['income', 'banknote', '所得税の納付', '所得税徴収高計算書で源泉所得税額を確認し、納付します。', '納付書を作成', '7月10日まで', 'warn'],
+    ['teiji', 'file-text', '定時決定・随時改定', '過去3ヶ月の給与を確定すると、算定基礎届・月額変更届を自動で作成できます。', '提出書類を作成', '速やかに', 'soon'],
+  ];
+
+  componentDidMount() { this._icons(); }
+  componentDidUpdate() { this._icons(); }
+  _icons() { if (!window.lucide || !window.lucide.createIcons) { setTimeout(() => this._icons(), 140); return; } try { window.lucide.createIcons(); } catch (e) {} }
+
+  toggleTheme = () => this.setState(s => ({ themeAttr: s.themeAttr === 'dark' ? 'light' : 'dark' }));
+  cycleMonth = () => this.setState(s => ({ monthIndex: (s.monthIndex + 1) % this.months.length }));
+  toggleDone = (id) => this.setState(s => ({ done: { ...s.done, [id]: !s.done[id] } }));
+
+  ICONS = {
+    check: [['path', { d: 'M20 6 9 17l-5-5' }]],
+    clock: [['circle', { cx: 12, cy: 12, r: 10 }], ['polyline', { points: '12 6 12 12 16 14' }]],
+    'rotate-ccw': [['path', { d: 'M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8' }], ['path', { d: 'M3 3v5h5' }]],
+  };
+  _icon(name, size, sw) {
+    const defs = this.ICONS[name] || this.ICONS.check;
+    return React.createElement('svg', { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: sw || 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      defs.map((d, i) => React.createElement(d[0], { key: i, ...d[1] })));
+  }
+
+  _dueStyle(tone) {
+    const base = 'display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:500;white-space:nowrap;';
+    if (tone === 'warn') return base + 'background:var(--sev-warn-bg);color:var(--sev-warn-fg);border:1px solid var(--sev-warn-border)';
+    if (tone === 'soon') return base + 'background:var(--sev-vio-bg);color:var(--sev-vio-fg);border:1px solid var(--sev-vio-border)';
+    return base + 'background:var(--surface-sunken);color:var(--text-3);border:1px solid var(--border)';
+  }
+
+  renderVals() {
+    const p = this.props || {};
+    const navItems = this.nav.map(([label, icon, href, active]) => ({
+      label, icon, href,
+      style: `display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;text-decoration:none;font-size:14px;cursor:pointer;${active ? 'background:var(--accent-soft);color:var(--accent);font-weight:500' : 'color:var(--text-2);font-weight:400'}`,
+    }));
+
+    const done = this.state.done;
+    const tasks = this.taskDefs.map(([id, icon, title, desc, action, due, dueTone]) => {
+      const isDone = !!done[id];
+      return {
+        id, icon, title, desc, action, due, hasDue: !!due && !isDone, pending: !isDone, done: isDone,
+        onToggle: () => this.toggleDone(id),
+        dueStyle: this._dueStyle(dueTone),
+        cardStyle: `display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--surface);border:1px solid ${isDone ? 'var(--border-hairline)' : 'var(--border)'};border-radius:14px;transition:opacity 120ms;${isDone ? 'opacity:0.62' : ''}`,
+        checkStyle: `width:26px;height:26px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;cursor:pointer;border:1.5px solid ${isDone ? 'var(--accent)' : 'var(--border-strong)'};background:${isDone ? 'var(--accent)' : 'transparent'};color:${isDone ? 'var(--accent-on)' : 'var(--text-4)'}`,
+        titleStyle: `font-size:15px;font-weight:500;${isDone ? 'text-decoration:line-through;color:var(--text-3)' : ''}`,
+        checkEl: this._icon('check', 16, 2.4),
+        dueIconEl: this._icon('clock', 12, 2),
+        badgeCheckEl: this._icon('check', 11, 2.5),
+        undoEl: this._icon('rotate-ccw', 13, 2),
+      };
+    });
+
+    const doneCount = tasks.filter(t => t.done).length;
+    const totalCount = tasks.length;
+    const pct = Math.round((doneCount / totalCount) * 100);
+
+    return {
+      themeAttr: this.state.themeAttr,
+      themeIcon: this.state.themeAttr === 'dark' ? 'sun' : 'moon',
+      toggleTheme: this.toggleTheme,
+      companyName: p.companyName ?? '株式会社 山田製作所',
+      monthLabel: this.months[this.state.monthIndex],
+      cycleMonth: this.cycleMonth,
+      navItems,
+      tasks, doneCount, totalCount, allDone: doneCount === totalCount,
+      doneIconEl: this._icon('check', 18, 2),
+      progressStyle: `height:100%;width:${pct}%;background:var(--accent);border-radius:999px;transition:width 200ms`,
+    };
+  }
+}
+</script>
+</body>
+</html>

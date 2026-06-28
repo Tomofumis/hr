@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/colors.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/typography.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/base.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/components.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/styles.css">
+<link rel="stylesheet" href="app-theme.css">
+</helmet>
+
+<div data-theme="{{ themeAttr }}" style="min-height:100vh;background:var(--surface-sunken);display:flex;justify-content:center;font-family:var(--font-sans)">
+<div style="width:100%;max-width:420px;min-height:100vh;background:var(--bg-page);color:var(--text-1);display:flex;flex-direction:column;position:relative">
+
+  <header style="position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:16px 20px;background:color-mix(in srgb,var(--bg-page) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border-hairline)">
+    <span style="font-size:17px;font-weight:500">{{ screenTitle }}</span>
+  </header>
+
+  <main style="flex:1;overflow-y:auto;padding:18px 16px 96px;display:flex;flex-direction:column;gap:16px">
+
+    <!-- HOME -->
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <span style="font-size:14px;color:var(--text-3)">こんにちは、山田 太郎 さん</span>
+        <div style="background:var(--accent-soft);border:1px solid var(--accent-soft-border);border-radius:18px;padding:22px 20px;display:flex;flex-direction:column;align-items:center;gap:14px">
+          <span style="font-size:13px;color:var(--text-2)">{{ dateStr }}</span>
+          <span style="font-size:40px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1;color:var(--text-1)">{{ timeStr }}</span>
+          <span style="{{ statusStyle }}"><span style="{{ statusDotStyle }}"></span>{{ statusLabel }}</span>
+          <div style="width:100%;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px">
+            <sc-for list="{{ homeButtons }}" as="b" hint-placeholder-count="2">
+              <button onClick="{{ b.onClick }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:14px;font-weight:500">本日の勤怠</span><span style="font-size:12px;color:var(--text-3)">6月28日（日）</span></div>
+          <div style="display:flex;gap:20px">
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:var(--text-3)">出勤</span><span style="font-size:18px;font-weight:500;font-family:var(--font-mono)">--:--</span></div>
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:var(--text-3)">退勤</span><span style="font-size:18px;font-weight:500;font-family:var(--font-mono)">--:--</span></div>
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:var(--text-3)">勤務時間</span><span style="font-size:18px;font-weight:500;font-family:var(--font-mono)">0:00</span></div>
+          </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:15px 18px;display:flex;align-items:center;gap:12px">
+          <span style="width:34px;height:34px;border-radius:50%;background:var(--accent-soft);display:grid;place-items:center;color:var(--accent);flex:0 0 auto">{{ bellEl }}</span>
+          <div style="display:flex;flex-direction:column;gap:1px;flex:1;min-width:0"><span style="font-size:14px;font-weight:500">お知らせ</span><span style="font-size:12px;color:var(--text-3)">5月支払分の給与明細が公開されました</span></div>
+          <span style="color:var(--text-4);flex:0 0 auto">{{ chevEl }}</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ATTENDANCE -->
+    <sc-if value="{{ isAtt }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <span style="font-size:13px;color:var(--text-3)">2026年6月度 ・ 5/16〜6/15 勤務分</span>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:18px">
+          <sc-for list="{{ attStats }}" as="s" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:12px;color:var(--text-3)">{{ s.label }}</span><span style="font-size:20px;font-weight:500;font-family:var(--font-mono);font-variant-numeric:tabular-nums">{{ s.value }}</span></div>
+          </sc-for>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden">
+          <sc-for list="{{ attDays }}" as="d" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;gap:14px;padding:13px 18px;border-bottom:1px solid var(--border-hairline)">
+              <span style="font-size:13px;font-weight:500;width:60px;font-variant-numeric:tabular-nums;color:{{ d.color }}">{{ d.date }}</span>
+              <span style="font-size:13px;color:var(--text-2);font-family:var(--font-mono);flex:1">{{ d.times }}</span>
+              <span style="font-size:13px;font-weight:500;font-family:var(--font-mono)">{{ d.total }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- REQUESTS -->
+    <sc-if value="{{ isReq }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <button onClick="{{ noop }}" style="display:flex;align-items:center;justify-content:center;gap:7px;padding:13px;border-radius:12px;border:none;background:var(--accent);color:var(--accent-on);font-family:inherit;font-size:15px;font-weight:500;cursor:pointer">{{ plusEl }}新しい申請</button>
+        <sc-for list="{{ requests }}" as="r" hint-placeholder-count="3">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:15px 18px;display:flex;align-items:center;gap:14px">
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+              <div style="display:flex;align-items:center;gap:8px"><span style="font-size:15px;font-weight:500">{{ r.title }}</span><span style="{{ r.statusStyle }}">{{ r.status }}</span></div>
+              <span style="font-size:13px;color:var(--text-3)">{{ r.detail }}</span>
+            </div>
+            <span style="color:var(--text-4);flex:0 0 auto">{{ chevEl }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- PAYSLIP -->
+    <sc-if value="{{ isPay }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:center;gap:4px;padding:4px;border:1px solid var(--border);border-radius:12px;background:var(--surface-sunken)">
+          <sc-for list="{{ payTabs }}" as="pt" hint-placeholder-count="2">
+            <button onClick="{{ pt.onClick }}" style="{{ pt.style }}">{{ pt.label }}</button>
+          </sc-for>
+        </div>
+        <sc-for list="{{ payYears }}" as="y" hint-placeholder-count="2">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:13px;color:var(--text-3);padding-left:4px">{{ y.year }}</span>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden">
+              <sc-for list="{{ y.items }}" as="m" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border-hairline)">
+                  <span style="width:38px;height:38px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:14px;font-weight:500;font-family:var(--font-mono);flex:0 0 auto">{{ m.month }}</span>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font-size:15px;font-weight:500">{{ m.label }}</span><span style="font-size:13px;color:var(--text-3);font-family:var(--font-mono);font-variant-numeric:tabular-nums">{{ m.amount }}</span></div>
+                  <span style="color:var(--text-4);flex:0 0 auto">{{ chevEl }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- OTHER -->
+    <sc-if value="{{ isOther }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <sc-for list="{{ menuGroups }}" as="g" hint-placeholder-count="3">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:12px;color:var(--text-3);padding-left:6px;letter-spacing:0.02em">{{ g.title }}</span>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden">
+              <sc-for list="{{ g.items }}" as="i" hint-placeholder-count="4">
+                <a href="{{ i.href }}" style="display:flex;align-items:center;gap:12px;padding:15px 18px;border-bottom:1px solid var(--border-hairline);text-decoration:none;color:inherit">
+                  <span style="font-size:15px;flex:1;min-width:0">{{ i.label }}</span>
+                  <sc-if value="{{ i.hasValue }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--text-3);font-family:var(--font-mono)">{{ i.value }}</span></sc-if>
+                  <sc-if value="{{ i.chev }}" hint-placeholder-val="{{ true }}"><span style="color:var(--text-4);flex:0 0 auto">{{ chevEl }}</span></sc-if>
+                  <sc-if value="{{ i.ext }}" hint-placeholder-val="{{ false }}"><span style="color:var(--text-4);flex:0 0 auto">{{ compassEl }}</span></sc-if>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+  </main>
+
+  <nav style="position:sticky;bottom:0;z-index:10;display:flex;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--border-hairline);padding:8px 6px 12px">
+    <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+      <button onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.iconEl }}<span style="font-size:11px;font-weight:500">{{ t.label }}</span></button>
+    </sc-for>
+  </nav>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 420, &quot;height&quot;: 880 }
+}">
+class Component extends DCLogic {
+  state = { themeAttr: '', tab: 'other', now: new Date(), status: '勤務外', payTab: '給与' };
+  dows = ['日', '月', '火', '水', '木', '金', '土'];
+
+  componentDidMount() { this._t = setInterval(() => this.setState({ now: new Date() }), 1000); }
+  componentWillUnmount() { clearInterval(this._t); }
+
+  _icon(defs, size, sw) {
+    return React.createElement('svg', { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: sw || 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      defs.map((d, i) => React.createElement(d[0], { key: i, ...d[1] })));
+  }
+  pad(n) { return String(n).padStart(2, '0'); }
+  setTab = (t) => this.setState({ tab: t });
+  setPayTab = (t) => this.setState({ payTab: t });
+  punch = (type) => this.setState({ status: type === '出勤' ? '勤務中' : '退勤済' });
+
+  ICONS = {
+    home: [['path', { d: 'M3 10a2 2 0 0 1 .7-1.5l7-6a2 2 0 0 1 2.6 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z' }], ['path', { d: 'M9 21v-7h6v7' }]],
+    cal: [['rect', { width: 18, height: 18, x: 3, y: 4, rx: 2 }], ['path', { d: 'M3 10h18' }], ['path', { d: 'M8 2v4' }], ['path', { d: 'M16 2v4' }]],
+    req: [['path', { d: 'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z' }], ['path', { d: 'M14 2v5h5' }], ['path', { d: 'm9 15 2 2 4-4' }]],
+    pay: [['path', { d: 'M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1Z' }], ['path', { d: 'M16 8H8' }], ['path', { d: 'M16 12H8' }], ['path', { d: 'M12 16H8' }]],
+    menu: [['path', { d: 'M4 6h16' }], ['path', { d: 'M4 12h16' }], ['path', { d: 'M4 18h16' }]],
+    chev: [['path', { d: 'm9 18 6-6-6-6' }]],
+    compass: [['circle', { cx: 12, cy: 12, r: 10 }], ['polygon', { points: '16.2 7.8 14.1 14.1 7.8 16.2 9.9 9.9 16.2 7.8' }]],
+    bell: [['path', { d: 'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9' }], ['path', { d: 'M10.3 21a1.94 1.94 0 0 0 3.4 0' }]],
+    plus: [['path', { d: 'M12 5v14' }], ['path', { d: 'M5 12h14' }]],
+  };
+
+  renderVals() {
+    const d = this.state.now;
+    const tab = this.state.tab;
+    const titles = { home: 'ホーム', attendance: '勤怠', requests: '申請', payslip: '明細', other: 'その他' };
+
+    const tabDefs = [['home', 'ホーム', 'home'], ['attendance', '勤怠', 'cal'], ['requests', '申請', 'req'], ['payslip', '明細', 'pay'], ['other', 'その他', 'menu']];
+    const tabs = tabDefs.map(([key, label, icon]) => {
+      const active = tab === key;
+      return { label, onClick: () => this.setTab(key),
+        iconEl: this._icon(this.ICONS[icon], 23, active ? 2.2 : 1.8),
+        style: `flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px;background:transparent;border:none;cursor:pointer;color:${active ? 'var(--accent)' : 'var(--text-4)'}` };
+    });
+
+    const st = this.state.status;
+    const sm = { '勤務外': ['var(--text-4)', 'var(--surface)', 'var(--text-2)', 'var(--border)'], '勤務中': ['var(--ok-fg)', 'var(--ok-bg)', 'var(--ok-fg)', 'var(--ok-border)'], '退勤済': ['var(--text-4)', 'var(--surface)', 'var(--text-3)', 'var(--border)'] }[st];
+    const homeButtons = [['出勤', st === '勤務外'], ['退勤', st === '勤務中']].map(([label, en]) => ({
+      label, disabled: !en, onClick: en ? () => this.punch(label) : () => {},
+      style: `padding:16px;border-radius:14px;font-family:inherit;font-size:18px;font-weight:500;cursor:${en ? 'pointer' : 'not-allowed'};${en ? 'background:var(--accent);color:var(--accent-on);border:1px solid var(--accent)' : 'background:var(--surface);color:var(--text-4);border:1px solid var(--border)'}`,
+    }));
+
+    const attDays = [
+      ['6/12(金)', '09:01 - 18:30', '8:00', 'var(--text-1)'],
+      ['6/11(木)', '08:58 - 19:15', '8:00', 'var(--text-1)'],
+      ['6/10(水)', '08:47 - 18:02', '8:00', 'var(--text-1)'],
+      ['6/9(火)', '09:00 - 17:00', '7:00', 'var(--text-1)'],
+      ['6/8(月)', '08:49 - 18:30', '8:00', 'var(--text-1)'],
+    ].map(([date, times, total, color]) => ({ date, times, total, color }));
+
+    const reqStyle = (t) => `display:inline-flex;align-items:center;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:500;${t === '承認待ち' ? 'background:var(--sev-warn-bg);color:var(--sev-warn-fg)' : t === '承認済' ? 'background:var(--ok-bg);color:var(--ok-fg)' : 'background:var(--surface-sunken);color:var(--text-3)'}`;
+    const requests = [
+      ['有給休暇', '承認待ち', '6/24（火）〜6/25（水） ・ 2.0日'],
+      ['残業申請', '承認済', '6/11（木） ・ 1時間15分'],
+      ['交通費精算', '差し戻し', '6/3（火） ・ ¥1,280'],
+    ].map(([title, status, detail]) => ({ title, status, detail, statusStyle: reqStyle(status) }));
+
+    const giveYears = [
+      { year: '2026年', items: [['5', '5月支払分', '338,490円'], ['4', '4月支払分', '426,377円'], ['3', '3月支払分', '371,888円'], ['2', '2月支払分', '370,880円'], ['1', '1月支払分', '297,605円']] },
+      { year: '2025年', items: [['12', '12月支払分', '402,902円'], ['11', '11月支払分', '367,656円'], ['10', '10月支払分', '412,692円'], ['9', '9月支払分', '387,744円'], ['8', '8月支払分', '391,778円'], ['7', '7月支払分', '408,162円']] },
+    ];
+    const bonusYears = [
+      { year: '2025年', items: [['12', '冬季賞与', '512,400円'], ['7', '夏季賞与', '498,100円']] },
+      { year: '2024年', items: [['12', '冬季賞与', '486,900円'], ['7', '夏季賞与', '471,300円']] },
+    ];
+    const payYears = (this.state.payTab === '給与' ? giveYears : bonusYears).map(y => ({ year: y.year, items: y.items.map(([month, label, amount]) => ({ month, label, amount })) }));
+
+    const payTabs = ['給与', '賞与'].map(label => {
+      const active = this.state.payTab === label;
+      return { label, onClick: () => this.setPayTab(label),
+        style: `flex:1;padding:9px;border-radius:9px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;border:none;${active ? 'background:var(--accent);color:var(--accent-on)' : 'background:transparent;color:var(--text-2)'}` };
+    });
+
+    const menuGroups = [
+      { title: '従業員情報', items: [['基本情報', '従業員詳細.dc.html', 'chev'], ['税金', '#', 'chev'], ['年末調整', '年末調整.dc.html', 'chev'], ['源泉徴収票', '#', 'chev']] },
+      { title: '設定', items: [['位置情報サービス打刻', '#', 'chev'], ['パスコードロック', '#', 'chev'], ['通知', '#', 'chev']] },
+      { title: '概要', items: [['アプリの使い方', '#', 'ext'], ['プライバシーポリシー', '#', 'ext'], ['謝辞', '#', 'chev'], ['バージョン', '#', 'val']] },
+    ].map(g => ({ title: g.title, items: g.items.map(([label, href, kind]) => ({
+      label, href, chev: kind === 'chev', ext: kind === 'ext', hasValue: kind === 'val', value: kind === 'val' ? '2.59.0' : '',
+    })) }));
+
+    return {
+      themeAttr: this.state.themeAttr,
+      screenTitle: titles[tab],
+      tabs,
+      isHome: tab === 'home', isAtt: tab === 'attendance', isReq: tab === 'requests', isPay: tab === 'payslip', isOther: tab === 'other',
+      dateStr: `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日（${this.dows[d.getDay()]}）`,
+      timeStr: `${this.pad(d.getHours())}:${this.pad(d.getMinutes())}`,
+      statusLabel: st,
+      statusStyle: `display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;font-size:14px;font-weight:500;background:${sm[1]};color:${sm[2]};border:1px solid ${sm[3]}`,
+      statusDotStyle: `width:9px;height:9px;border-radius:50%;background:${sm[0]}`,
+      homeButtons,
+      attStats: [{ label: '出勤日数', value: '14日' }, { label: '総労働時間', value: '112:00' }, { label: '残業時間', value: '6:30' }, { label: '有休残', value: '12日' }],
+      attDays,
+      requests,
+      payTabs, payYears,
+      menuGroups,
+      chevEl: this._icon(this.ICONS.chev, 18, 2),
+      compassEl: this._icon(this.ICONS.compass, 18, 2),
+      bellEl: this._icon(this.ICONS.bell, 17, 2),
+      plusEl: this._icon(this.ICONS.plus, 18, 2.2),
+      noop: () => {},
+    };
+  }
+}
+</script>
+</body>
+</html>

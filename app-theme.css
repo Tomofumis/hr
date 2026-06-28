@@ -1,0 +1,46 @@
+/* 給与デスク — shared app theme: flat, teal accent, 2 weights, dark-ready.
+   Layered on top of the Torioki design-system tokens. */
+*{box-sizing:border-box}
+body{margin:0}
+
+:root,[data-theme="light"]{
+  --accent:#0f7d74; --accent-hover:#0c6a62; --accent-active:#0a564f;
+  --accent-on:#ffffff; --accent-soft:#e6f2f0; --accent-soft-border:#c2ddd8;
+  --ring:color-mix(in srgb,#0f7d74 38%,transparent);
+  --weight-bold:500;
+  --shadow-xs:none;--shadow-sm:none;--shadow-md:none;--shadow-lg:none;
+  --sev-vio-fg:#b1473c;--sev-vio-bg:#f6e8e6;--sev-vio-border:#e8d0cb;
+  --sev-warn-fg:#946f1d;--sev-warn-bg:#f5efd8;--sev-warn-border:#e6d7ab;
+  --sev-chk-fg:#5d6b76;--sev-chk-bg:#eceff1;--sev-chk-border:#d6dce0;
+  --ok-fg:#3f7a52;--ok-bg:#e8f0ea;--ok-border:#cbe0d2;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --accent:#54b6ac; --accent-hover:#69c4ba; --accent-active:#80d0c7;
+    --accent-on:#10201e; --accent-soft:#18302d; --accent-soft-border:#234440;
+    --ring:color-mix(in srgb,#54b6ac 42%,transparent);
+    --weight-bold:500;
+    --shadow-xs:none;--shadow-sm:none;--shadow-md:none;--shadow-lg:none;
+    --sev-vio-fg:#d99089;--sev-vio-bg:#2e1f1d;--sev-vio-border:#46302c;
+    --sev-warn-fg:#cdac6e;--sev-warn-bg:#2c2716;--sev-warn-border:#433a21;
+    --sev-chk-fg:#9fadb8;--sev-chk-bg:#222a2f;--sev-chk-border:#343e46;
+    --ok-fg:#84b48c;--ok-bg:#1d2a20;--ok-border:#2e4233;
+  }
+}
+[data-theme="dark"]{
+  --accent:#54b6ac; --accent-hover:#69c4ba; --accent-active:#80d0c7;
+  --accent-on:#10201e; --accent-soft:#18302d; --accent-soft-border:#234440;
+  --ring:color-mix(in srgb,#54b6ac 42%,transparent);
+  --weight-bold:500;
+  --shadow-xs:none;--shadow-sm:none;--shadow-md:none;--shadow-lg:none;
+  --sev-vio-fg:#d99089;--sev-vio-bg:#2e1f1d;--sev-vio-border:#46302c;
+  --sev-warn-fg:#cdac6e;--sev-warn-bg:#2c2716;--sev-warn-border:#433a21;
+  --sev-chk-fg:#9fadb8;--sev-chk-bg:#222a2f;--sev-chk-border:#343e46;
+  --ok-fg:#84b48c;--ok-bg:#1d2a20;--ok-border:#2e4233;
+}
+
+@media (max-width:860px){ .app-side{display:none!important} }
+.nav-link:hover{ background:var(--surface-hover); }
+.row-hover:hover{ background:var(--surface-hover); }
+.pay-row:hover{ background:var(--surface-hover); }
+.ghost-link:hover{ color:var(--accent-hover); }

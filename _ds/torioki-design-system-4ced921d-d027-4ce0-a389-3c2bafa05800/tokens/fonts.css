@@ -1,0 +1,9 @@
+/* ============================================================
+   Torioki — Webfonts
+   Primary: Zen Kaku Gothic New — a calm, geometric Japanese
+   gothic with an upright, Muji-like quiet. Clean Latin & figures.
+   Mono:    IBM Plex Mono — for IDs / timestamps / tabular detail.
+   Loaded from Google Fonts CDN (no local binaries shipped).
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap');

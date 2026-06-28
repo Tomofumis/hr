@@ -1,0 +1,43 @@
+/* ============================================================
+   Torioki — Typography tokens
+   One family does almost everything; hierarchy comes from size,
+   weight and space — not from many typefaces.
+   ============================================================ */
+
+:root {
+  /* --- Families ---------------------------------------------- */
+  --font-sans: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN",
+               "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular",
+               "Menlo", monospace;
+
+  /* --- Weights ----------------------------------------------- */
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-bold:    700;
+
+  /* --- Type scale (rem, 16px base) --------------------------- */
+  --text-2xs: 0.6875rem;  /* 11px — micro labels */
+  --text-xs:  0.75rem;    /* 12px — meta, captions */
+  --text-sm:  0.8125rem;  /* 13px — secondary / chips */
+  --text-base:0.9375rem;  /* 15px — body default */
+  --text-md:  1.0625rem;  /* 17px — emphasis body */
+  --text-lg:  1.25rem;    /* 20px — card titles */
+  --text-xl:  1.5rem;     /* 24px — section heads */
+  --text-2xl: 1.875rem;   /* 30px — page title */
+  --text-3xl: 2.5rem;     /* 40px — display numerals */
+
+  /* --- Line heights ------------------------------------------ */
+  --leading-tight:  1.2;
+  --leading-snug:   1.35;
+  --leading-normal: 1.6;
+  --leading-relaxed:1.75;
+
+  /* --- Letter spacing (Japanese gothic wants near-zero) ------ */
+  --tracking-tight:  -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.04em;   /* for small uppercase Latin labels */
+
+  /* --- Tabular figures for ledgers/counts -------------------- */
+  --num-tabular: "tnum" 1, "lnum" 1; /* @kind other */
+}

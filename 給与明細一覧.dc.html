@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/colors.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/typography.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/base.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/components.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/styles.css">
+<script src="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/_ds_bundle.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="app-theme.css">
+</helmet>
+
+<div data-theme="{{ themeAttr }}" style="min-height:100vh;background:var(--bg-page);color:var(--text-1);font-family:var(--font-sans);font-size:var(--text-base);line-height:1.5">
+<div style="display:flex;min-height:100vh;background:var(--bg-page)">
+
+  <aside class="app-side" style="width:236px;flex:0 0 236px;border-right:1px solid var(--border-hairline);background:var(--surface);display:flex;flex-direction:column;position:sticky;top:0;height:100vh">
+    <div style="display:flex;align-items:center;gap:10px;padding:20px 20px 18px">
+      <span style="width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center"><i data-lucide="square-stack" width="17" height="17" style="color:var(--accent-on)"></i></span>
+      <span style="font-size:17px;font-weight:500;letter-spacing:-0.01em">給与デスク</span>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:2px;padding:6px 12px;flex:1;overflow:auto">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="9">
+        <a href="{{ item.href }}" class="nav-link" style="{{ item.style }}">
+          <i data-lucide="{{ item.icon }}" width="18" height="18" style="flex:0 0 auto"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px;border-top:1px solid var(--border-hairline);display:flex;align-items:center;gap:10px">
+      <span style="width:30px;height:30px;border-radius:50%;background:var(--surface-sunken);border:1px solid var(--border);display:grid;place-items:center;font-size:12px;color:var(--text-2)">経</span>
+      <div style="display:flex;flex-direction:column;line-height:1.3"><span style="font-size:13px">経理 担当</span><span style="font-size:11px;color:var(--text-3)">管理者</span></div>
+    </div>
+  </aside>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+    <header style="position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 28px;border-bottom:1px solid var(--border-hairline);background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(8px)">
+      <div style="display:flex;align-items:center;gap:14px;min-width:0">
+        <span style="font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ companyName }}</span>
+        <button onClick="{{ cycleMonth }}" style="display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;cursor:pointer;white-space:nowrap;flex:0 0 auto">
+          <i data-lucide="calendar" width="15" height="15" style="color:var(--text-3)"></i>
+          <span style="font-variant-numeric:tabular-nums">{{ monthLabel }}</span>
+          <i data-lucide="chevron-down" width="14" height="14" style="color:var(--text-3)"></i>
+        </button>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button aria-label="通知" style="position:relative;width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text-2);display:grid;place-items:center;cursor:pointer">
+          <i data-lucide="bell" width="19" height="19"></i>
+          <span style="position:absolute;top:8px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:1.5px solid var(--surface)"></span>
+        </button>
+        <button onClick="{{ toggleTheme }}" aria-label="表示テーマ" style="width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text-2);display:grid;place-items:center;cursor:pointer">
+          <i data-lucide="{{ themeIcon }}" width="19" height="19"></i>
+        </button>
+      </div>
+    </header>
+
+    <main style="flex:1;padding:26px 28px 56px;max-width:1400px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <h1 style="margin:0;font-size:24px;font-weight:500;letter-spacing:-0.01em">給与明細一覧</h1>
+          <p style="margin:0;font-size:14px;color:var(--text-3)">2026年6月25日支払い分 ・ 5/16〜6/15 勤務分</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+          <a href="#" class="ghost-link" style="display:inline-flex;align-items:center;gap:5px;color:var(--text-2);font-size:13px;text-decoration:none">前月比更新レポート<i data-lucide="chevron-right" width="14" height="14"></i></a>
+          <a href="#" class="ghost-link" style="display:inline-flex;align-items:center;gap:5px;color:var(--text-2);font-size:13px;text-decoration:none">従業員項目選択出力<i data-lucide="chevron-right" width="14" height="14"></i></a>
+          <x-import component-from-global-scope="ToriokiDesignSystem_4ced92.Button" variant="secondary" size="sm" onClick="{{ noop }}" hint-size="auto,34px">給与明細一覧表の出力</x-import>
+          <x-import component-from-global-scope="ToriokiDesignSystem_4ced92.Button" variant="primary" size="sm" onClick="{{ noop }}" hint-size="auto,34px">印刷用ダウンロード</x-import>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <button onClick="{{ noop }}" style="display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;cursor:pointer"><i data-lucide="sliders-horizontal" width="15" height="15" style="color:var(--text-3)"></i>フィルタ</button>
+        <div style="position:relative;display:flex;align-items:center;flex:0 1 280px;min-width:200px">
+          <i data-lucide="search" width="16" height="16" style="position:absolute;left:11px;color:var(--text-4)"></i>
+          <input value="{{ query }}" onInput="{{ onSearch }}" placeholder="氏名など" style="width:100%;padding:9px 12px 9px 32px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;outline:none">
+        </div>
+        <span style="font-size:13px;color:var(--text-3);font-variant-numeric:tabular-nums">1 - {{ count }} / {{ count }} 件</span>
+      </div>
+
+      <section style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+        <div style="overflow-x:auto">
+          <div style="min-width:1300px">
+            <div style="display:grid;grid-template-columns:188px 0.9fr 1.2fr 0.7fr 1.5fr 1.5fr 1.4fr 1.4fr 0.9fr;gap:10px;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--surface-sunken);font-size:12px;color:var(--text-3)">
+              <span>氏名</span><span>従業員番号</span><span>勤務・賃金設定</span><span>給与形態</span>
+              <span style="text-align:right">差引支給額/手取り（前月比）</span>
+              <span style="text-align:right">総支給額（前月比）</span>
+              <span style="text-align:right">総控除額（前月比）</span>
+              <span>最終計算日時</span><span>ステータス</span>
+            </div>
+            <sc-if value="{{ hasRows }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+                  <div class="row-hover" style="display:grid;grid-template-columns:188px 0.9fr 1.2fr 0.7fr 1.5fr 1.5fr 1.4fr 1.4fr 0.9fr;gap:10px;align-items:center;padding:13px 20px;border-bottom:1px solid var(--border-hairline);cursor:pointer;font-variant-numeric:tabular-nums">
+                    <div style="display:flex;align-items:center;gap:11px;min-width:0">
+                      <span style="width:30px;height:30px;border-radius:50%;background:var(--surface-sunken);border:1px solid var(--border);display:grid;place-items:center;font-size:12px;color:var(--text-2);flex:0 0 auto">{{ r.initial }}</span>
+                      <span style="font-size:14px;font-weight:500;white-space:nowrap">{{ r.name }}</span>
+                    </div>
+                    <span style="font-size:13px;color:var(--text-2);font-family:var(--font-mono)">{{ r.code }}</span>
+                    <span style="font-size:13px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.kubun }}</span>
+                    <span style="font-size:13px;color:var(--text-2)">{{ r.keitai }}</span>
+                    <span style="text-align:right;font-size:13px;font-family:var(--font-mono)">{{ r.net }}<span style="{{ r.netDStyle }}">（{{ r.netD }}）</span></span>
+                    <span style="text-align:right;font-size:13px;color:var(--text-2);font-family:var(--font-mono)">{{ r.gross }}<span style="{{ r.grossDStyle }}">（{{ r.grossD }}）</span></span>
+                    <span style="text-align:right;font-size:13px;color:var(--text-2);font-family:var(--font-mono)">{{ r.deduct }}<span style="{{ r.deductDStyle }}">（{{ r.deductD }}）</span></span>
+                    <span style="font-size:12px;color:var(--text-3);font-family:var(--font-mono)">{{ r.time }}</span>
+                    <span style="{{ r.statusStyle }}">{{ r.status }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:48px 20px;text-align:center;color:var(--text-3);font-size:14px">該当する従業員がいません。</div>
+            </sc-if>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1400, &quot;height&quot;: 760 },
+  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;株式会社 山田製作所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
+}">
+class Component extends DCLogic {
+  state = { themeAttr: '', monthIndex: 1, query: '' };
+  months = ['2026年5月度', '2026年6月度', '2026年7月度'];
+
+  nav = [
+    ['ダッシュボード', 'layout-dashboard', '給与ダッシュボード.dc.html', false],
+    ['従業員', 'users', '従業員.dc.html', false],
+    ['勤怠', 'clock', '勤怠.dc.html', false],
+    ['休暇・有給', 'palmtree', '休暇・有給.dc.html', false],
+    ['給与計算', 'calculator', '給与計算.dc.html', true],
+    ['賞与', 'gift', '賞与.dc.html', false],
+    ['年末調整', 'file-text', '年末調整.dc.html', false],
+    ['書類', 'folder', '書類.dc.html', false],
+    ['設定', 'settings', '設定.dc.html', false],
+  ];
+
+  // [name, code, kubun, keitai, net, netD, gross, grossD, deduct, deductD, time, status]
+  emp = [
+    ['山田 太郎', 'E-1001', '正社員', '月給', 261778, -5954, 331388, 42287, 69610, 48241, '2026-06-17 12:10', '計算完了'],
+    ['佐藤 花子', 'E-1002', '正社員', '月給', 237670, 6906, 298500, 13302, 60830, 6396, '2026-06-17 12:10', '計算完了'],
+    ['鈴木 一郎', 'E-1003', '正社員', '月給', 322020, 2626, 412000, 2640, 89980, 14, '2026-06-23 10:21', '直接編集済'],
+    ['田中 美咲', 'E-1004', '契約', '月給', 203660, -19556, 256000, -3756, 52340, 15800, '2026-06-17 12:10', '計算完了'],
+    ['高橋 健太', 'E-1005', '正社員', '月給', 262800, 9512, 332000, 23730, 69200, 14218, '2026-06-17 12:15', '直接編集済'],
+    ['渡辺 さくら', 'E-1006', 'アルバイト', '時給', 164900, 26168, 205000, 27118, 40100, 950, '2026-06-17 12:10', '計算完了'],
+    ['伊藤 大輔', 'E-1007', '正社員', '月給', 313700, 3120, 401000, 5400, 87300, 2280, '2026-06-17 12:10', '計算完了'],
+    ['山本 由美', 'E-1008', '正社員', '月給', 247200, -1200, 312000, 800, 64800, 2000, '2026-06-23 10:21', '直接編集済'],
+    ['中村 翔', 'E-1009', '契約', '時給', 228300, 4500, 286000, 6200, 57700, 1700, '2026-06-17 12:10', '計算完了'],
+    ['小林 麻衣', 'E-1010', 'アルバイト 9:30〜17:30', '時給', 151500, 8800, 188000, 9500, 36500, 700, '2026-06-17 12:10', '計算完了'],
+    ['加藤 遼', 'E-1011', '正社員', '月給', 282400, 3300, 358000, 4100, 75600, 800, '2026-06-17 12:10', '計算完了'],
+    ['吉田 直樹', 'E-1012', '正社員', '月給', 290100, -2100, 368000, -900, 77900, 1200, '2026-06-17 12:10', '計算完了'],
+  ];
+
+  componentDidMount() { this._icons(); }
+  componentDidUpdate() { this._icons(); }
+  _icons() { if (!window.lucide || !window.lucide.createIcons) { setTimeout(() => this._icons(), 140); return; } try { window.lucide.createIcons(); } catch (e) {} }
+
+  toggleTheme = () => this.setState(s => ({ themeAttr: s.themeAttr === 'dark' ? 'light' : 'dark' }));
+  cycleMonth = () => this.setState(s => ({ monthIndex: (s.monthIndex + 1) % this.months.length }));
+  onSearch = (e) => this.setState({ query: e.target.value });
+  fmt = (n) => n.toLocaleString('ja-JP');
+
+  _delta(n) {
+    const sign = n > 0 ? '+' : '';
+    const color = n > 0 ? 'var(--ok-fg)' : n < 0 ? 'var(--sev-vio-fg)' : 'var(--text-4)';
+    return { text: sign + this.fmt(n), style: `font-size:12px;margin-left:4px;color:${color}` };
+  }
+
+  renderVals() {
+    const p = this.props || {};
+    const navItems = this.nav.map(([label, icon, href, active]) => ({
+      label, icon, href,
+      style: `display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;text-decoration:none;font-size:14px;cursor:pointer;${active ? 'background:var(--accent-soft);color:var(--accent);font-weight:500' : 'color:var(--text-2);font-weight:400'}`,
+    }));
+
+    const q = (this.state.query || '').trim();
+    const list = this.emp.filter(e => !q || e[0].includes(q));
+    const rows = list.map(([name, code, kubun, keitai, net, netD, gross, grossD, deduct, deductD, time, status]) => {
+      const nd = this._delta(netD), gd = this._delta(grossD), dd = this._delta(deductD);
+      return {
+        name, code, kubun, keitai, time, status, initial: name.charAt(0),
+        net: this.fmt(net), netD: nd.text, netDStyle: nd.style,
+        gross: this.fmt(gross), grossD: gd.text, grossDStyle: gd.style,
+        deduct: this.fmt(deduct), deductD: dd.text, deductDStyle: dd.style,
+        statusStyle: `display:inline-flex;align-items:center;justify-self:start;padding:2px 10px;border-radius:7px;font-size:12px;font-weight:500;${status === '直接編集済' ? 'background:var(--sev-warn-bg);color:var(--sev-warn-fg);border:1px solid var(--sev-warn-border)' : 'background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-soft-border)'}`,
+      };
+    });
+
+    return {
+      themeAttr: this.state.themeAttr,
+      themeIcon: this.state.themeAttr === 'dark' ? 'sun' : 'moon',
+      toggleTheme: this.toggleTheme,
+      companyName: p.companyName ?? '株式会社 山田製作所',
+      monthLabel: this.months[this.state.monthIndex],
+      cycleMonth: this.cycleMonth,
+      navItems,
+      query: this.state.query, onSearch: this.onSearch,
+      rows, count: rows.length, hasRows: rows.length > 0, isEmpty: rows.length === 0,
+      noop: () => {},
+    };
+  }
+}
+</script>
+</body>
+</html>

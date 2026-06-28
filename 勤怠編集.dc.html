@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/colors.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/typography.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/base.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/components.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/styles.css">
+<script src="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/_ds_bundle.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="app-theme.css">
+</helmet>
+
+<div data-theme="{{ themeAttr }}" style="min-height:100vh;background:var(--bg-page);color:var(--text-1);font-family:var(--font-sans);font-size:var(--text-base);line-height:1.5">
+<div style="display:flex;min-height:100vh;background:var(--bg-page)">
+
+  <aside class="app-side" style="width:236px;flex:0 0 236px;border-right:1px solid var(--border-hairline);background:var(--surface);display:flex;flex-direction:column;position:sticky;top:0;height:100vh">
+    <div style="display:flex;align-items:center;gap:10px;padding:20px 20px 18px">
+      <span style="width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center"><i data-lucide="square-stack" width="17" height="17" style="color:var(--accent-on)"></i></span>
+      <span style="font-size:17px;font-weight:500;letter-spacing:-0.01em">給与デスク</span>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:2px;padding:6px 12px;flex:1;overflow:auto">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="9">
+        <a href="{{ item.href }}" class="nav-link" style="{{ item.style }}">
+          <i data-lucide="{{ item.icon }}" width="18" height="18" style="flex:0 0 auto"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px;border-top:1px solid var(--border-hairline);display:flex;align-items:center;gap:10px">
+      <span style="width:30px;height:30px;border-radius:50%;background:var(--surface-sunken);border:1px solid var(--border);display:grid;place-items:center;font-size:12px;color:var(--text-2)">経</span>
+      <div style="display:flex;flex-direction:column;line-height:1.3"><span style="font-size:13px">経理 担当</span><span style="font-size:11px;color:var(--text-3)">管理者</span></div>
+    </div>
+  </aside>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+    <header style="position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 28px;border-bottom:1px solid var(--border-hairline);background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(8px)">
+      <div style="display:flex;align-items:center;gap:14px;min-width:0">
+        <span style="font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ companyName }}</span>
+        <button onClick="{{ cycleMonth }}" style="display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;cursor:pointer;white-space:nowrap;flex:0 0 auto">
+          <i data-lucide="calendar" width="15" height="15" style="color:var(--text-3)"></i>
+          <span style="font-variant-numeric:tabular-nums">{{ monthLabel }}</span>
+          <i data-lucide="chevron-down" width="14" height="14" style="color:var(--text-3)"></i>
+        </button>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button aria-label="通知" style="position:relative;width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text-2);display:grid;place-items:center;cursor:pointer">
+          <i data-lucide="bell" width="19" height="19"></i>
+          <span style="position:absolute;top:8px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:1.5px solid var(--surface)"></span>
+        </button>
+        <button onClick="{{ toggleTheme }}" aria-label="表示テーマ" style="width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text-2);display:grid;place-items:center;cursor:pointer">
+          <i data-lucide="{{ themeIcon }}" width="19" height="19"></i>
+        </button>
+      </div>
+    </header>
+
+    <main style="flex:1;padding:22px 28px 56px;max-width:1320px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:18px">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <a href="勤怠.dc.html" class="ghost-link" style="display:inline-flex;align-items:center;gap:6px;color:var(--text-3);font-size:13px;text-decoration:none"><i data-lucide="arrow-left" width="15" height="15"></i>勤怠一覧へ戻る</a>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:13px;color:var(--text-3);font-variant-numeric:tabular-nums">1 / 12 人</span>
+          <button aria-label="前の従業員" style="width:32px;height:32px;border-radius:9px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);display:grid;place-items:center;cursor:pointer"><i data-lucide="chevron-left" width="16" height="16"></i></button>
+          <button aria-label="次の従業員" style="width:32px;height:32px;border-radius:9px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);display:grid;place-items:center;cursor:pointer"><i data-lucide="chevron-right" width="16" height="16"></i></button>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:16px;min-width:0">
+            <span style="width:52px;height:52px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:21px;font-weight:500;flex:0 0 auto">山</span>
+            <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+              <span style="font-size:12px;color:var(--text-3);font-family:var(--font-mono)">E-1001</span>
+              <h1 style="margin:0;font-size:22px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap">山田 太郎</h1>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+            <a href="#" class="ghost-link" style="display:inline-flex;align-items:center;gap:5px;color:var(--text-2);font-size:13px;text-decoration:none">勤怠モニター<i data-lucide="chevron-right" width="14" height="14"></i></a>
+            <a href="#" class="ghost-link" style="display:inline-flex;align-items:center;gap:5px;color:var(--text-2);font-size:13px;text-decoration:none">勤務・賃金設定: 正社員<i data-lucide="chevron-right" width="14" height="14"></i></a>
+            <a href="#" class="ghost-link" style="display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-size:13px;font-weight:500;text-decoration:none"><i data-lucide="download" width="15" height="15"></i>日次データ出力</a>
+          </div>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--border);border-radius:11px;background:var(--surface-sunken);width:fit-content;flex-wrap:wrap">
+          <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+            <a href="{{ t.href }}" style="{{ t.style }}">{{ t.label }}</a>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:12px">
+        <span style="font-size:14px;font-weight:500">月次勤怠締め申請</span>
+        <span style="display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:500;background:var(--surface-sunken);color:var(--text-3);border:1px solid var(--border)">未申請</span>
+        <x-import component-from-global-scope="ToriokiDesignSystem_4ced92.Button" variant="secondary" size="sm" onClick="{{ noop }}" hint-size="auto,34px" style="margin-left:auto">締め申請する</x-import>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;padding:13px 18px;background:var(--sev-warn-bg);border:1px solid var(--sev-warn-border);border-radius:12px">
+        <i data-lucide="triangle-alert" width="18" height="18" style="color:var(--sev-warn-fg);flex:0 0 auto"></i>
+        <span style="font-size:14px;color:var(--sev-warn-fg);font-weight:500">申請または修正が必要な勤怠が 2 日あります。</span>
+        <button class="ghost-link" onClick="{{ noop }}" style="margin-left:auto;background:transparent;border:none;color:var(--text-2);font-family:inherit;font-size:13px;cursor:pointer;padding:4px 6px">閉じる</button>
+      </div>
+
+      <section style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:18px 16px">
+        <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="11">
+          <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-3)"><sc-if value="{{ t.hasDot }}" hint-placeholder-val="{{ false }}"><span style="{{ t.dotStyle }}"></span></sc-if>{{ t.label }}</span>
+            <span style="font-size:20px;font-weight:500;font-family:var(--font-mono);font-variant-numeric:tabular-nums">{{ t.value }}<span style="font-size:12px;color:var(--text-3);font-family:var(--font-sans);margin-left:3px;font-weight:400">{{ t.unit }}</span></span>
+          </div>
+        </sc-for>
+      </section>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <span style="font-size:15px;font-weight:500">2026年6月25日払い <span style="font-size:13px;color:var(--text-3);font-weight:400">（2026年5月16日 〜 2026年6月15日 勤務分）</span></span>
+        <div style="display:flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--border);border-radius:11px;background:var(--surface-sunken)">
+          <sc-for list="{{ views }}" as="v" hint-placeholder-count="3">
+            <button onClick="{{ v.onClick }}" style="{{ v.style }}"><i data-lucide="{{ v.icon }}" width="14" height="14"></i>{{ v.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <section style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+        <div style="overflow-x:auto">
+          <div style="min-width:1180px">
+            <div style="display:grid;grid-template-columns:44px 92px 100px 110px 100px 80px 80px 80px 80px 72px 84px 72px 64px;gap:0;padding:0 4px;border-bottom:1px solid var(--border);background:var(--surface-sunken);font-size:11px;color:var(--text-3)">
+              <span style="padding:10px 6px;text-align:center">アラート</span>
+              <span style="padding:10px 6px">日付</span>
+              <span style="padding:10px 6px">勤務日種別</span>
+              <span style="padding:10px 6px">勤務予定</span>
+              <span style="padding:10px 6px">勤怠種別</span>
+              <span style="padding:10px 6px;text-align:center">出勤打刻</span>
+              <span style="padding:10px 6px;text-align:center">退勤打刻</span>
+              <span style="padding:10px 6px;text-align:center">始業時刻</span>
+              <span style="padding:10px 6px;text-align:center">終業時刻</span>
+              <span style="padding:10px 6px;text-align:right">所定内</span>
+              <span style="padding:10px 6px;text-align:right">法定内残業</span>
+              <span style="padding:10px 6px;text-align:right">時間外</span>
+              <span style="padding:10px 6px;text-align:right">深夜</span>
+            </div>
+            <sc-for list="{{ days }}" as="d" hint-placeholder-count="10">
+              <div>
+              <div style="{{ d.rowStyle }}">
+                <span style="padding:0 6px;display:flex;align-items:center;justify-content:center"><sc-if value="{{ d.alert }}" hint-placeholder-val="{{ false }}"><i data-lucide="triangle-alert" width="15" height="15" style="color:var(--sev-vio-fg)" title="{{ d.alertText }}"></i></sc-if></span>
+                <span style="padding:11px 6px;font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;color:{{ d.dateColor }}">{{ d.date }}</span>
+                <span style="padding:11px 6px;font-size:12px;color:var(--text-2)">{{ d.kind }}</span>
+                <span style="padding:11px 6px;font-size:12px;color:var(--text-3);font-family:var(--font-mono)">{{ d.plan }}</span>
+                <span style="padding:11px 6px;font-size:12px;color:var(--text-2)">{{ d.type }}</span>
+                <span style="padding:7px 6px;display:flex;align-items:center;justify-content:center"><sc-if value="{{ d.worked }}" hint-placeholder-val="{{ true }}"><input defaultValue="{{ d.in }}" style="width:64px;padding:5px 4px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text-1);font-family:var(--font-mono);font-size:12px;text-align:center;outline:none"></sc-if></span>
+                <span style="padding:7px 6px;display:flex;align-items:center;justify-content:center"><sc-if value="{{ d.worked }}" hint-placeholder-val="{{ true }}"><input defaultValue="{{ d.out }}" style="{{ d.outInputStyle }}"></sc-if></span>
+                <span style="padding:11px 6px;text-align:center;font-size:12px;color:var(--text-2);font-family:var(--font-mono)">{{ d.start }}</span>
+                <span style="padding:11px 6px;text-align:center;font-size:12px;color:var(--text-2);font-family:var(--font-mono)">{{ d.end }}</span>
+                <span style="padding:11px 6px;text-align:right;font-size:12px;color:var(--text-2);font-family:var(--font-mono)">{{ d.regular }}</span>
+                <span style="padding:11px 6px;text-align:right;font-size:12px;color:var(--text-2);font-family:var(--font-mono)">{{ d.lateOt }}</span>
+                <span style="padding:11px 6px;text-align:right;font-size:12px;font-family:var(--font-mono);color:{{ d.otColor }}">{{ d.overtime }}</span>
+                <span style="padding:11px 6px;text-align:right;font-size:12px;color:var(--text-2);font-family:var(--font-mono)">{{ d.night }}</span>
+              </div>
+              <sc-if value="{{ d.alert }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:flex-start;gap:9px;padding:9px 16px 11px;background:var(--sev-vio-bg);border-bottom:1px solid var(--border-hairline)">
+                  <span style="font-size:11px;font-weight:500;padding:2px 8px;border-radius:6px;background:var(--surface);border:1px solid var(--sev-vio-border);color:var(--sev-vio-fg);flex:0 0 auto;margin-top:1px">{{ d.alertTag }}</span>
+                  <span style="font-size:12px;line-height:1.55;color:var(--sev-vio-fg)"><span style="color:var(--text-3)">理由：</span>{{ d.alertText }}</span>
+                </div>
+              </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding:11px 18px;border-top:1px solid var(--border-hairline);font-size:12px;color:var(--text-3)">打刻欄をクリックすると修正できます。修正後は「締め申請する」で確定します。</div>
+      </section>
+
+    </main>
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1340, &quot;height&quot;: 960 },
+  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;株式会社 山田製作所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
+}">
+class Component extends DCLogic {
+  state = { themeAttr: '', monthIndex: 1, view: 'table' };
+  months = ['2026年5月度', '2026年6月度', '2026年7月度'];
+
+  nav = [
+    ['ダッシュボード', 'layout-dashboard', '給与ダッシュボード.dc.html', false],
+    ['従業員', 'users', '従業員.dc.html', false],
+    ['勤怠', 'clock', '勤怠.dc.html', true],
+    ['休暇・有給', 'palmtree', '休暇・有給.dc.html', false],
+    ['給与計算', 'calculator', '給与計算.dc.html', false],
+    ['賞与', 'gift', '賞与.dc.html', false],
+    ['年末調整', 'file-text', '年末調整.dc.html', false],
+    ['書類', 'folder', '書類.dc.html', false],
+    ['設定', 'settings', '設定.dc.html', false],
+  ];
+
+  tabDefs = [['従業員', '従業員詳細.dc.html', false], ['勤怠', '#', true], ['休暇', '休暇・有給.dc.html', false], ['給与', '給与計算.dc.html', false], ['賞与', '賞与.dc.html', false]];
+
+  tileDefs = [
+    ['労働日数', '22', '日', null],
+    ['総勤務時間', '178:23', '', null],
+    ['所定内労働', '147:00', '', 'var(--accent)'],
+    ['法定内残業', '14:00', '', '#7fbeb7'],
+    ['時間外労働', '24:23', '', 'var(--accent-700)'],
+    ['法定休日労働', '0:00', '', 'var(--sev-warn-fg)'],
+    ['深夜労働', '4:00', '', '#3a4a66'],
+    ['欠勤日数', '0', '日', null],
+    ['有休取得数', '1', '日', null],
+    ['有休残数', '12', '日', null],
+    ['遅刻早退時間', '0:00', '', null],
+  ];
+
+  // [date, dow, kind, plan, type, in, out, start, end, regular, lateOt, overtime, night, alert, alertText, holiday]
+  dayDefs = [
+    ['6/1', '月', '所定労働日', '09:00-18:00', '通常勤務', '08:50', '18:05', '09:00', '18:05', '8:00', '0:05', '0:00', '0:00', false, '', false],
+    ['6/2', '火', '所定労働日', '09:00-18:00', '打刻欠け', '08:48', '', '08:48', '—', '—', '—', '—', '—', true, '退勤打刻がありません。実働時間を確認し、退勤時刻を入力してください。', false],
+    ['6/3', '水', '所定労働日', '09:00-18:00', '通常勤務', '08:45', '19:30', '08:45', '19:30', '8:00', '0:00', '1:30', '0:00', true, '休憩不足：実働8時間超の勤務ですが、休憩が60分未満（45分）です。休憩を60分以上に修正してください。', false],
+    ['6/4', '木', '所定労働日', '09:00-18:00', '通常勤務', '08:55', '18:10', '08:55', '18:10', '8:00', '0:10', '0:00', '0:00', false, '', false],
+    ['6/5', '金', '所定労働日', '09:00-18:00', '通常勤務', '08:52', '20:48', '08:52', '20:48', '8:00', '0:00', '2:48', '1:00', false, '', false],
+    ['6/6', '土', '所定休日', '', '所定休日', '', '', '', '', '', '', '', '', false, '', false],
+    ['6/7', '日', '法定休日', '', '法定休日', '', '', '', '', '', '', '', '', false, '', true],
+    ['6/8', '月', '所定労働日', '09:00-18:00', '通常勤務', '08:49', '18:30', '08:49', '18:30', '8:00', '0:30', '0:00', '0:00', false, '', false],
+    ['6/9', '火', '所定労働日', '09:00-18:00', '通常勤務', '08:58', '19:15', '08:58', '19:15', '8:00', '0:00', '1:15', '0:00', false, '', false],
+    ['6/10', '水', '所定労働日', '09:00-18:00', '通常勤務', '08:47', '18:02', '08:47', '18:02', '8:00', '0:02', '0:00', '0:00', false, '', false],
+  ];
+
+  componentDidMount() { this._icons(); }
+  componentDidUpdate() { this._icons(); }
+  _icons() { if (!window.lucide || !window.lucide.createIcons) { setTimeout(() => this._icons(), 140); return; } try { window.lucide.createIcons(); } catch (e) {} }
+
+  toggleTheme = () => this.setState(s => ({ themeAttr: s.themeAttr === 'dark' ? 'light' : 'dark' }));
+  cycleMonth = () => this.setState(s => ({ monthIndex: (s.monthIndex + 1) % this.months.length }));
+  setView = (v) => this.setState({ view: v });
+
+  renderVals() {
+    const p = this.props || {};
+    const navItems = this.nav.map(([label, icon, href, active]) => ({
+      label, icon, href,
+      style: `display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;text-decoration:none;font-size:14px;cursor:pointer;${active ? 'background:var(--accent-soft);color:var(--accent);font-weight:500' : 'color:var(--text-2);font-weight:400'}`,
+    }));
+
+    const tabs = this.tabDefs.map(([label, href, active]) => ({
+      label, href,
+      style: `padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;cursor:pointer;${active ? 'background:var(--accent);color:var(--accent-on)' : 'color:var(--text-2);background:transparent'}`,
+    }));
+
+    const tiles = this.tileDefs.map(([label, value, unit, dot]) => ({
+      label, value, unit,
+      hasDot: !!dot,
+      dotStyle: dot ? `width:9px;height:9px;border-radius:2px;background:${dot}` : '',
+    }));
+
+    const viewDefs = [['table', 'テーブル', 'table-2'], ['list', 'リスト', 'list'], ['calendar', 'カレンダー', 'calendar-days']];
+    const views = viewDefs.map(([key, label, icon]) => {
+      const active = this.state.view === key;
+      return { label, icon, onClick: () => this.setView(key),
+        style: `display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:8px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;border:none;${active ? 'background:var(--accent);color:var(--accent-on)' : 'background:transparent;color:var(--text-2)'}` };
+    });
+
+    const days = this.dayDefs.map(([date, dow, kind, plan, type, tin, tout, start, end, regular, lateOt, overtime, night, alert, alertText, holiday]) => {
+      const worked = !!start;
+      const dateColor = dow === '日' || holiday ? 'var(--sev-vio-fg)' : (dow === '土' ? 'var(--accent)' : 'var(--text-1)');
+      const otActive = overtime && overtime !== '0:00' && overtime !== '—';
+      return {
+        date: `${date}(${dow})`, dateColor, kind, plan, type,
+        worked, in: tin, out: tout, start, end, regular, lateOt, overtime, night,
+        alert, alertText,
+        alertTag: type === '打刻欠け' ? '要確認' : '違反',
+        otColor: otActive ? 'var(--accent-700)' : 'var(--text-2)',
+        rowStyle: `display:grid;grid-template-columns:44px 92px 100px 110px 100px 80px 80px 80px 80px 72px 84px 72px 64px;gap:0;padding:0 4px;border-bottom:1px solid var(--border-hairline);align-items:center;${alert ? 'background:var(--sev-vio-bg)' : (holiday || dow === '土' ? 'background:var(--surface-sunken)' : '')}`,
+        outInputStyle: `width:64px;padding:5px 4px;border:1px solid ${tout ? 'var(--border)' : 'var(--sev-vio-border)'};border-radius:7px;background:${tout ? 'var(--surface)' : 'var(--sev-vio-bg)'};color:var(--text-1);font-family:var(--font-mono);font-size:12px;text-align:center;outline:none`,
+      };
+    });
+
+    return {
+      themeAttr: this.state.themeAttr,
+      themeIcon: this.state.themeAttr === 'dark' ? 'sun' : 'moon',
+      toggleTheme: this.toggleTheme,
+      companyName: p.companyName ?? '株式会社 山田製作所',
+      monthLabel: this.months[this.state.monthIndex],
+      cycleMonth: this.cycleMonth,
+      navItems, tabs, tiles, views, days,
+      noop: () => {},
+    };
+  }
+}
+</script>
+</body>
+</html>

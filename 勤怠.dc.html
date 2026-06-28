@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/colors.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/typography.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/base.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/components.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/styles.css">
+<script src="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/_ds_bundle.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="app-theme.css">
+</helmet>
+
+<div data-theme="{{ themeAttr }}" style="min-height:100vh;background:var(--bg-page);color:var(--text-1);font-family:var(--font-sans);font-size:var(--text-base);line-height:1.5">
+<div style="display:flex;min-height:100vh;background:var(--bg-page)">
+
+  <aside class="app-side" style="width:236px;flex:0 0 236px;border-right:1px solid var(--border-hairline);background:var(--surface);display:flex;flex-direction:column;position:sticky;top:0;height:100vh">
+    <div style="display:flex;align-items:center;gap:10px;padding:20px 20px 18px">
+      <span style="width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center"><i data-lucide="square-stack" width="17" height="17" style="color:var(--accent-on)"></i></span>
+      <span style="font-size:17px;font-weight:500;letter-spacing:-0.01em">給与デスク</span>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:2px;padding:6px 12px;flex:1;overflow:auto">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="9">
+        <a href="{{ item.href }}" class="nav-link" style="{{ item.style }}">
+          <i data-lucide="{{ item.icon }}" width="18" height="18" style="flex:0 0 auto"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px;border-top:1px solid var(--border-hairline);display:flex;align-items:center;gap:10px">
+      <span style="width:30px;height:30px;border-radius:50%;background:var(--surface-sunken);border:1px solid var(--border);display:grid;place-items:center;font-size:12px;color:var(--text-2)">経</span>
+      <div style="display:flex;flex-direction:column;line-height:1.3"><span style="font-size:13px">経理 担当</span><span style="font-size:11px;color:var(--text-3)">管理者</span></div>
+    </div>
+  </aside>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+    <header style="position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 28px;border-bottom:1px solid var(--border-hairline);background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(8px)">
+      <div style="display:flex;align-items:center;gap:14px;min-width:0">
+        <span style="font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ companyName }}</span>
+        <button onClick="{{ cycleMonth }}" style="display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;cursor:pointer;white-space:nowrap;flex:0 0 auto">
+          <i data-lucide="calendar" width="15" height="15" style="color:var(--text-3)"></i>
+          <span style="font-variant-numeric:tabular-nums">{{ monthLabel }}</span>
+          <i data-lucide="chevron-down" width="14" height="14" style="color:var(--text-3)"></i>
+        </button>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button aria-label="通知" style="position:relative;width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text-2);display:grid;place-items:center;cursor:pointer">
+          <i data-lucide="bell" width="19" height="19"></i>
+          <span style="position:absolute;top:8px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:1.5px solid var(--surface)"></span>
+        </button>
+        <button onClick="{{ toggleTheme }}" aria-label="表示テーマ" style="width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text-2);display:grid;place-items:center;cursor:pointer">
+          <i data-lucide="{{ themeIcon }}" width="19" height="19"></i>
+        </button>
+      </div>
+    </header>
+
+    <main style="flex:1;padding:26px 28px 56px;max-width:1240px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:18px">
+
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <h1 style="margin:0;font-size:24px;font-weight:500;letter-spacing:-0.01em">勤怠</h1>
+          <p style="margin:0;font-size:14px;color:var(--text-3)">当月の勤怠を取り込み、異常を確認します。<span style="font-variant-numeric:tabular-nums">{{ periodLabel }}</span> 勤務分</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <x-import component-from-global-scope="ToriokiDesignSystem_4ced92.Button" variant="secondary" size="md" onClick="{{ onImport }}" hint-size="auto,40px">CSVインポート</x-import>
+          <x-import component-from-global-scope="ToriokiDesignSystem_4ced92.Button" variant="primary" size="md" onClick="{{ onSync }}" hint-size="auto,40px">勤怠を取り込む</x-import>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;padding:13px 18px;background:var(--ok-bg);border:1px solid var(--ok-border);border-radius:12px;flex-wrap:wrap">
+        <span style="width:28px;height:28px;border-radius:50%;background:var(--surface);border:1px solid var(--ok-border);display:grid;place-items:center;flex:0 0 auto"><i data-lucide="check" width="15" height="15" style="color:var(--ok-fg)"></i></span>
+        <span style="font-size:14px;color:var(--ok-fg);font-weight:500">勤怠データは取込済みです</span>
+        <span style="font-size:13px;color:var(--text-2)">最終取込: <span style="font-variant-numeric:tabular-nums;font-family:var(--font-mono)">6/16 09:12</span> ・ タイムレコーダー連携</span>
+        <button class="ghost-link" onClick="{{ onSync }}" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:transparent;border:none;color:var(--accent);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;padding:4px 6px"><i data-lucide="refresh-cw" width="14" height="14"></i>再取込</button>
+      </div>
+
+      <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px"><x-import component-from-global-scope="ToriokiDesignSystem_4ced92.SummaryStat" value="{{ s_synced }}" unit="名" label="取込済" hint-size="auto,auto"></x-import></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px"><x-import component-from-global-scope="ToriokiDesignSystem_4ced92.SummaryStat" value="{{ s_pending }}" unit="名" label="未取込" hint-size="auto,auto"></x-import></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px"><x-import component-from-global-scope="ToriokiDesignSystem_4ced92.SummaryStat" value="{{ s_anomaly }}" unit="件" label="勤怠の異常" tone="alert" hint-size="auto,auto"></x-import></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px"><x-import component-from-global-scope="ToriokiDesignSystem_4ced92.SummaryStat" value="{{ s_overtime }}" label="総残業時間" hint-size="auto,auto"></x-import></div>
+      </section>
+
+      <section style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border-hairline)">
+          <h2 style="margin:0;font-size:16px;font-weight:500">従業員別 勤怠サマリ</h2>
+          <span style="font-size:12px;color:var(--text-3)">時間は時:分。残業は法定外を表示</span>
+        </div>
+        <div style="overflow-x:auto">
+          <div style="min-width:760px">
+            <div style="display:grid;grid-template-columns:1.7fr .8fr .9fr .9fr .8fr .9fr 1.1fr;gap:10px;padding:11px 20px;border-bottom:1px solid var(--border-hairline);font-size:12px;color:var(--text-3)">
+              <span>氏名</span>
+              <span style="text-align:right">出勤</span>
+              <span style="text-align:right">所定内</span>
+              <span style="text-align:right">残業</span>
+              <span style="text-align:right">深夜</span>
+              <span style="text-align:right">遅刻早退</span>
+              <span>状態</span>
+            </div>
+            <div>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="10">
+                <a href="勤怠編集.dc.html" class="row-hover" style="display:grid;grid-template-columns:1.7fr .8fr .9fr .9fr .8fr .9fr 1.1fr;gap:10px;align-items:center;padding:13px 20px;border-bottom:1px solid var(--border-hairline);font-variant-numeric:tabular-nums;text-decoration:none;color:inherit">
+                  <div style="display:flex;align-items:center;gap:11px;min-width:0">
+                    <span style="width:30px;height:30px;border-radius:50%;background:var(--surface-sunken);border:1px solid var(--border);display:grid;place-items:center;font-size:12px;color:var(--text-2);flex:0 0 auto">{{ r.initial }}</span>
+                    <span style="font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span>
+                  </div>
+                  <span style="text-align:right;font-size:13px;color:var(--text-2);font-family:var(--font-mono)">{{ r.days }}</span>
+                  <span style="text-align:right;font-size:13px;color:var(--text-2);font-family:var(--font-mono)">{{ r.regular }}</span>
+                  <span style="{{ r.otStyle }}">{{ r.overtime }}</span>
+                  <span style="text-align:right;font-size:13px;color:var(--text-2);font-family:var(--font-mono)">{{ r.night }}</span>
+                  <span style="text-align:right;font-size:13px;color:var(--text-2);font-family:var(--font-mono)">{{ r.late }}</span>
+                  <span style="display:flex;align-items:center;gap:8px"><span style="{{ r.stateStyle }}"><i data-lucide="{{ r.stateIcon }}" width="12" height="12"></i>{{ r.stateLabel }}</span><sc-if value="{{ r.flagged }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--text-3)">編集 →</span></sc-if></span>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 860 },
+  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;株式会社 山田製作所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
+}">
+class Component extends DCLogic {
+  state = { themeAttr: '', monthIndex: 1 };
+  months = ['2026年5月度', '2026年6月度', '2026年7月度'];
+  periods = ['4/16〜5/15', '5/16〜6/15', '6/16〜7/15'];
+
+  nav = [
+    ['ダッシュボード', 'layout-dashboard', '給与ダッシュボード.dc.html', false],
+    ['従業員', 'users', '従業員.dc.html', false],
+    ['勤怠', 'clock', '勤怠.dc.html', true],
+    ['休暇・有給', 'palmtree', '休暇・有給.dc.html', false],
+    ['給与計算', 'calculator', '#', false],
+    ['賞与', 'gift', '#', false],
+    ['年末調整', 'file-text', '年末調整.dc.html', false],
+    ['書類', 'folder', '#', false],
+    ['設定', 'settings', '#', false],
+  ];
+
+  // [name, days, regular, overtime, night, late, state]  state: ok|違反|警告|休職
+  att = [
+    ['山田太郎', '22日', '168:00', '38:23', '4:00', '1回', '違反'],
+    ['佐藤花子', '22日', '176:00', '52:00', '0:00', '0回', '警告'],
+    ['鈴木一郎', '21日', '168:00', '12:30', '0:00', '0回', 'ok'],
+    ['田中美咲', '20日', '152:00', '4:00', '0:00', '1回', 'ok'],
+    ['高橋健太', '22日', '176:00', '18:15', '2:00', '0回', 'ok'],
+    ['渡辺さくら', '18日', '108:00', '0:00', '0:00', '0回', 'ok'],
+    ['伊藤大輔', '21日', '168:00', '24:00', '1:30', '0回', 'ok'],
+    ['山本由美', '—', '—', '—', '—', '—', '休職'],
+    ['中村翔', '21日', '168:00', '9:45', '0:00', '2回', 'ok'],
+    ['小林麻衣', '16日', '96:00', '0:00', '0:00', '0回', 'ok'],
+    ['加藤遼', '22日', '176:00', '31:00', '3:00', '0回', 'ok'],
+    ['吉田直樹', '21日', '168:00', '14:20', '0:00', '0回', 'ok'],
+  ];
+
+  componentDidMount() { this._icons(); }
+  componentDidUpdate() { this._icons(); }
+  _icons() { if (!window.lucide || !window.lucide.createIcons) { setTimeout(() => this._icons(), 140); return; } try { window.lucide.createIcons(); } catch (e) {} }
+
+  toggleTheme = () => this.setState(s => ({ themeAttr: s.themeAttr === 'dark' ? 'light' : 'dark' }));
+  cycleMonth = () => this.setState(s => ({ monthIndex: (s.monthIndex + 1) % this.months.length }));
+
+  _state(s) {
+    const base = 'display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:500;';
+    if (s === '違反') return { style: base + 'background:var(--sev-vio-bg);color:var(--sev-vio-fg);border:1px solid var(--sev-vio-border)', icon: 'octagon-alert', label: '違反', flagged: true, ot: 'var(--sev-vio-fg)' };
+    if (s === '警告') return { style: base + 'background:var(--sev-warn-bg);color:var(--sev-warn-fg);border:1px solid var(--sev-warn-border)', icon: 'triangle-alert', label: '警告', flagged: true, ot: 'var(--sev-warn-fg)' };
+    if (s === '休職') return { style: base + 'background:var(--surface-sunken);color:var(--text-3);border:1px solid var(--border)', icon: 'minus', label: '休職', flagged: false, ot: 'var(--text-3)' };
+    return { style: base + 'background:var(--ok-bg);color:var(--ok-fg);border:1px solid var(--ok-border)', icon: 'check', label: '正常', flagged: false, ot: 'var(--text-2)' };
+  }
+
+  renderVals() {
+    const p = this.props || {};
+    const navItems = this.nav.map(([label, icon, href, active]) => ({
+      label, icon, href,
+      style: `display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;text-decoration:none;font-size:14px;cursor:pointer;${active ? 'background:var(--accent-soft);color:var(--accent);font-weight:500' : 'color:var(--text-2);font-weight:400'}`,
+    }));
+
+    const rows = this.att.map(([name, days, regular, overtime, night, late, st]) => {
+      const m = this._state(st);
+      return { name, initial: name.charAt(0), days, regular, overtime, night, late,
+        otStyle: { textAlign: 'right', fontSize: '13px', fontFamily: 'var(--font-mono)', color: m.ot },
+        stateStyle: m.style, stateIcon: m.icon, stateLabel: m.label, flagged: m.flagged };
+    });
+
+    const anomalyCount = this.att.filter(a => a[6] === '違反' || a[6] === '警告').length;
+
+    return {
+      themeAttr: this.state.themeAttr,
+      themeIcon: this.state.themeAttr === 'dark' ? 'sun' : 'moon',
+      toggleTheme: this.toggleTheme,
+      companyName: p.companyName ?? '株式会社 山田製作所',
+      monthLabel: this.months[this.state.monthIndex],
+      periodLabel: this.periods[this.state.monthIndex],
+      cycleMonth: this.cycleMonth,
+      navItems,
+      onSync: () => {}, onImport: () => {},
+      s_synced: 12, s_pending: 0, s_anomaly: anomalyCount, s_overtime: '129時間',
+      rows,
+    };
+  }
+}
+</script>
+</body>
+</html>
