@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>給与デスク — 画面一覧</title>
+<style>
+  :root{
+    --accent:#0f7c74; --accent-soft:#e6f2f0; --accent-soft-border:#c8e0db;
+    --bg:#f6f5f2; --surface:#ffffff; --border:#e7e3dc;
+    --text-1:#2a2722; --text-2:#5d574e; --text-3:#8d8678;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text-1);
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased; line-height:1.6;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:56px 28px 96px;}
+  .brand{display:flex; align-items:center; gap:12px; margin-bottom:8px;}
+  .logo{
+    width:38px; height:38px; border-radius:10px; background:var(--accent);
+    color:#fff; display:grid; place-items:center; font-weight:600; font-size:18px;
+  }
+  .brand h1{font-size:22px; font-weight:600; margin:0; letter-spacing:.02em;}
+  .lead{color:var(--text-2); font-size:15px; margin:6px 0 0; max-width:60ch;}
+  .group{margin-top:44px;}
+  .group > h2{
+    font-size:13px; font-weight:600; letter-spacing:.08em; color:var(--text-3);
+    text-transform:none; margin:0 0 14px; padding-bottom:0;
+  }
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:14px;}
+  a.card{
+    display:flex; flex-direction:column; gap:4px; text-decoration:none;
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:16px 18px; color:inherit; transition:border-color .15s, transform .12s;
+  }
+  a.card:hover{border-color:var(--accent); transform:translateY(-2px);}
+  .card .top{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .card .name{font-size:15px; font-weight:600; color:var(--text-1);}
+  .card .arrow{color:var(--accent); font-size:18px; line-height:1;}
+  .card .desc{font-size:12.5px; color:var(--text-3);}
+  .tag{
+    display:inline-block; font-size:11px; font-weight:600; color:var(--accent);
+    background:var(--accent-soft); border:1px solid var(--accent-soft-border);
+    border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:1px;
+  }
+  footer{margin-top:64px; color:var(--text-3); font-size:12.5px; border-top:1px solid var(--border); padding-top:18px;}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo">給</div>
+      <h1>給与デスク</h1>
+    </div>
+    <p class="lead">中小企業向けの給与・労務SaaS。勤怠異常をつぶして給与を確定する業務フローを中心に設計したプロトタイプです。下のカードから各画面を開けます。</p>
+
+    <div class="group">
+      <h2>認証</h2>
+      <div class="grid" id="g-auth"></div>
+    </div>
+
+    <div class="group">
+      <h2>管理画面（PC）<span class="tag">業務フロー</span></h2>
+      <div class="grid" id="g-admin"></div>
+    </div>
+
+    <div class="group">
+      <h2>給与・明細</h2>
+      <div class="grid" id="g-pay"></div>
+    </div>
+
+    <div class="group">
+      <h2>従業員向け（モバイル / タブレット）</h2>
+      <div class="grid" id="g-emp"></div>
+    </div>
+
+    <footer>給与デスク プロトタイプ · ダミーデータ · ティール1色 / フラット / ダーク・レスポンシブ対応</footer>
+  </div>
+
+  <script>
+    const screens = {
+      'g-auth': [
+        ['ログイン.dc.html', 'ログイン', '会社ごとのログイン画面'],
+      ],
+      'g-admin': [
+        ['給与ダッシュボード.dc.html', 'ダッシュボード', '勤怠異常→給与確定のトップ'],
+        ['従業員.dc.html', '従業員一覧', '在籍メンバーの一覧'],
+        ['従業員詳細.dc.html', '従業員詳細', '基本情報・税・社保など'],
+        ['勤怠.dc.html', '勤怠一覧', '月次の勤怠状況'],
+        ['勤怠編集.dc.html', '勤怠編集', '日次の打刻修正・締め申請'],
+        ['休暇・有給.dc.html', '休暇・有給', '申請の承認 / 却下'],
+        ['確定後の手続き.dc.html', '確定後の手続き', '給与確定後のタスク'],
+        ['書類.dc.html', '書類', '各種手続き・帳票の出力'],
+        ['設定.dc.html', '設定', '事業所・締め支払・料率'],
+      ],
+      'g-pay': [
+        ['給与計算.dc.html', '給与計算', '計算結果と帳票出力'],
+        ['給与明細一覧.dc.html', '給与明細一覧', '従業員ごとの明細一覧'],
+        ['給与明細.dc.html', '給与明細', '印刷可能な明細（PDF）'],
+        ['賞与.dc.html', '賞与', '賞与の計算と明細'],
+        ['年末調整.dc.html', '年末調整', '年調の進行管理'],
+      ],
+      'g-emp': [
+        ['個人ページ.dc.html', '個人ページ', '従業員向けモバイルアプリ'],
+        ['打刻.dc.html', '打刻', 'タブレットのキオスク打刻'],
+      ],
+    };
+    for (const [gid, list] of Object.entries(screens)) {
+      const host = document.getElementById(gid);
+      for (const [href, name, desc] of list) {
+        const a = document.createElement('a');
+        a.className = 'card';
+        a.href = encodeURI(href);
+        a.innerHTML =
+          '<div class="top"><span class="name"></span><span class="arrow">→</span></div>' +
+          '<div class="desc"></div>';
+        a.querySelector('.name').textContent = name;
+        a.querySelector('.desc').textContent = desc;
+        host.appendChild(a);
+      }
+    }
+  </script>
+</body>
+</html>
