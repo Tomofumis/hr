@@ -180,5 +180,41 @@
     };
   }
 
-  global.PayrollCalc = { RATES: RATES, calc: calc, MAX_OVERTIME_MIN: 45 * 60 };
+  /* 賞与の源泉所得税：「賞与に対する源泉徴収税額の算出率の表」（令和6年分・甲）。
+     前月の社会保険料控除後の給与と扶養親族等の数から賞与率を引く。
+     扶養>0は前月給与を扶養×31,667で調整して近似（要・公式表確認）。 */
+  var BONUS_RATES = [
+    [68000, 0], [79000, 0.02042], [252000, 0.04084], [300000, 0.06126], [334000, 0.08168],
+    [363000, 0.10210], [395000, 0.12252], [426000, 0.14294], [520000, 0.16336], [601000, 0.18378],
+    [678000, 0.20420], [708000, 0.22462], [745000, 0.24504], [788000, 0.26546], [846000, 0.28588],
+    [914000, 0.30630], [1312000, 0.32672], [1521000, 0.35742], [2621000, 0.38804], [3496000, 0.41846],
+    [Infinity, 0.45945],
+  ];
+  function bonusTaxRate(prevPay, deps) {
+    var a = Math.max(0, (prevPay || 0) - 31667 * (deps || 0));
+    for (var i = 0; i < BONUS_RATES.length; i++) { if (a < BONUS_RATES[i][0]) return BONUS_RATES[i][1]; }
+    return 0.45945;
+  }
+  // 賞与の社会保険料・源泉所得税・差引を計算。
+  // emp: { prevPay(前月社保後給与), dependents, care, socialApplicable, taxColumn, bonusTax(乙欄の登録値) }
+  function calcBonus(emp, gross) {
+    var r = rates();
+    gross = gross || 0;
+    var sb = Math.floor(gross / 1000) * 1000;          // 標準賞与額（1,000円未満切捨て）
+    var applicable = emp.socialApplicable !== false;
+    var health = applicable ? Math.round(sb * r.health / 2) : 0;
+    var care = (applicable && emp.care) ? Math.round(sb * r.care / 2) : 0;
+    var childCare = applicable ? Math.round(sb * r.childCare) : 0;
+    var pension = applicable ? Math.round(Math.min(sb, 1500000) * r.pension / 2) : 0;  // 厚年は月150万上限
+    var employment = Math.round(gross * r.employment);
+    var social = health + care + childCare + pension + employment;
+    var rate = bonusTaxRate(emp.prevPay, emp.dependents);
+    var incomeTax = emp.taxColumn === '乙' ? (emp.bonusTax || 0) : Math.max(0, Math.floor((gross - social) * rate));
+    return {
+      standardBonus: sb, health: health, care: care, childCare: childCare, pension: pension,
+      employment: employment, social: social, incomeTax: incomeTax, taxRate: rate, net: gross - social - incomeTax,
+    };
+  }
+
+  global.PayrollCalc = { RATES: RATES, calc: calc, calcBonus: calcBonus, MAX_OVERTIME_MIN: 45 * 60 };
 })(typeof window !== 'undefined' ? window : this);
