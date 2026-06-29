@@ -17,6 +17,8 @@
 <link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/styles.css">
 <script src="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/_ds_bundle.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="./hr-data.js"></script>
+<script src="./payroll-calc.js"></script>
 <link rel="stylesheet" href="app-theme.css">
 </helmet>
 
@@ -158,21 +160,23 @@ class Component extends DCLogic {
     ['設定', 'settings', '設定.dc.html', false],
   ];
 
-  // [name, grade, gross, ins, tax]
+  // [name, grade, gross(賞与額), prevPay(前月の社保控除後給与), deps(扶養数), care, applicable, taxColumn]
+  // 社会保険料・源泉所得税は payroll-calc.js（賞与の算式・賞与算出率表）で計算する。
   bonus = [
-    ['山田太郎', 'A', 580000, 84000, 35000],
-    ['佐藤花子', 'B', 520000, 75000, 29000],
-    ['鈴木一郎', 'S', 760000, 110000, 52000],
-    ['田中美咲', 'B', 420000, 61000, 21000],
-    ['高橋健太', 'A', 560000, 81000, 33000],
-    ['渡辺さくら', 'C', 280000, 40000, 9000],
-    ['伊藤大輔', 'A', 700000, 101000, 46000],
-    ['山本由美', 'B', 540000, 78000, 31000],
-    ['中村翔', 'B', 480000, 70000, 25000],
-    ['小林麻衣', 'C', 250000, 36000, 7000],
-    ['加藤遼', 'A', 640000, 93000, 40000],
-    ['吉田直樹', 'S', 720000, 104000, 48000],
+    ['山田太郎', 'A', 580000, 300000, 2, true, true, '甲'],
+    ['佐藤花子', 'B', 520000, 278000, 1, true, true, '甲'],
+    ['鈴木一郎', 'S', 760000, 322000, 0, true, true, '乙'],
+    ['田中美咲', 'B', 420000, 250000, 0, false, true, '甲'],
+    ['高橋健太', 'A', 560000, 296000, 1, true, true, '甲'],
+    ['渡辺さくら', 'C', 280000, 165000, 0, false, false, '甲'],
+    ['伊藤大輔', 'A', 700000, 338000, 2, true, true, '甲'],
+    ['山本由美', 'B', 540000, 288000, 0, true, true, '甲'],
+    ['中村翔', 'B', 480000, 268000, 0, false, true, '甲'],
+    ['小林麻衣', 'C', 250000, 158000, 0, false, false, '甲'],
+    ['加藤遼', 'A', 640000, 310000, 1, true, true, '甲'],
+    ['吉田直樹', 'S', 720000, 318000, 0, true, true, '甲'],
   ];
+  bonusTaxOtsu = { '鈴木一郎': 52000 };   // 乙欄は登録値（賞与の乙欄表は別途）
 
   componentDidMount() { this._icons(); }
   componentDidUpdate() { this._icons(); }
@@ -198,9 +202,13 @@ class Component extends DCLogic {
       style: `display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;text-decoration:none;font-size:14px;cursor:pointer;${active ? 'background:var(--accent-soft);color:var(--accent);font-weight:500' : 'color:var(--text-2);font-weight:400'}`,
     }));
 
+    const C = window.PayrollCalc;
     let tg = 0, ti = 0, tt = 0, tn = 0;
-    const rows = this.bonus.map(([name, grade, gross, ins, tax]) => {
-      const net = gross - ins - tax;
+    const rows = this.bonus.map(([name, grade, gross, prevPay, deps, care, applicable, taxColumn]) => {
+      const b = C
+        ? C.calcBonus({ prevPay, dependents: deps, care, socialApplicable: applicable, taxColumn, bonusTax: this.bonusTaxOtsu[name] || 0 }, gross)
+        : { social: 0, incomeTax: 0, net: gross };
+      const ins = b.social, tax = b.incomeTax, net = b.net;
       tg += gross; ti += ins; tt += tax; tn += net;
       return { name, grade, gradeStyle: this._grade(grade), gross: this.fmt(gross), ins: this.fmt(ins), tax: this.fmt(tax), net: this.fmt(net) };
     });
