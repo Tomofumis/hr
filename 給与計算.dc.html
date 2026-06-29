@@ -72,6 +72,7 @@
           <p style="margin:0;font-size:14px;color:var(--text-3)">勤怠をもとに当月の給与を計算します。<span style="font-variant-numeric:tabular-nums">{{ periodLabel }}</span> 勤務分</p>
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <button onClick="{{ onTransfer }}" style="display:inline-flex;align-items:center;gap:7px;padding:9px 15px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer"><i data-lucide="download" width="15" height="15" style="color:var(--text-3)"></i>振込データ（CSV）</button>
           <x-import component-from-global-scope="ToriokiDesignSystem_4ced92.Button" variant="secondary" size="md" onClick="{{ onPreview }}" hint-size="auto,40px">明細プレビュー</x-import>
           <x-import component-from-global-scope="ToriokiDesignSystem_4ced92.Button" variant="primary" size="md" onClick="{{ onRun }}" hint-size="auto,40px">給与計算を実行</x-import>
         </div>
@@ -196,6 +197,33 @@ class Component extends DCLogic {
   fmt = (n) => n.toLocaleString('ja-JP');
   yen = (n) => '¥' + n.toLocaleString('ja-JP');
 
+  // 振込先（デモ用ダミー。本来は従業員マスタの口座情報）
+  banks = [['みずほ銀行', '0001'], ['三菱UFJ銀行', '0005'], ['三井住友銀行', '0009'], ['りそな銀行', '0010']];
+  _bankOf(i) {
+    const b = this.banks[i % this.banks.length];
+    return { bank: b[0], code: b[1], branch: ('00' + (1 + (i * 3) % 99)).slice(-3), type: '普通', acct: String(1000000 + i * 137).slice(0, 7) };
+  }
+  _download(text, filename) {
+    try {
+      const blob = new Blob([text], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; document.body.appendChild(a); a.click();
+      document.body.removeChild(a); setTimeout(() => URL.revokeObjectURL(url), 1500);
+    } catch (e) {}
+  }
+  // 総合振込用CSV（従業員名・銀行・支店・預金種別・口座番号・振込金額）を生成してダウンロード
+  onTransfer = () => {
+    const header = ['従業員名', '銀行名', '銀行コード', '支店コード', '預金種別', '口座番号', '振込金額'];
+    const lines = this.pay.map(([name, gross, ins, tax, resident], i) => {
+      const net = gross - ins - tax - resident;
+      const b = this._bankOf(i);
+      return [name, b.bank, b.code, b.branch, b.type, b.acct, net].join(',');
+    });
+    const csv = '﻿' + [header.join(','), ...lines].join('\r\n') + '\r\n';
+    this._download(csv, '給与振込データ_' + this.months[this.state.monthIndex].replace(/[^0-9]/g, '') + '.csv');
+  };
+
   renderVals() {
     const p = this.props || {};
     const navItems = this.nav.map(([label, icon, href, active]) => ({
@@ -219,7 +247,7 @@ class Component extends DCLogic {
       periodLabel: this.periods[this.state.monthIndex],
       cycleMonth: this.cycleMonth,
       navItems,
-      onRun: () => {}, onPreview: () => {},
+      onRun: () => {}, onPreview: () => {}, onTransfer: this.onTransfer,
       s_people: this.pay.length,
       s_gross: this.yen(tg), s_deduct: this.yen(ti + tt + tr), s_net: this.yen(tn),
       t_ins: this.fmt(ti), t_tax: this.fmt(tt), t_resident: this.fmt(tr),
