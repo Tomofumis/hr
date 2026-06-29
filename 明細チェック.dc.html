@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/colors.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/typography.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/base.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/components.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/styles.css">
+<script src="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/_ds_bundle.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="app-theme.css">
+</helmet>
+
+<div data-theme="{{ themeAttr }}" style="min-height:100vh;background:var(--bg-page);color:var(--text-1);font-family:var(--font-sans);font-size:var(--text-base);line-height:1.5">
+<div style="display:flex;min-height:100vh;background:var(--bg-page)">
+
+  <aside class="app-side" style="width:236px;flex:0 0 236px;border-right:1px solid var(--border-hairline);background:var(--surface);display:flex;flex-direction:column;position:sticky;top:0;height:100vh">
+    <div style="display:flex;align-items:center;gap:10px;padding:20px 20px 18px">
+      <span style="width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center"><i data-lucide="square-stack" width="17" height="17" style="color:var(--accent-on)"></i></span>
+      <span style="font-size:17px;font-weight:500;letter-spacing:-0.01em">給与デスク</span>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:2px;padding:6px 12px;flex:1;overflow:auto">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="10">
+        <a href="{{ item.href }}" class="nav-link" style="{{ item.style }}">
+          <i data-lucide="{{ item.icon }}" width="18" height="18" style="flex:0 0 auto"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px;border-top:1px solid var(--border-hairline);display:flex;align-items:center;gap:10px">
+      <span style="width:30px;height:30px;border-radius:50%;background:var(--surface-sunken);border:1px solid var(--border);display:grid;place-items:center;font-size:12px;color:var(--text-2)">経</span>
+      <div style="display:flex;flex-direction:column;line-height:1.3"><span style="font-size:13px">経理 担当</span><span style="font-size:11px;color:var(--text-3)">管理者</span></div>
+    </div>
+  </aside>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+    <header style="position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 28px;border-bottom:1px solid var(--border-hairline);background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(8px)">
+      <div style="display:flex;align-items:center;gap:14px;min-width:0">
+        <span style="font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ companyName }}</span>
+        <button onClick="{{ cycleMonth }}" style="display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;cursor:pointer;white-space:nowrap;flex:0 0 auto">
+          <i data-lucide="calendar" width="15" height="15" style="color:var(--text-3)"></i>
+          <span style="font-variant-numeric:tabular-nums">{{ monthLabel }}</span>
+          <i data-lucide="chevron-down" width="14" height="14" style="color:var(--text-3)"></i>
+        </button>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button aria-label="通知" style="position:relative;width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text-2);display:grid;place-items:center;cursor:pointer">
+          <i data-lucide="bell" width="19" height="19"></i>
+          <span style="position:absolute;top:8px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:1.5px solid var(--surface)"></span>
+        </button>
+        <button onClick="{{ toggleTheme }}" aria-label="表示テーマ" style="width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text-2);display:grid;place-items:center;cursor:pointer">
+          <i data-lucide="{{ themeIcon }}" width="19" height="19"></i>
+        </button>
+      </div>
+    </header>
+
+    <main style="flex:1;padding:26px 28px 56px;max-width:1400px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <h1 style="margin:0;font-size:24px;font-weight:500;letter-spacing:-0.01em">明細チェック</h1>
+          <p style="margin:0;font-size:14px;color:var(--text-3)">基準値マスタ × 当月実績 × 前月比 を自動突合 ・ 2026年6月25日支払い分（ダミーデータ）</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+          <a href="#" class="ghost-link" style="display:inline-flex;align-items:center;gap:5px;color:var(--text-2);font-size:13px;text-decoration:none">基準値マスタ<i data-lucide="chevron-right" width="14" height="14"></i></a>
+          <button onClick="{{ toggleWarnOnly }}" style="display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border:1px solid {{ warnOnlyBorder }};border-radius:10px;background:{{ warnOnlyBg }};color:{{ warnOnlyFg }};font-family:inherit;font-size:13px;cursor:pointer"><i data-lucide="alert-triangle" width="15" height="15"></i>要確認のみ</button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+        <div style="background:var(--surface-sunken);border-radius:12px;padding:14px 16px"><div style="font-size:12px;color:var(--text-3)">自動OK</div><div style="font-size:24px;font-weight:500;font-variant-numeric:tabular-nums">{{ okCount }}<span style="font-size:13px;color:var(--text-3);margin-left:3px">名</span></div></div>
+        <div style="background:var(--surface-sunken);border-radius:12px;padding:14px 16px"><div style="font-size:12px;color:var(--text-3)">要確認</div><div style="font-size:24px;font-weight:500;color:var(--sev-warn-fg);font-variant-numeric:tabular-nums">{{ warnCount }}<span style="font-size:13px;margin-left:3px">名</span></div></div>
+        <div style="background:var(--surface-sunken);border-radius:12px;padding:14px 16px"><div style="font-size:12px;color:var(--text-3)">検算項目</div><div style="font-size:24px;font-weight:500;font-variant-numeric:tabular-nums">{{ itemCount }}<span style="font-size:13px;color:var(--text-3);margin-left:3px">件</span></div></div>
+        <div style="background:var(--surface-sunken);border-radius:12px;padding:14px 16px"><div style="font-size:12px;color:var(--text-3)">基準値ズレ</div><div style="font-size:24px;font-weight:500;color:var(--sev-warn-fg);font-variant-numeric:tabular-nums">{{ zureCount }}<span style="font-size:13px;margin-left:3px">件</span></div></div>
+      </div>
+
+      <section style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+        <div style="overflow-x:auto">
+          <div style="min-width:1040px">
+            <div style="display:grid;grid-template-columns:176px repeat(8,1fr);gap:8px;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--surface-sunken);font-size:12px;color:var(--text-3)">
+              <span>氏名</span>
+              <sc-for list="{{ cats }}" as="c" hint-placeholder-count="8"><span style="text-align:center">{{ c }}</span></sc-for>
+            </div>
+            <sc-if value="{{ hasRows }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+                  <div onClick="{{ r.onClick }}" class="row-hover" style="{{ r.rowStyle }}">
+                    <div style="display:flex;align-items:center;gap:10px;min-width:0">
+                      <span style="width:28px;height:28px;border-radius:50%;background:var(--surface-sunken);border:1px solid var(--border);display:grid;place-items:center;font-size:12px;color:var(--text-2);flex:0 0 auto">{{ r.initial }}</span>
+                      <div style="display:flex;flex-direction:column;min-width:0;line-height:1.25">
+                        <span style="font-size:13px;font-weight:500;white-space:nowrap">{{ r.name }}</span>
+                        <span style="font-size:11px;color:var(--text-3);font-family:var(--font-mono)">{{ r.code }}</span>
+                      </div>
+                    </div>
+                    <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="8">
+                      <span style="{{ c.style }}">{{ c.label }}</span>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:48px 20px;text-align:center;color:var(--text-3);font-size:14px">要確認の従業員はいません。すべて基準値どおりです。</div>
+            </sc-if>
+          </div>
+        </div>
+        <div style="display:flex;gap:18px;padding:12px 20px;border-top:1px solid var(--border-hairline);font-size:12px;color:var(--text-3);flex-wrap:wrap">
+          <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:11px;height:11px;border-radius:3px;background:var(--ok-bg);border:1px solid var(--ok-border)"></span>基準値・前月比どおり</span>
+          <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:11px;height:11px;border-radius:3px;background:var(--sev-warn-bg);border:1px solid var(--sev-warn-border)"></span>要確認（ズレ / 超過 / 変動）</span>
+          <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:11px;height:11px;border-radius:3px;background:var(--sev-chk-bg);border:1px solid var(--sev-chk-border)"></span>既知の例外条件</span>
+        </div>
+      </section>
+
+      <sc-if value="{{ hasSelected }}" hint-placeholder-val="{{ true }}">
+        <section style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:16px 20px;border-bottom:1px solid var(--border-hairline)">
+            <span style="font-size:16px;font-weight:500">{{ selName }} の検算内訳</span>
+            <span style="font-size:12px;color:var(--text-3);font-family:var(--font-mono)">{{ selCode }}</span>
+            <sc-for list="{{ selBadges }}" as="b" hint-placeholder-count="2">
+              <span style="{{ b.style }}">{{ b.text }}</span>
+            </sc-for>
+          </div>
+          <div style="overflow-x:auto">
+            <div style="min-width:760px">
+              <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr 2.2fr 0.9fr;gap:10px;padding:10px 20px;border-bottom:1px solid var(--border);background:var(--surface-sunken);font-size:12px;color:var(--text-3)">
+                <span>項目</span><span style="text-align:right">実績</span><span style="text-align:right">期待値</span><span>根拠</span><span style="text-align:center">判定</span>
+              </div>
+              <sc-for list="{{ selRows }}" as="d" hint-placeholder-count="8">
+                <div style="{{ d.rowStyle }}">
+                  <span style="font-size:13px">{{ d.item }}</span>
+                  <span style="text-align:right;font-size:13px;font-family:var(--font-mono)">{{ d.actual }}</span>
+                  <span style="text-align:right;font-size:13px;font-family:var(--font-mono);color:var(--text-2)">{{ d.expected }}</span>
+                  <span style="font-size:12px;color:var(--text-2)">{{ d.basis }}</span>
+                  <span style="{{ d.judgeStyle }}">{{ d.judge }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </section>
+      </sc-if>
+
+    </main>
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1400, &quot;height&quot;: 880 },
+  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;株式会社 山田製作所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
+}">
+class Component extends DCLogic {
+  state = { themeAttr: '', monthIndex: 1, selected: 2, warnOnly: false };
+  months = ['2026年5月度', '2026年6月度', '2026年7月度'];
+
+  nav = [
+    ['ダッシュボード', 'layout-dashboard', '給与ダッシュボード.dc.html', false],
+    ['従業員', 'users', '従業員.dc.html', false],
+    ['勤怠', 'clock', '勤怠.dc.html', false],
+    ['休暇・有給', 'palmtree', '休暇・有給.dc.html', false],
+    ['給与計算', 'calculator', '給与計算.dc.html', false],
+    ['明細チェック', 'clipboard-check', '明細チェック.dc.html', true],
+    ['賞与', 'gift', '賞与.dc.html', false],
+    ['年末調整', 'file-text', '年末調整.dc.html', false],
+    ['書類', 'folder', '書類.dc.html', false],
+    ['設定', 'settings', '設定.dc.html', false],
+  ];
+
+  cats = ['基本給', '残業', '社保', '雇保', '所得税', '住民税', '通勤', '差引'];
+  catsLong = { '基本給': '基本給', '残業': '残業手当', '社保': '社会保険料', '雇保': '雇用保険料', '所得税': '所得税', '住民税': '住民税', '通勤': '通勤手当', '差引': '差引支給額' };
+
+  // ok = 基準値どおり / warn = 要確認 / info = 既知の例外
+  emp = [
+    { name: '山田 太郎', code: 'E-1001', chk: {
+      '基本給': { s: 'ok',   actual: '360,000', expected: '360,000', basis: 'マスタ正規額' },
+      '残業':   { s: 'ok',   actual: '117,634', expected: '117,634', basis: '月給 ÷ 147h × 割増率 × 残業時間' },
+      '社保':   { s: 'ok',   actual: '79,500',  expected: '79,500',  basis: '標準報酬月額 × 料率（本人負担）' },
+      '雇保':   { s: 'ok',   actual: '2,388',   expected: '2,388',   basis: '課税支給 × 雇用保険料率' },
+      '所得税': { s: 'ok',   actual: '15,410',  expected: '15,410',  basis: '甲欄・源泉徴収税額表' },
+      '住民税': { s: 'ok',   actual: '47,800',  expected: '47,800',  basis: 'マスタ月額（特別徴収）' },
+      '通勤':   { s: 'ok',   actual: '12,000',  expected: '12,000',  basis: 'マスタ区間額' },
+      '差引':   { s: 'ok',   actual: '332,536', expected: '332,536', basis: '総支給 − 控除計' } } },
+
+    { name: '佐藤 花子', code: 'E-1002', chk: {
+      '基本給': { s: 'ok',   actual: '255,000', expected: '255,000', basis: 'マスタ正規額' },
+      '残業':   { s: 'warn', note: '47:50', actual: '47:50', expected: '≤ 45:00', basis: '36協定の上限（月45h）超過 — 要確認' },
+      '社保':   { s: 'ok',   actual: '56,200',  expected: '56,200',  basis: '標準報酬月額 × 料率（本人負担）' },
+      '雇保':   { s: 'ok',   actual: '1,791',   expected: '1,791',   basis: '課税支給 × 雇用保険料率' },
+      '所得税': { s: 'ok',   actual: '6,750',   expected: '6,750',   basis: '甲欄・源泉徴収税額表' },
+      '住民税': { s: 'ok',   actual: '20,000',  expected: '20,000',  basis: 'マスタ月額（特別徴収）' },
+      '通勤':   { s: 'ok',   actual: '9,800',   expected: '9,800',   basis: 'マスタ区間額' },
+      '差引':   { s: 'ok',   actual: '237,670', expected: '237,670', basis: '総支給 − 控除計' } } },
+
+    { name: '鈴木 一郎', code: 'E-1003', chk: {
+      '基本給': { s: 'ok',   actual: '250,000', expected: '250,000', basis: 'マスタ正規額' },
+      '残業':   { s: 'ok',   actual: '38,420',  expected: '38,420',  basis: '月給 ÷ 147h × 割増率 × 残業時間' },
+      '社保':   { s: 'ok',   actual: '52,300',  expected: '52,300',  basis: '標準報酬月額 × 料率（本人負担）' },
+      '雇保':   { s: 'ok',   actual: '1,732',   expected: '1,732',   basis: '課税支給 × 雇用保険料率' },
+      '所得税': { s: 'info', note: '乙欄', actual: '11,800', expected: '乙欄', basis: '乙欄区分（扶養控除等申告書の提出なし）' },
+      '住民税': { s: 'warn', note: '+15,400', actual: '15,400', expected: '15,400', basis: '前月 0 → 今月から特別徴収を開始 — 要確認' },
+      '通勤':   { s: 'ok',   actual: '14,000',  expected: '14,000',  basis: 'マスタ区間額' },
+      '差引':   { s: 'ok',   actual: '322,020', expected: '322,020', basis: '総支給 − 控除計' } } },
+
+    { name: '田中 美咲', code: 'E-1004', chk: {
+      '基本給': { s: 'ok',   actual: '230,000', expected: '230,000', basis: 'マスタ正規額（契約）' },
+      '残業':   { s: 'ok',   actual: '12,800',  expected: '12,800',  basis: '月給 ÷ 147h × 割増率 × 残業時間' },
+      '社保':   { s: 'warn', note: '+2,400', actual: '62,340', expected: '59,940', basis: '標準報酬の等級改定漏れの疑い — 要確認' },
+      '雇保':   { s: 'ok',   actual: '1,457',   expected: '1,457',   basis: '課税支給 × 雇用保険料率' },
+      '所得税': { s: 'ok',   actual: '5,210',   expected: '5,210',   basis: '甲欄・源泉徴収税額表' },
+      '住民税': { s: 'ok',   actual: '11,500',  expected: '11,500',  basis: 'マスタ月額（特別徴収）' },
+      '通勤':   { s: 'ok',   actual: '8,400',   expected: '8,400',   basis: 'マスタ区間額' },
+      '差引':   { s: 'ok',   actual: '203,660', expected: '203,660', basis: '総支給 − 控除計' } } },
+
+    { name: '渡辺 さくら', code: 'E-1006', chk: {
+      '基本給': { s: 'info', note: '時給', actual: '—', expected: '時給 2,000', basis: '時給 × 勤務時間（パート）' },
+      '残業':   { s: 'ok',   actual: '0',       expected: '0',       basis: '時間外なし' },
+      '社保':   { s: 'info', note: '対象外', actual: '0', expected: '0', basis: '社会保険の加入対象外' },
+      '雇保':   { s: 'ok',   actual: '1,230',   expected: '1,230',   basis: '課税支給 × 雇用保険料率' },
+      '所得税': { s: 'ok',   actual: '0',       expected: '0',       basis: '甲欄・源泉徴収税額表' },
+      '住民税': { s: 'info', note: '普徴', actual: '0', expected: '0', basis: '普通徴収（給与天引きなし）' },
+      '通勤':   { s: 'ok',   actual: '6,200',   expected: '6,200',   basis: 'マスタ区間額' },
+      '差引':   { s: 'ok',   actual: '164,900', expected: '164,900', basis: '総支給 − 控除計' } } },
+
+    { name: '中村 翔', code: 'E-1009', chk: {
+      '基本給': { s: 'info', note: '時給', actual: '—', expected: '時給 2,000', basis: '時給 × 勤務時間（契約）' },
+      '残業':   { s: 'ok',   actual: '21,500',  expected: '21,500',  basis: '時給 × 割増率 × 残業時間' },
+      '社保':   { s: 'ok',   actual: '50,800',  expected: '50,800',  basis: '標準報酬月額 × 料率（本人負担）' },
+      '雇保':   { s: 'ok',   actual: '1,716',   expected: '1,716',   basis: '課税支給 × 雇用保険料率' },
+      '所得税': { s: 'ok',   actual: '5,940',   expected: '5,940',   basis: '甲欄・源泉徴収税額表' },
+      '住民税': { s: 'ok',   actual: '13,200',  expected: '13,200',  basis: 'マスタ月額（特別徴収）' },
+      '通勤':   { s: 'warn', note: '+3,000', actual: '15,000', expected: '12,000', basis: 'マスタ区間額と不一致 — 要確認' },
+      '差引':   { s: 'ok',   actual: '228,300', expected: '228,300', basis: '総支給 − 控除計' } } },
+  ];
+
+  componentDidMount() { this._icons(); }
+  componentDidUpdate() { this._icons(); }
+  _icons() { if (!window.lucide || !window.lucide.createIcons) { setTimeout(() => this._icons(), 140); return; } try { window.lucide.createIcons(); } catch (e) {} }
+
+  toggleTheme = () => this.setState(s => ({ themeAttr: s.themeAttr === 'dark' ? 'light' : 'dark' }));
+  cycleMonth = () => this.setState(s => ({ monthIndex: (s.monthIndex + 1) % this.months.length }));
+  toggleWarnOnly = () => this.setState(s => ({ warnOnly: !s.warnOnly }));
+  select = (i) => this.setState({ selected: i });
+
+  _cellStyle(s) {
+    const base = 'display:flex;align-items:center;justify-content:center;height:30px;border-radius:8px;font-size:11px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;';
+    if (s === 'warn') return base + 'background:var(--sev-warn-bg);color:var(--sev-warn-fg);border:1px solid var(--sev-warn-border)';
+    if (s === 'info') return base + 'background:var(--sev-chk-bg);color:var(--sev-chk-fg);border:1px solid var(--sev-chk-border)';
+    return base + 'background:var(--ok-bg);color:var(--ok-fg);border:1px solid var(--ok-border)';
+  }
+  _empWarns(e) { return this.cats.filter(c => e.chk[c].s === 'warn').length; }
+
+  renderVals() {
+    const p = this.props || {};
+    const navItems = this.nav.map(([label, icon, href, active]) => ({
+      label, icon, href,
+      style: `display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;text-decoration:none;font-size:14px;cursor:pointer;${active ? 'background:var(--accent-soft);color:var(--accent);font-weight:500' : 'color:var(--text-2);font-weight:400'}`,
+    }));
+
+    const warnOnly = this.state.warnOnly;
+    const visible = this.emp
+      .map((e, i) => ({ e, i }))
+      .filter(({ e }) => !warnOnly || this._empWarns(e) > 0);
+
+    const rows = visible.map(({ e, i }) => {
+      const selected = i === this.state.selected;
+      const cells = this.cats.map(c => {
+        const k = e.chk[c];
+        return { style: this._cellStyle(k.s), label: k.s === 'warn' ? k.note : k.s === 'info' ? k.note : '✓' };
+      });
+      return {
+        name: e.name, code: e.code, initial: e.name.charAt(0), cells,
+        onClick: () => this.select(i),
+        rowStyle: `display:grid;grid-template-columns:176px repeat(8,1fr);gap:8px;align-items:center;padding:11px 20px;border-bottom:1px solid var(--border-hairline);cursor:pointer;${selected ? 'background:var(--accent-soft)' : ''}`,
+      };
+    });
+
+    const sel = this.emp[this.state.selected] || null;
+    const selRows = sel ? this.cats.map(c => {
+      const k = sel.chk[c];
+      const isWarn = k.s === 'warn', isInfo = k.s === 'info';
+      const judge = isWarn ? '要確認' : isInfo ? (k.note || '例外') : '✓';
+      const jcolor = isWarn ? 'var(--sev-warn-fg)' : isInfo ? 'var(--sev-chk-fg)' : 'var(--ok-fg)';
+      return {
+        item: this.catsLong[c], actual: k.actual, expected: k.expected, basis: k.basis, judge,
+        judgeStyle: `justify-self:center;text-align:center;font-size:12px;font-weight:500;color:${jcolor}`,
+        rowStyle: `display:grid;grid-template-columns:1.1fr 1fr 1fr 2.2fr 0.9fr;gap:10px;align-items:center;padding:11px 20px;border-bottom:1px solid var(--border-hairline);${isWarn ? 'background:var(--sev-warn-bg)' : ''}`,
+      };
+    }) : [];
+    const selBadges = sel ? this.cats.filter(c => sel.chk[c].s !== 'ok').map(c => {
+      const k = sel.chk[c];
+      const w = k.s === 'warn';
+      return {
+        text: w ? `${this.catsLong[c]}：要確認` : `${this.catsLong[c]}：${k.note}`,
+        style: `display:inline-flex;align-items:center;padding:2px 10px;border-radius:7px;font-size:12px;font-weight:500;${w ? 'background:var(--sev-warn-bg);color:var(--sev-warn-fg);border:1px solid var(--sev-warn-border)' : 'background:var(--sev-chk-bg);color:var(--sev-chk-fg);border:1px solid var(--sev-chk-border)'}`,
+      };
+    }) : [];
+
+    const warnCount = this.emp.filter(e => this._empWarns(e) > 0).length;
+    const zureCount = this.emp.reduce((n, e) => n + this._empWarns(e), 0);
+
+    return {
+      themeAttr: this.state.themeAttr,
+      themeIcon: this.state.themeAttr === 'dark' ? 'sun' : 'moon',
+      toggleTheme: this.toggleTheme,
+      companyName: p.companyName ?? '株式会社 山田製作所',
+      monthLabel: this.months[this.state.monthIndex],
+      cycleMonth: this.cycleMonth,
+      navItems, cats: this.cats,
+      toggleWarnOnly: this.toggleWarnOnly,
+      warnOnlyBg: warnOnly ? 'var(--sev-warn-bg)' : 'var(--surface)',
+      warnOnlyFg: warnOnly ? 'var(--sev-warn-fg)' : 'var(--text-1)',
+      warnOnlyBorder: warnOnly ? 'var(--sev-warn-border)' : 'var(--border)',
+      rows, hasRows: rows.length > 0, isEmpty: rows.length === 0,
+      okCount: this.emp.length - warnCount, warnCount,
+      itemCount: this.emp.length * this.cats.length, zureCount,
+      hasSelected: !!sel, selName: sel ? sel.name : '', selCode: sel ? sel.code : '',
+      selRows, selBadges,
+    };
+  }
+}
+</script>
+</body>
+</html>
