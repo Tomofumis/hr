@@ -129,6 +129,12 @@
     return { health: health, healthGrade: healthGrade, pension: pensionSm };
   }
 
+  // 日割り計算：月給を（出勤対象日数 ÷ 所定労働日数）で按分（入社・退社月など）。
+  function proratePay(monthly, worked, scheduled) {
+    if (!scheduled || scheduled <= 0) return monthly || 0;
+    return Math.round((monthly || 0) * Math.max(0, Math.min(worked, scheduled)) / scheduled);
+  }
+
   function calc(emp) {
     var r = rates();
     var applicable = emp.socialApplicable !== false;
@@ -139,10 +145,15 @@
     var sm = smInfo.health;          // 健保・介護・子育ての算定基礎
     var smPension = smInfo.pension;  // 厚年（上限650,000）の算定基礎
 
-    // 基本給
+    // 基本給。入社・退社月は emp.prorate（{worked, scheduled}）で日割り（月給のみ）。
     var base = emp.type === '時給'
       ? R((emp.hourly || 0) * (emp.workedHours || 0))
       : (emp.base || 0);
+    var prorated = false;
+    if (emp.type !== '時給' && emp.prorate && emp.prorate.scheduled) {
+      base = proratePay(emp.base || 0, emp.prorate.worked, emp.prorate.scheduled);
+      prorated = true;
+    }
 
     // 残業手当：月給は (月給 ÷ 所定時間)、時給は時給そのものを単価に
     var unit = emp.type === '時給'
@@ -190,7 +201,7 @@
       overtimeMin: emp.overtimeMin || 0,
       // 検算の根拠文（画面表示用）
       basis: {
-        base: emp.type === '時給' ? '時給 × 勤務時間' : 'マスタ正規額',
+        base: emp.type === '時給' ? '時給 × 勤務時間' : (prorated ? 'マスタ正規額の日割り（' + emp.prorate.worked + '/' + emp.prorate.scheduled + '日）' : 'マスタ正規額'),
         overtime: (emp.type === '時給'
           ? '時給 × ' + r.overtimeMult + ' × 残業時間'
           : '月給 ÷ ' + r.workHours + 'h × ' + r.overtimeMult + ' × 残業時間')
@@ -245,5 +256,5 @@
     };
   }
 
-  global.PayrollCalc = { RATES: RATES, calc: calc, calcBonus: calcBonus, standardMonthly: standardMonthly, MAX_OVERTIME_MIN: 45 * 60 };
+  global.PayrollCalc = { RATES: RATES, calc: calc, calcBonus: calcBonus, standardMonthly: standardMonthly, proratePay: proratePay, MAX_OVERTIME_MIN: 45 * 60 };
 })(typeof window !== 'undefined' ? window : this);
