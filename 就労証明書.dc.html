@@ -19,11 +19,16 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <link rel="stylesheet" href="app-theme.css">
 <style>
-@media print { .scr { display: none !important; } .cert { display: block !important; } @page { size: A4 portrait; margin: 12mm; } }
-.cert { display: none; }
-.cert table { border-collapse: collapse; width: 100%; }
-.cert th, .cert td { border: 1px solid #333; padding: 5px 7px; font-size: 11px; vertical-align: top; }
-.cert th { background: #f0efea; font-weight: 500; text-align: left; white-space: nowrap; }
+@media print { .scr { display: none !important; } .cert { display: block !important; } @page { size: A4 portrait; margin: 8mm; } body { background: #fff; } }
+.cert { display: none; color: #000; font-family: var(--font-sans); }
+.gtbl { border-collapse: collapse; width: 100%; table-layout: fixed; }
+.gtbl td, .gtbl th { border: 1px solid #000; padding: 2px 4px; font-size: 9px; vertical-align: middle; line-height: 1.55; }
+.gtbl .no { width: 22px; text-align: center; }
+.gtbl .it { width: 96px; background: #fbfaf5; }
+.hbox { border-collapse: collapse; }
+.hbox td { border: 1px solid #000; padding: 2px 5px; font-size: 9px; }
+.cb { display: inline-block; width: 9px; height: 9px; border: 1px solid #000; text-align: center; line-height: 8px; font-size: 7px; margin-right: 2px; vertical-align: middle; }
+.opt { display: inline-block; white-space: nowrap; margin-right: 8px; }
 .fld { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text-1); font-family: inherit; font-size: 13px; outline: none; }
 .lbl { font-size: 12px; color: var(--text-3); }
 .req { font-size: 10px; color: #fff; background: var(--sev-vio-fg); border-radius: 4px; padding: 1px 5px; margin-left: 5px; vertical-align: 1px; }
@@ -183,33 +188,52 @@
   </div>
 </div>
 
-<div class="cert" style="padding:6mm;color:#111;background:#fff;font-family:var(--font-sans)">
-  <div style="text-align:center;font-size:18px;font-weight:600;margin-bottom:4px">就 労 証 明 書</div>
-  <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:10px"><span>{{ f.atena }} 宛</span><span>証明日：{{ f.certDate }}</span></div>
-  <table style="margin-bottom:10px">
-    <tr><th style="width:120px">事業所名</th><td>{{ f.company }}</td><th style="width:90px">代表者名</th><td>{{ cert.rep }}</td></tr>
-    <tr><th>所在地</th><td colspan="3">{{ f.addr }}</td></tr>
-    <tr><th>電話番号</th><td>{{ cert.tel }}</td><th>担当者名</th><td>{{ cert.tanto }}</td></tr>
-    <tr><th>業種</th><td colspan="3">{{ f.industry }}</td></tr>
-  </table>
-  <table style="margin-bottom:10px">
-    <tr><th style="width:120px">氏名</th><td>{{ cert.name }}（{{ cert.kana }}）</td><th style="width:90px">生年月日</th><td>{{ f.birth }}</td></tr>
-    <tr><th>雇用形態</th><td>{{ f.koyou }}</td><th>雇用開始日</th><td>{{ f.empStart }}</td></tr>
-    <tr><th>就労先事業所</th><td colspan="3">{{ f.workplaceName }}（{{ f.workplaceAddr }}）</td></tr>
-  </table>
-  <table style="margin-bottom:10px">
-    <tr><th style="width:120px">出勤日</th><td colspan="3">{{ cert.weekdays }}</td></tr>
-    <tr><th>月間就労時間</th><td>{{ cert.monthTime }}（休憩 {{ f.monthBreak }} 分）</td><th style="width:90px">月間就労日数</th><td>{{ f.monthDays }} 日</td></tr>
-    <tr><th>一週就労日数</th><td>{{ f.weekDays }} 日</td><th>平日就労時間</th><td>{{ cert.weekdayTime }}</td></tr>
-    <tr><th>土曜就労時間</th><td>{{ cert.satTime }}</td><th>—</th><td></td></tr>
-  </table>
-  <table style="margin-bottom:10px">
-    <tr><th style="width:120px">就労実績</th><td>
-      <sc-for list="{{ records }}" as="r" hint-placeholder-count="3"><div>{{ r.ym }}：{{ r.days }} 日／{{ r.hours }} 時間</div></sc-for>
+<div class="cert" style="padding:2mm;background:#fff">
+  <div style="text-align:center;font-size:15px;font-weight:600;letter-spacing:5px;margin-bottom:6px">就労証明書</div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-bottom:6px">
+    <div style="font-size:10px;padding-bottom:2px"><span style="display:inline-block;border-bottom:1px solid #000;min-width:150px;text-align:center;padding:0 6px">{{ f.atena }}</span>　宛</div>
+    <table class="hbox" style="width:340px">
+      <tr><td style="width:76px">証明日</td><td>西暦 {{ cd.y }} 年 {{ cd.mo }} 月 {{ cd.d }} 日</td></tr>
+      <tr><td>事業所名</td><td>{{ f.company }}</td></tr>
+      <tr><td>代表者名</td><td>{{ cv.rep }}</td></tr>
+      <tr><td>所在地</td><td>{{ f.addr }}</td></tr>
+      <tr><td>電話番号</td><td>{{ f.tel1 }} － {{ f.tel2 }} － {{ f.tel3 }}</td></tr>
+      <tr><td>担当者名</td><td>{{ cv.tanto }}</td></tr>
+      <tr><td>記載者連絡先</td><td>{{ f.tel1 }} － {{ f.tel2 }} － {{ f.tel3 }}</td></tr>
+    </table>
+  </div>
+  <div style="font-size:10px;margin:4px 0 2px">下記の内容について、事実であることを証明いたします。</div>
+  <div style="font-size:9px;color:#c00;font-weight:600;margin-bottom:5px">※本証明書の内容について、就労先事業者等に無断で作成又は改ざんを行ったときには、刑法上の罪に問われる場合があります。</div>
+  <table class="gtbl">
+    <tr><th class="no">No.</th><th class="it">項目</th><th>記載欄</th></tr>
+    <tr><td class="no">1</td><td class="it">業種</td><td><sc-for list="{{ cv.industries }}" as="o" hint-placeholder-count="19"><span class="opt"><span class="cb">{{ o.ck }}</span>{{ o.label }}</span></sc-for></td></tr>
+    <tr><td class="no">2</td><td class="it">フリガナ／本人氏名</td><td><div style="font-size:8px;color:#444">{{ cv.kana }}</div><div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:12px">{{ cv.name }}</span><span>生年月日　{{ bd.y }} 年 {{ bd.mo }} 月 {{ bd.d }} 日</span></div></td></tr>
+    <tr><td class="no">3</td><td class="it">雇用(予定)期間等</td><td><span class="opt"><span class="cb">{{ cv.muki }}</span>無期</span><span class="opt"><span class="cb">{{ cv.yuki }}</span>有期</span>　期間（有期の場合は雇用開始日のみ）　{{ es.y }} 年 {{ es.mo }} 月 {{ es.d }} 日 ～ 　年　月　日</td></tr>
+    <tr><td class="no">4</td><td class="it">本人就労先事業所</td><td><div>名称　{{ f.workplaceName }}</div><div>住所　{{ f.workplaceAddr }}</div></td></tr>
+    <tr><td class="no">5</td><td class="it">雇用の形態</td><td><sc-for list="{{ cv.employTypes }}" as="o" hint-placeholder-count="14"><span class="opt"><span class="cb">{{ o.ck }}</span>{{ o.label }}</span></sc-for></td></tr>
+    <tr><td class="no">6</td><td class="it">就労時間（固定就労の場合）</td><td>
+      <div style="margin-bottom:2px"><sc-for list="{{ cv.wk }}" as="w" hint-placeholder-count="8"><span class="opt"><span class="cb">{{ w.ck }}</span>{{ w.label }}</span></sc-for>　合計時間 月 {{ f.monthH }} 時間 {{ f.monthM }} 分（うち休憩時間 {{ f.monthBreak }} 分）</div>
+      <div style="margin-bottom:2px">一月当たりの就労日数 月 {{ f.monthDays }} 日　／　一週当たりの就労日数 週 {{ f.weekDays }} 日</div>
+      <div>平日 {{ cv.wkS }} ～ {{ cv.wkE }}（うち休憩 {{ f.wkBreak }} 分）　土曜 {{ cv.satS }} ～ {{ cv.satE }}（うち休憩 {{ f.satBreak }} 分）　日祝 　：　～　：　</div>
     </td></tr>
-    <tr><th>備考</th><td>{{ cert.bikou }}</td></tr>
+    <tr><td class="no">7</td><td class="it">就労実績</td><td><sc-for list="{{ cv.recs }}" as="r" hint-placeholder-count="3"><span class="opt">{{ r.y }}年 {{ r.mo }}月　{{ r.days }} 日／月　{{ r.hours }} 時間／月</span></sc-for></td></tr>
+    <tr><td class="no">8</td><td class="it">産前・産後休業の取得</td><td><span class="opt"><span class="cb"></span>取得予定</span><span class="opt"><span class="cb"></span>取得中</span>　期間 　年　月　日 ～ 　年　月　日</td></tr>
+    <tr><td class="no">9</td><td class="it">育児休業の取得</td><td><span class="opt"><span class="cb"></span>取得予定</span><span class="opt"><span class="cb"></span>取得中</span><span class="opt"><span class="cb"></span>取得済み</span>　期間 　年　月　日 ～</td></tr>
+    <tr><td class="no">10</td><td class="it">産休・育休以外の休業の取得</td><td><span class="opt"><span class="cb"></span>取得予定</span><span class="opt"><span class="cb"></span>取得中</span><span class="opt"><span class="cb"></span>取得済み</span>　理由 <span class="opt"><span class="cb"></span>介護休業</span><span class="opt"><span class="cb"></span>病休</span><span class="opt"><span class="cb"></span>その他（　）</span></td></tr>
+    <tr><td class="no">11</td><td class="it">復職(予定)年月日</td><td><span class="opt"><span class="cb"></span>復職予定</span><span class="opt"><span class="cb"></span>復職済み</span>　　年　月　日</td></tr>
+    <tr><td class="no">12</td><td class="it">育児のための短時間勤務制度利用有無</td><td><span class="opt"><span class="cb"></span>取得予定</span><span class="opt"><span class="cb"></span>取得中</span>　期間 　年　月　日 ～</td></tr>
+    <tr><td class="no">13</td><td class="it">保育士等としての勤務実態の有無</td><td><span class="opt"><span class="cb"></span>有</span><span class="opt"><span class="cb"></span>有（予定）</span><span class="opt"><span class="cb"></span>無</span></td></tr>
+    <tr><td class="no">14</td><td class="it">(雇用契約の)満了後の更新の有無</td><td><span class="opt"><span class="cb"></span>有</span><span class="opt"><span class="cb"></span>有（予定）</span><span class="opt"><span class="cb"></span>無</span><span class="opt"><span class="cb"></span>未定</span></td></tr>
+    <tr><td class="no">15</td><td class="it">入所内定時育休短縮可否</td><td><span class="opt"><span class="cb"></span>可</span><span class="opt"><span class="cb"></span>可（予定）</span><span class="opt"><span class="cb"></span>否</span></td></tr>
+    <tr><td class="no">16</td><td class="it">育休証明可否</td><td><span class="opt"><span class="cb"></span>可</span><span class="opt"><span class="cb"></span>可（予定）</span><span class="opt"><span class="cb"></span>否</span></td></tr>
+    <tr><td class="no">17</td><td class="it">単身赴任期間(予定含む)</td><td>　年　月　日 ～ 　年　月　日</td></tr>
+    <tr><td class="no">18</td><td class="it">備考欄</td><td style="height:42px;vertical-align:top">{{ cv.bikou }}</td></tr>
+    <tr><td class="no">19</td><td class="it">保護者記載欄</td><td>
+      <div style="border-bottom:1px solid #000;padding:2px 0">児童名 ________　生年月日 　年　月　日　施設名 ________　<span class="cb"></span>利用中　<span class="cb"></span>申込中（第一希望）</div>
+      <div style="border-bottom:1px solid #000;padding:2px 0">児童名 ________　生年月日 　年　月　日　施設名 ________　<span class="cb"></span>利用中　<span class="cb"></span>申込中（第一希望）</div>
+      <div style="padding:2px 0">児童名 ________　生年月日 　年　月　日　施設名 ________　<span class="cb"></span>利用中　<span class="cb"></span>申込中（第一希望）</div>
+    </td></tr>
   </table>
-  <div style="font-size:10px;color:#555">※ 証明の有効期限は証明日から3か月間です。</div>
 </div>
 
 </div>
@@ -299,20 +323,26 @@ class Component extends DCLogic {
 
     const publishOptions = ['公開しない', '公開する'].map(o => ({ label: o, checked: this.state.publish === o, onPick: () => this.setState({ publish: o }) }));
 
-    const checkedWeek = this.weekDefs.filter(([k]) => this.state.week[k]).map(([k, l]) => l.replace('曜日', '')).join('・');
-    const cert = {
-      rep: `${f.repSei} ${f.repMei}`, tanto: `${f.tantoSei} ${f.tantoMei}`,
-      tel: `${f.tel1}-${f.tel2}-${f.tel3}`, name: `${f.sei} ${f.mei}`, kana: `${f.kanaSei} ${f.kanaMei}`,
-      weekdays: checkedWeek, monthTime: `${f.monthH}時間${f.monthM}分`,
-      weekdayTime: `${f.wkStart}〜${f.wkEnd}（休憩${f.wkBreak}分）`, satTime: `${f.satStart}〜${f.satEnd}（休憩${f.satBreak}分）`,
-      bikou: f.bikou || '—',
+    const ymd = (s) => { const m = String(s).match(/(\d+)\D+(\d+)\D+(\d+)/); return m ? { y: m[1], mo: m[2], d: m[3] } : { y: '', mo: '', d: '' }; };
+    const cd = ymd(f.certDate), bd = ymd(f.birth), es = ymd(f.empStart);
+    const INDUSTRIES = ['農業・林業', '漁業', '鉱業・採石業・砂利採取業', '建設業', '製造業', '電気・ガス・熱供給・水道業', '情報通信業', '運輸業・郵便業', '卸売業・小売業', '金融業・保険業', '不動産業・物品賃貸業', '学術研究・専門・技術サービス', '宿泊業・飲食サービス業', '生活関連サービス業・娯楽業', '医療・福祉', '教育・学習支援業', '複合サービス事業', '公務', 'その他（　）'];
+    const EMPLOY = ['正社員', 'パート・アルバイト', '派遣社員', '契約社員', '会計年度任用職員', '非常勤・臨時職員', '役員', '自営業主', '自営業専従者', '家族従業者', '内職', '業務委託', 'その他（　）', '公務'];
+    const cv = {
+      rep: `${f.repSei}　${f.repMei}`, tanto: `${f.tantoSei}　${f.tantoMei}`,
+      name: `${f.sei}　${f.mei}`, kana: `${f.kanaSei}　${f.kanaMei}`,
+      muki: '✓', yuki: '',
+      industries: INDUSTRIES.map(o => ({ label: o, ck: (f.industry || '').startsWith(o.slice(0, 3)) ? '✓' : '' })),
+      employTypes: EMPLOY.map(o => ({ label: o, ck: o === f.koyou ? '✓' : '' })),
+      wk: [['月', 'mon'], ['火', 'tue'], ['水', 'wed'], ['木', 'thu'], ['金', 'fri'], ['土', 'sat'], ['日', 'sun'], ['祝日', 'hol']].map(([l, k]) => ({ label: l, ck: this.state.week[k] ? '✓' : '' })),
+      recs: this.state.rec.map(r => { const m = String(r.ym).match(/(\d+)\D+(\d+)/); return { y: m ? m[1] : '', mo: m ? m[2] : '', days: r.days, hours: r.hours }; }),
+      wkS: f.wkStart, wkE: f.wkEnd, satS: f.satStart, satE: f.satEnd, bikou: f.bikou || '',
     };
 
     return {
       themeAttr: this.state.themeAttr,
       themeIcon: this.state.themeAttr === 'dark' ? 'sun' : 'moon',
       toggleTheme: this.toggleTheme,
-      navItems, f, on, weekdays, records, leaves, publishOptions, cert,
+      navItems, f, on, weekdays, records, leaves, publishOptions, cv, cd, bd, es,
       onDownload: this.onDownload, noop: () => {},
     };
   }
