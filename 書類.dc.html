@@ -161,6 +161,7 @@
 class Component extends DCLogic {
   state = { themeAttr: '', monthIndex: 1, query: '', category: 'すべて', format: 'all', modalOpen: false, modalDoc: '', modalEmp: 'A-001 佐川 智史' };
   creatable = { '就労証明書': '就労証明書.dc.html' };
+  directLinks = { '賃金台帳': '賃金台帳.dc.html' };   // 従業員選択モーダルなしで直接開く帳票
   empOptions = ['A-001 佐川 智史', 'A-002 瀬川', 'A-003 中原'];
   months = ['2026年5月度', '2026年6月度', '2026年7月度'];
 
@@ -214,7 +215,10 @@ class Component extends DCLogic {
   onCategory = (e) => this.setState({ category: e.target.value });
   onFormat = (e) => this.setState({ format: e.target.value });
   onClear = () => this.setState({ query: '', category: 'すべて', format: 'all' });
-  openModal = (title) => { if (this.creatable[title]) this.setState({ modalOpen: true, modalDoc: title }); };
+  openModal = (title) => {
+    if (this.directLinks[title]) { if (typeof window !== 'undefined') window.location.href = this.directLinks[title]; return; }
+    if (this.creatable[title]) this.setState({ modalOpen: true, modalDoc: title });
+  };
   onCloseModal = () => this.setState({ modalOpen: false });
   onModalEmp = (e) => this.setState({ modalEmp: e.target.value });
   onCreate = () => { const href = this.creatable[this.state.modalDoc]; if (href && typeof window !== 'undefined') window.location.href = href; };
