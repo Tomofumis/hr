@@ -160,23 +160,13 @@ class Component extends DCLogic {
     ['設定', 'settings', '設定.dc.html', false],
   ];
 
-  // [name, grade, gross(賞与額), prevPay(前月の社保控除後給与), deps(扶養数), care, applicable, taxColumn]
-  // 社会保険料・源泉所得税は payroll-calc.js（賞与の算式・賞与算出率表）で計算する。
-  bonus = [
-    ['山田太郎', 'A', 580000, 300000, 2, true, true, '甲'],
-    ['佐藤花子', 'B', 520000, 278000, 1, true, true, '甲'],
-    ['鈴木一郎', 'S', 760000, 322000, 0, true, true, '乙'],
-    ['田中美咲', 'B', 420000, 250000, 0, false, true, '甲'],
-    ['高橋健太', 'A', 560000, 296000, 1, true, true, '甲'],
-    ['渡辺さくら', 'C', 280000, 165000, 0, false, false, '甲'],
-    ['伊藤大輔', 'A', 700000, 338000, 2, true, true, '甲'],
-    ['山本由美', 'B', 540000, 288000, 0, true, true, '甲'],
-    ['中村翔', 'B', 480000, 268000, 0, false, true, '甲'],
-    ['小林麻衣', 'C', 250000, 158000, 0, false, false, '甲'],
-    ['加藤遼', 'A', 640000, 310000, 1, true, true, '甲'],
-    ['吉田直樹', 'S', 720000, 318000, 0, true, true, '甲'],
-  ];
-  bonusTaxOtsu = { '鈴木一郎': 52000 };   // 乙欄は登録値（賞与の乙欄表は別途）
+  // 従業員は共通マスタ hr-data.js（HRData.employees）を参照（単一の真実）。
+  //   [name, grade, gross(賞与額), prevPay(前月の社保控除後給与), deps, care, applicable, taxColumn]
+  get bonus() {
+    const es = (typeof window !== 'undefined' && window.HRData && window.HRData.employees) || [];
+    return es.map(e => [e.name, e.grade || 'B', e.bonus || 0, e.prevPay || 0, e.dependents || 0, !!e.care, e.socialApplicable !== false, e.taxColumn || '甲']);
+  }
+  bonusTaxOtsu = { '鷲尾': 35000, '張': 36000 };   // 乙欄の賞与所得税は登録値（賞与の乙欄表は別途）
 
   componentDidMount() { this._icons(); }
   componentDidUpdate() { this._icons(); }
