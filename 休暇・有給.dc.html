@@ -78,7 +78,7 @@
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px"><x-import component-from-global-scope="ToriokiDesignSystem_4ced92.SummaryStat" value="{{ s_pending }}" unit="件" label="承認待ち" tone="{{ pendingTone }}" hint-size="auto,auto"></x-import></div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px"><x-import component-from-global-scope="ToriokiDesignSystem_4ced92.SummaryStat" value="{{ s_taken }}" unit="日" label="当月の取得" hint-size="auto,auto"></x-import></div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px"><x-import component-from-global-scope="ToriokiDesignSystem_4ced92.SummaryStat" value="{{ s_avg }}" unit="日" label="平均残日数" hint-size="auto,auto"></x-import></div>
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px"><x-import component-from-global-scope="ToriokiDesignSystem_4ced92.SummaryStat" value="{{ s_next }}" label="次回付与日" hint-size="auto,auto"></x-import></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px"><x-import component-from-global-scope="ToriokiDesignSystem_4ced92.SummaryStat" value="{{ s_oblige }}" unit="名" label="取得義務アラート（年5日）" tone="{{ obligeTone }}" hint-size="auto,auto"></x-import></div>
       </section>
 
       <section style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
@@ -136,7 +136,7 @@
             <div>
               <sc-for list="{{ balances }}" as="b" hint-placeholder-count="8">
                 <div class="row-hover" style="display:grid;grid-template-columns:1.4fr .8fr .8fr .8fr 1.5fr 1fr;gap:12px;align-items:center;padding:13px 20px;border-bottom:1px solid var(--border-hairline);font-variant-numeric:tabular-nums">
-                  <span style="font-size:14px;font-weight:500">{{ b.name }}</span>
+                  <span style="font-size:14px;font-weight:500;display:flex;align-items:center;gap:7px;min-width:0">{{ b.name }}<sc-if value="{{ b.alert }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:500;padding:1px 7px;border-radius:6px;background:var(--sev-warn-bg);color:var(--sev-warn-fg);border:1px solid var(--sev-warn-border);white-space:nowrap">取得義務 未達</span></sc-if></span>
                   <span style="text-align:right;font-size:13px;color:var(--text-2);font-family:var(--font-mono)">{{ b.granted }}</span>
                   <span style="text-align:right;font-size:13px;color:var(--text-2);font-family:var(--font-mono)">{{ b.used }}</span>
                   <span style="text-align:right;font-size:14px;font-weight:500;font-family:var(--font-mono);color:var(--accent)">{{ b.remain }}</span>
@@ -184,17 +184,29 @@ class Component extends DCLogic {
     { id: 'r3', name: '中村翔', type: '特別', period: '6/30（月）', days: '1.0日', reason: '慶弔（結婚）' },
   ];
 
-  // [name, granted, used, remain, next]
+  // [name, years(勤続年数), used(取得済), next(次回付与日)]。付与日数は法定表から自動算出。
   bal = [
-    ['山田太郎', 20.0, 8.0, 12.0, '2026/04/01'],
-    ['佐藤花子', 20.0, 12.0, 8.0, '2026/07/16'],
-    ['鈴木一郎', 20.0, 5.0, 15.0, '2026/04/01'],
-    ['田中美咲', 14.0, 6.0, 8.0, '2026/10/01'],
-    ['高橋健太', 16.0, 9.5, 6.5, '2026/04/01'],
-    ['伊藤大輔', 20.0, 3.0, 17.0, '2026/09/01'],
-    ['加藤遼', 18.0, 11.0, 7.0, '2026/11/01'],
-    ['吉田直樹', 20.0, 14.0, 6.0, '2026/04/01'],
+    ['山田太郎', 7.0, 8.0, '2026/04/01'],
+    ['佐藤花子', 7.0, 12.0, '2026/07/16'],
+    ['鈴木一郎', 7.0, 5.0, '2026/04/01'],
+    ['田中美咲', 3.5, 6.0, '2026/10/01'],
+    ['高橋健太', 4.5, 9.5, '2026/04/01'],
+    ['伊藤大輔', 7.0, 3.0, '2026/09/01'],
+    ['加藤遼', 5.5, 11.0, '2026/11/01'],
+    ['吉田直樹', 7.0, 14.0, '2026/04/01'],
   ];
+
+  // 法定の年次有給付与日数（通常の労働者・継続勤務年数別）
+  _grantDays(years) {
+    if (years >= 6.5) return 20;
+    if (years >= 5.5) return 18;
+    if (years >= 4.5) return 16;
+    if (years >= 3.5) return 14;
+    if (years >= 2.5) return 12;
+    if (years >= 1.5) return 11;
+    if (years >= 0.5) return 10;
+    return 0;
+  }
 
   componentDidMount() { this._icons(); }
   componentDidUpdate() { this._icons(); }
@@ -238,16 +250,23 @@ class Component extends DCLogic {
     });
     const pendingCount = requests.filter(r => r.pending).length;
 
-    const balances = this.bal.map(([name, granted, used, remain, next]) => {
-      const pct = Math.round((used / granted) * 100);
+    let obligeCount = 0, remainSum = 0;
+    const balances = this.bal.map(([name, years, used, next]) => {
+      const granted = this._grantDays(years);
+      const remain = granted - used;
+      const pct = granted ? Math.round((used / granted) * 100) : 0;
+      // 年5日の取得義務：付与10日以上の者で取得が5日未満ならアラート
+      const alert = granted >= 10 && used < 5;
+      if (alert) obligeCount++;
+      remainSum += remain;
       return {
-        name,
+        name, alert,
         granted: granted.toFixed(1), used: used.toFixed(1), remain: remain.toFixed(1),
         pct, next,
-        barStyle: `height:100%;width:${pct}%;background:var(--accent);border-radius:999px`,
+        barStyle: `height:100%;width:${pct}%;background:${alert ? 'var(--sev-warn-fg)' : 'var(--accent)'};border-radius:999px`,
       };
     });
-    const avg = (this.bal.reduce((a, b) => a + b[3], 0) / this.bal.length).toFixed(1);
+    const avg = (remainSum / this.bal.length).toFixed(1);
 
     return {
       themeAttr: this.state.themeAttr,
@@ -260,7 +279,8 @@ class Component extends DCLogic {
       onRequest: () => {},
       s_pending: pendingCount,
       pendingTone: pendingCount > 0 ? 'alert' : 'accent',
-      s_taken: 8, s_avg: avg, s_next: '7/1',
+      s_taken: 8, s_avg: avg,
+      s_oblige: obligeCount, obligeTone: obligeCount > 0 ? 'alert' : 'accent',
       pendingBadge: `display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:500;${pendingCount > 0 ? 'background:var(--sev-warn-bg);color:var(--sev-warn-fg)' : 'background:var(--ok-bg);color:var(--ok-fg)'}`,
       requests,
       balances,
