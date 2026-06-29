@@ -105,10 +105,39 @@
   // emp: { type:'月給'|'時給', base, hourly, workedHours, standardMonthly,
   //        care:bool, socialApplicable:bool, taxColumn:'甲'|'乙', dependents,
   //        incomeTax(乙欄の登録値), residentTax, commute, overtimeMin }
+  /* 標準報酬月額の等級表（健康保険・全国健康保険協会）。報酬月額から標準報酬月額を判定。
+     [等級, 標準報酬月額, 報酬月額の下限（この額以上）]。上限等級は下限のみで判定。
+     厚生年金は標準報酬を 88,000〜650,000 にクランプ（第1等級88,000・上限第32等級650,000）。 */
+  var SM_TABLE = [
+    [1, 58000, 0], [2, 68000, 63000], [3, 78000, 73000], [4, 88000, 83000], [5, 98000, 93000],
+    [6, 104000, 101000], [7, 110000, 107000], [8, 118000, 114000], [9, 126000, 122000], [10, 134000, 130000],
+    [11, 142000, 138000], [12, 150000, 146000], [13, 160000, 155000], [14, 170000, 165000], [15, 180000, 175000],
+    [16, 190000, 185000], [17, 200000, 195000], [18, 220000, 210000], [19, 240000, 230000], [20, 260000, 250000],
+    [21, 280000, 270000], [22, 300000, 290000], [23, 320000, 310000], [24, 340000, 330000], [25, 360000, 350000],
+    [26, 380000, 370000], [27, 410000, 395000], [28, 440000, 425000], [29, 470000, 455000], [30, 500000, 485000],
+    [31, 530000, 515000], [32, 560000, 545000], [33, 590000, 575000], [34, 620000, 605000], [35, 650000, 635000],
+    [36, 680000, 665000], [37, 710000, 695000], [38, 750000, 730000], [39, 790000, 770000], [40, 830000, 810000],
+    [41, 880000, 855000], [42, 930000, 905000], [43, 980000, 955000], [44, 1030000, 1005000], [45, 1090000, 1055000],
+    [46, 1150000, 1115000], [47, 1210000, 1175000], [48, 1270000, 1235000], [49, 1330000, 1295000], [50, 1390000, 1355000],
+  ];
+  function standardMonthly(pay) {
+    pay = pay || 0;
+    var row = SM_TABLE[0];
+    for (var i = 0; i < SM_TABLE.length; i++) { if (pay >= SM_TABLE[i][2]) row = SM_TABLE[i]; else break; }
+    var health = row[1], healthGrade = row[0];
+    var pensionSm = Math.min(Math.max(health, 88000), 650000);   // 厚年は88,000〜650,000
+    return { health: health, healthGrade: healthGrade, pension: pensionSm };
+  }
+
   function calc(emp) {
     var r = rates();
-    var sm = emp.standardMonthly || 0;
     var applicable = emp.socialApplicable !== false;
+    // 標準報酬月額：直接指定があればそれを使用、無ければ報酬月額から等級表で判定。
+    var smInfo = emp.standardMonthly != null
+      ? { health: emp.standardMonthly, healthGrade: standardMonthly(emp.standardMonthly).healthGrade, pension: Math.min(emp.standardMonthly, 650000) }
+      : standardMonthly(emp.reportedPay || 0);
+    var sm = smInfo.health;          // 健保・介護・子育ての算定基礎
+    var smPension = smInfo.pension;  // 厚年（上限650,000）の算定基礎
 
     // 基本給
     var base = emp.type === '時給'
@@ -131,7 +160,7 @@
     var health = applicable ? R(sm * r.health / 2) : 0;
     var care = (applicable && emp.care) ? R(sm * r.care / 2) : 0;
     var childCare = applicable ? R(sm * r.childCare) : 0;
-    var pension = applicable ? R(sm * r.pension / 2) : 0;
+    var pension = applicable ? R(smPension * r.pension / 2) : 0;   // 厚年は上限650,000の標準報酬
     var social = health + care + childCare + pension;
 
     // 雇用保険：賃金総額（基本給＋残業＋通勤）× 本人料率
@@ -167,7 +196,7 @@
           : '月給 ÷ ' + r.workHours + 'h × ' + r.overtimeMult + ' × 残業時間')
           + ((emp.nightMin || emp.holidayMin || emp.over60Min) ? '（＋深夜+' + (r.nightAdd * 100) + '%／法定休日×' + r.holidayMult + '／60h超×' + r.over60Mult + '）' : ''),
         social: applicable
-          ? '標準報酬 ' + sm.toLocaleString('ja-JP') + ' × 料率（健保' + (r.health * 100) + '%/厚年' + (r.pension * 100) + '%ほか・折半）'
+          ? '標準報酬 ' + sm.toLocaleString('ja-JP') + '（健保' + smInfo.healthGrade + '等級' + (smPension < sm ? '・厚年上限650,000' : '') + '）× 料率（健保' + (r.health * 100) + '%/厚年' + (r.pension * 100) + '%ほか・折半）'
           : '社会保険の加入対象外',
         employment: '（基本給＋残業＋通勤）× ' + (r.employment * 100) + '%',
         incomeTax: emp.taxColumn === '乙'
@@ -216,5 +245,5 @@
     };
   }
 
-  global.PayrollCalc = { RATES: RATES, calc: calc, calcBonus: calcBonus, MAX_OVERTIME_MIN: 45 * 60 };
+  global.PayrollCalc = { RATES: RATES, calc: calc, calcBonus: calcBonus, standardMonthly: standardMonthly, MAX_OVERTIME_MIN: 45 * 60 };
 })(typeof window !== 'undefined' ? window : this);
