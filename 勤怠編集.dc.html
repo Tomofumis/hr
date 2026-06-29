@@ -75,7 +75,7 @@
         <div style="display:flex;align-items:center;gap:16px;min-width:0">
           <span style="width:52px;height:52px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:21px;font-weight:500;flex:0 0 auto">山</span>
           <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
-            <span style="font-size:12px;color:var(--text-3);font-family:var(--font-mono)">E-1001</span>
+            <span style="font-size:12px;color:var(--text-3);font-family:var(--font-mono)">A-001</span>
             <h1 style="margin:0;font-size:22px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap">山田 太郎</h1>
           </div>
         </div>
@@ -258,7 +258,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{
   &quot;$preview&quot;: { &quot;width&quot;: 1480, &quot;height&quot;: 980 },
-  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;株式会社 山田製作所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
+  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;吉田国際特許事務所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
 }">
 class Component extends DCLogic {
   state = { themeAttr: '', monthIndex: 1, days: null, submitted: false, locked: false, editing: null, modal: null };
@@ -512,7 +512,7 @@ class Component extends DCLogic {
       themeAttr: this.state.themeAttr,
       themeIcon: this.state.themeAttr === 'dark' ? 'sun' : 'moon',
       toggleTheme: this.toggleTheme,
-      companyName: p.companyName ?? '株式会社 山田製作所',
+      companyName: p.companyName ?? '吉田国際特許事務所',
       monthLabel: this.months[this.state.monthIndex],
       cycleMonth: this.cycleMonth,
       navItems, tiles, days, gridCols: cols,

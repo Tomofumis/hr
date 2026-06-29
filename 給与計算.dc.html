@@ -151,7 +151,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{
   &quot;$preview&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 900 },
-  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;株式会社 山田製作所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
+  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;吉田国際特許事務所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
 }">
 class Component extends DCLogic {
   state = { themeAttr: '', monthIndex: 1 };
@@ -214,7 +214,7 @@ class Component extends DCLogic {
       themeAttr: this.state.themeAttr,
       themeIcon: this.state.themeAttr === 'dark' ? 'sun' : 'moon',
       toggleTheme: this.toggleTheme,
-      companyName: p.companyName ?? '株式会社 山田製作所',
+      companyName: p.companyName ?? '吉田国際特許事務所',
       monthLabel: this.months[this.state.monthIndex],
       periodLabel: this.periods[this.state.monthIndex],
       cycleMonth: this.cycleMonth,

@@ -5,16 +5,23 @@
    住民税は市区町村からの通知額をマスタ登録して参照（設計どおり）。
    window.PayrollCalc.calc(emp) で各項目の期待値を返す。 */
 (function (global) {
-  // 設定画面の料率に対応（健保・厚年・雇用は設定値、介護・子育ては概算）
-  var RATES = {
-    health: 0.0998,        // 健康保険料率（労使合計）
-    care: 0.0159,          // 介護保険料率（労使合計・40〜64歳）
-    childCare: 0.00115,    // 子ども・子育て支援金（本人負担・対標準報酬）
-    pension: 0.183,        // 厚生年金保険料率（労使合計）
-    employment: 0.006,     // 雇用保険料率（本人負担分）
-    workHours: 147,        // 月所定労働時間
-    overtimeMult: 1.25,    // 時間外割増率（法定内・通常時間外）
-  };
+  // 料率は共通マスタ hr-data.js（window.HRData.rates）を単一の真実として参照する。
+  // hr-data.js が未読込の場合に備えて既定値も持つ（二重管理を避けるため値は同一）。
+  var DEFAULT_RATES = { health: 0.0998, care: 0.0159, childCare: 0.00115, pension: 0.183, employment: 0.006 };
+  function rates() {
+    var hr = (global.HRData && global.HRData.rates) || {};
+    var wh = (global.HRData && global.HRData.office && global.HRData.office.workHoursMonth) || 147;
+    return {
+      health: hr.health != null ? hr.health : DEFAULT_RATES.health,
+      care: hr.care != null ? hr.care : DEFAULT_RATES.care,
+      childCare: hr.childCare != null ? hr.childCare : DEFAULT_RATES.childCare,
+      pension: hr.pension != null ? hr.pension : DEFAULT_RATES.pension,
+      employment: hr.employment != null ? hr.employment : DEFAULT_RATES.employment,
+      workHours: wh,        // 月所定労働時間（hr-data の workHoursMonth）
+      overtimeMult: 1.25,   // 時間外割増率（法定内・通常時間外）
+    };
+  }
+  var RATES = rates();   // モジュール読込時のスナップショット（公開用）
 
   var R = Math.round;
 
@@ -71,7 +78,9 @@
       ],
     },
   };
-  var TAX_YEAR = 'R8';   // 適用年度（'R6' に変えると令和6年分で計算）
+  // 適用年度は hr-data.js（HRData.rates.taxYear）を参照。未指定なら R8。
+  function taxYear() { return (global.HRData && global.HRData.rates && global.HRData.rates.taxYear) || 'R8'; }
+  var TAX_YEAR = taxYear();
 
   function kyuyoKojo(a, t) {
     for (var i = 0; i < t.kyuyo.length; i++) {
@@ -81,7 +90,7 @@
   }
   // 甲欄：その月の社会保険料等控除後の金額 a と扶養親族等の数 deps から税額を計算
   function incomeTaxKou(a, deps) {
-    var t = TAX_TABLES[TAX_YEAR];
+    var t = TAX_TABLES[taxYear()];
     var ti = a - kyuyoKojo(a, t) - t.basic - t.dep * (deps || 0);
     if (ti <= 0) return 0;
     for (var i = 0; i < t.brackets.length; i++) {
@@ -94,7 +103,7 @@
   //        care:bool, socialApplicable:bool, taxColumn:'甲'|'乙', dependents,
   //        incomeTax(乙欄の登録値), residentTax, commute, overtimeMin }
   function calc(emp) {
-    var r = RATES;
+    var r = rates();
     var sm = emp.standardMonthly || 0;
     var applicable = emp.socialApplicable !== false;
 
@@ -152,7 +161,7 @@
         employment: '（基本給＋残業＋通勤）× ' + (r.employment * 100) + '%',
         incomeTax: emp.taxColumn === '乙'
           ? '乙欄・税額表（登録値を参照）'
-          : '甲欄・電算特例 ' + TAX_TABLES[TAX_YEAR].label + '（給与所得控除→基礎→扶養' + (emp.dependents ? '×' + emp.dependents + '人' : '') + '→税率）',
+          : '甲欄・電算特例 ' + TAX_TABLES[taxYear()].label + '（給与所得控除→基礎→扶養' + (emp.dependents ? '×' + emp.dependents + '人' : '') + '→税率）',
         residentTax: '通知額をマスタ登録（特別徴収）',
         commute: 'マスタ区間額',
         net: '総支給 − 控除計',
