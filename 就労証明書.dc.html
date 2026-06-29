@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/colors.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/typography.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/base.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/components.css">
+<link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/styles.css">
+<script src="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/_ds_bundle.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="app-theme.css">
+<style>
+@media print { .scr { display: none !important; } .cert { display: block !important; } @page { size: A4 portrait; margin: 12mm; } }
+.cert { display: none; }
+.cert table { border-collapse: collapse; width: 100%; }
+.cert th, .cert td { border: 1px solid #333; padding: 5px 7px; font-size: 11px; vertical-align: top; }
+.cert th { background: #f0efea; font-weight: 500; text-align: left; white-space: nowrap; }
+.fld { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text-1); font-family: inherit; font-size: 13px; outline: none; }
+.lbl { font-size: 12px; color: var(--text-3); }
+.req { font-size: 10px; color: #fff; background: var(--sev-vio-fg); border-radius: 4px; padding: 1px 5px; margin-left: 5px; vertical-align: 1px; }
+</style>
+</helmet>
+
+<div data-theme="{{ themeAttr }}" style="min-height:100vh;background:var(--bg-page);color:var(--text-1);font-family:var(--font-sans);font-size:var(--text-base);line-height:1.5">
+<div class="scr" style="display:flex;min-height:100vh;background:var(--bg-page)">
+
+  <aside class="app-side" style="width:236px;flex:0 0 236px;border-right:1px solid var(--border-hairline);background:var(--surface);display:flex;flex-direction:column;position:sticky;top:0;height:100vh">
+    <div style="display:flex;align-items:center;gap:10px;padding:20px 20px 18px">
+      <span style="width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center"><i data-lucide="square-stack" width="17" height="17" style="color:var(--accent-on)"></i></span>
+      <span style="font-size:17px;font-weight:500;letter-spacing:-0.01em">給与デスク</span>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:2px;padding:6px 12px;flex:1;overflow:auto">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="10">
+        <a href="{{ item.href }}" class="nav-link" style="{{ item.style }}">
+          <i data-lucide="{{ item.icon }}" width="18" height="18" style="flex:0 0 auto"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px;border-top:1px solid var(--border-hairline);display:flex;align-items:center;gap:10px">
+      <span style="width:30px;height:30px;border-radius:50%;background:var(--surface-sunken);border:1px solid var(--border);display:grid;place-items:center;font-size:12px;color:var(--text-2)">経</span>
+      <div style="display:flex;flex-direction:column;line-height:1.3"><span style="font-size:13px">経理 担当</span><span style="font-size:11px;color:var(--text-3)">管理者</span></div>
+    </div>
+  </aside>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+    <header style="position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 28px;border-bottom:1px solid var(--border-hairline);background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(8px)">
+      <div style="display:flex;align-items:center;gap:14px;min-width:0">
+        <a href="書類.dc.html" class="ghost-link" style="display:inline-flex;align-items:center;gap:6px;color:var(--text-3);font-size:13px;text-decoration:none"><i data-lucide="arrow-left" width="15" height="15"></i>書類へ戻る</a>
+        <span style="font-size:15px;font-weight:500">就労証明書の作成</span>
+      </div>
+      <button onClick="{{ toggleTheme }}" aria-label="表示テーマ" style="width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text-2);display:grid;place-items:center;cursor:pointer"><i data-lucide="{{ themeIcon }}" width="19" height="19"></i></button>
+    </header>
+
+    <main style="flex:1;padding:24px 28px 96px;max-width:1080px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:22px">
+
+      <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:14px">
+        <span style="width:54px;height:54px;border-radius:50%;background:var(--surface-sunken);border:1px solid var(--border);display:grid;place-items:center;color:var(--text-3);flex:0 0 auto"><i data-lucide="user" width="24" height="24"></i></span>
+        <div style="display:flex;flex-direction:column;gap:3px;min-width:0">
+          <span style="font-size:18px;font-weight:500">佐川 智史 <span style="font-size:12px;color:var(--text-3);font-weight:400">サガワ トモフミ ・ 1984年6月4日（42歳）・ 〒135-0062 東京都江東区東雲1-10-14-317</span></span>
+          <span style="font-size:12px;color:var(--text-3)">従業員番号 A-001 ・ 勤務賃金設定 正社員 ・ 個人番号 参照権限なし</span>
+        </div>
+      </div>
+
+      <section style="display:flex;flex-direction:column;gap:14px">
+        <h2 style="margin:0;font-size:16px;font-weight:500">事業所情報</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+          <div><div class="lbl">事業所名<span class="req">必須</span></div><input class="fld" value="{{ f.company }}" onInput="{{ on.company }}"></div>
+          <div><div class="lbl">業種<span class="req">必須</span></div><input class="fld" value="{{ f.industry }}" onInput="{{ on.industry }}"></div>
+          <div><div class="lbl">代表者名<span class="req">必須</span></div><div style="display:flex;gap:8px"><input class="fld" value="{{ f.repSei }}" onInput="{{ on.repSei }}" placeholder="姓"><input class="fld" value="{{ f.repMei }}" onInput="{{ on.repMei }}" placeholder="名"></div></div>
+          <div><div class="lbl">所在地<span class="req">必須</span></div><input class="fld" value="{{ f.addr }}" onInput="{{ on.addr }}"></div>
+          <div><div class="lbl">電話番号<span class="req">必須</span></div><div style="display:flex;align-items:center;gap:6px"><input class="fld" value="{{ f.tel1 }}" onInput="{{ on.tel1 }}" style="width:64px"><span style="color:var(--text-3)">-</span><input class="fld" value="{{ f.tel2 }}" onInput="{{ on.tel2 }}" style="width:78px"><span style="color:var(--text-3)">-</span><input class="fld" value="{{ f.tel3 }}" onInput="{{ on.tel3 }}" style="width:78px"></div></div>
+          <div><div class="lbl">担当者名<span class="req">必須</span></div><div style="display:flex;gap:8px"><input class="fld" value="{{ f.tantoSei }}" onInput="{{ on.tantoSei }}" placeholder="姓"><input class="fld" value="{{ f.tantoMei }}" onInput="{{ on.tantoMei }}" placeholder="名"></div></div>
+        </div>
+      </section>
+
+      <section style="display:flex;flex-direction:column;gap:14px">
+        <h2 style="margin:0;font-size:16px;font-weight:500">基本情報</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+          <div><div class="lbl">宛名<span class="req">必須</span></div><div style="display:flex;align-items:center;gap:8px"><input class="fld" value="{{ f.atena }}" onInput="{{ on.atena }}"><span style="color:var(--text-3);font-size:13px">宛</span></div></div>
+          <div><div class="lbl">証明日</div><input class="fld" value="{{ f.certDate }}" onInput="{{ on.certDate }}"></div>
+          <div><div class="lbl">氏名<span class="req">必須</span></div><div style="display:flex;gap:8px"><input class="fld" value="{{ f.sei }}" onInput="{{ on.sei }}" placeholder="姓"><input class="fld" value="{{ f.mei }}" onInput="{{ on.mei }}" placeholder="名"></div></div>
+          <div><div class="lbl">氏名（カナ）<span class="req">必須</span></div><div style="display:flex;gap:8px"><input class="fld" value="{{ f.kanaSei }}" onInput="{{ on.kanaSei }}" placeholder="セイ"><input class="fld" value="{{ f.kanaMei }}" onInput="{{ on.kanaMei }}" placeholder="メイ"></div></div>
+          <div><div class="lbl">生年月日</div><input class="fld" value="{{ f.birth }}" onInput="{{ on.birth }}"></div>
+          <div><div class="lbl">雇用形態</div><input class="fld" value="{{ f.koyou }}" onInput="{{ on.koyou }}"></div>
+          <div><div class="lbl">雇用期間（雇用開始日）<span class="req">必須</span></div><input class="fld" value="{{ f.empStart }}" onInput="{{ on.empStart }}"></div>
+          <div><div class="lbl">就労先事業所の名称<span class="req">必須</span></div><input class="fld" value="{{ f.workplaceName }}" onInput="{{ on.workplaceName }}"></div>
+          <div style="grid-column:1/-1"><div class="lbl">就労先事業所の住所<span class="req">必須</span></div><input class="fld" value="{{ f.workplaceAddr }}" onInput="{{ on.workplaceAddr }}"></div>
+        </div>
+      </section>
+
+      <section style="display:flex;flex-direction:column;gap:14px">
+        <h2 style="margin:0;font-size:16px;font-weight:500">就労時間</h2>
+        <div>
+          <div class="lbl" style="margin-bottom:6px">出勤日</div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap">
+            <sc-for list="{{ weekdays }}" as="w" hint-placeholder-count="8">
+              <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);cursor:pointer"><input type="checkbox" checked="{{ w.checked }}" onChange="{{ w.onToggle }}">{{ w.label }}</label>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px">
+          <div><div class="lbl">月間 合計就労時間</div><div style="display:flex;align-items:center;gap:6px"><input class="fld" value="{{ f.monthH }}" onInput="{{ on.monthH }}" style="width:64px"><span style="font-size:13px;color:var(--text-3)">時間</span><input class="fld" value="{{ f.monthM }}" onInput="{{ on.monthM }}" style="width:54px"><span style="font-size:13px;color:var(--text-3)">分</span></div></div>
+          <div><div class="lbl">うち休憩時間（月・分）</div><input class="fld" value="{{ f.monthBreak }}" onInput="{{ on.monthBreak }}"></div>
+          <div><div class="lbl">一月当たりの就労日数</div><div style="display:flex;align-items:center;gap:6px"><input class="fld" value="{{ f.monthDays }}" onInput="{{ on.monthDays }}" style="width:64px"><span style="font-size:13px;color:var(--text-3)">日</span></div></div>
+          <div><div class="lbl">一週当たりの就労日数</div><div style="display:flex;align-items:center;gap:6px"><input class="fld" value="{{ f.weekDays }}" onInput="{{ on.weekDays }}" style="width:64px"><span style="font-size:13px;color:var(--text-3)">日</span></div></div>
+          <div><div class="lbl">平日の就労時間</div><div style="display:flex;align-items:center;gap:6px"><input class="fld" value="{{ f.wkStart }}" onInput="{{ on.wkStart }}" style="width:74px"><span style="color:var(--text-3)">〜</span><input class="fld" value="{{ f.wkEnd }}" onInput="{{ on.wkEnd }}" style="width:74px"><span style="font-size:12px;color:var(--text-3)">休憩</span><input class="fld" value="{{ f.wkBreak }}" onInput="{{ on.wkBreak }}" style="width:54px"><span style="font-size:12px;color:var(--text-3)">分</span></div></div>
+          <div><div class="lbl">土曜の就労時間</div><div style="display:flex;align-items:center;gap:6px"><input class="fld" value="{{ f.satStart }}" onInput="{{ on.satStart }}" style="width:74px"><span style="color:var(--text-3)">〜</span><input class="fld" value="{{ f.satEnd }}" onInput="{{ on.satEnd }}" style="width:74px"><span style="font-size:12px;color:var(--text-3)">休憩</span><input class="fld" value="{{ f.satBreak }}" onInput="{{ on.satBreak }}" style="width:54px"><span style="font-size:12px;color:var(--text-3)">分</span></div></div>
+        </div>
+      </section>
+
+      <section style="display:flex;flex-direction:column;gap:14px">
+        <h2 style="margin:0;font-size:16px;font-weight:500">就労実績</h2>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ records }}" as="r" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-size:13px;color:var(--text-3);width:78px">{{ r.label }}</span>
+              <input class="fld" value="{{ r.ym }}" onInput="{{ r.onYm }}" style="width:120px">
+              <input class="fld" value="{{ r.days }}" onInput="{{ r.onDays }}" style="width:64px"><span style="font-size:13px;color:var(--text-3)">日／月</span>
+              <input class="fld" value="{{ r.hours }}" onInput="{{ r.onHours }}" style="width:74px"><span style="font-size:13px;color:var(--text-3)">時間／月</span>
+            </div>
+          </sc-for>
+          <span style="font-size:12px;color:var(--text-3)">勤怠情報を参照しています。日数は有給休暇を含み、時間数には休憩・残業時間を含みます。</span>
+        </div>
+      </section>
+
+      <section style="display:flex;flex-direction:column;gap:14px">
+        <h2 style="margin:0;font-size:16px;font-weight:500">休業情報</h2>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <sc-for list="{{ leaves }}" as="g" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:200px 1fr;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border-hairline)">
+              <span style="font-size:13px;color:var(--text-2)">{{ g.label }}</span>
+              <div style="display:flex;gap:16px;flex-wrap:wrap">
+                <sc-for list="{{ g.options }}" as="o" hint-placeholder-count="3">
+                  <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);cursor:pointer"><input type="radio" name="{{ g.name }}" checked="{{ o.checked }}" onChange="{{ o.onPick }}">{{ o.label }}</label>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section style="display:flex;flex-direction:column;gap:14px">
+        <div><div class="lbl">備考欄</div><textarea value="{{ f.bikou }}" onInput="{{ on.bikou }}" style="width:100%;min-height:84px;padding:9px 11px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;outline:none;resize:vertical"></textarea></div>
+        <div style="padding:12px 16px;background:var(--surface-sunken);border-radius:10px;font-size:13px;color:var(--text-3)">保護者記載欄：この項目は保護者（従業員）が記載するため入力不要です。</div>
+        <div>
+          <div class="lbl" style="margin-bottom:6px">従業員への公開</div>
+          <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+            <sc-for list="{{ publishOptions }}" as="o" hint-placeholder-count="2">
+              <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);cursor:pointer"><input type="radio" name="publish" checked="{{ o.checked }}" onChange="{{ o.onPick }}">{{ o.label }}</label>
+            </sc-for>
+            <span style="font-size:12px;color:var(--text-3)">公開すると従業員が就労証明書をダウンロードできるようになります。</span>
+          </div>
+        </div>
+      </section>
+
+      <section style="padding:16px 18px;background:var(--surface-sunken);border-radius:12px">
+        <div style="font-size:14px;font-weight:500;margin-bottom:8px">就労証明書の注意事項</div>
+        <ul style="margin:0;padding-left:20px;font-size:13px;color:var(--text-2);line-height:1.8">
+          <li>証明の有効期限は、証明日から3か月間となります。</li>
+          <li>記載内容や備考欄等の記載方法に関するご質問は、提出先の自治体にご確認ください。</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <div style="position:sticky;bottom:0;display:flex;align-items:center;gap:12px;padding:14px 28px;border-top:1px solid var(--border-hairline);background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(8px)">
+      <button onClick="{{ onDownload }}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-on);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer"><i data-lucide="download" width="16" height="16"></i>保存してPDFダウンロード</button>
+      <button onClick="{{ noop }}" style="padding:10px 18px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);font-family:inherit;font-size:14px;cursor:pointer">保存</button>
+      <a href="書類.dc.html" style="padding:10px 14px;color:var(--text-3);font-size:14px;text-decoration:none">キャンセル</a>
+      <span style="margin-left:auto;font-size:12px;color:var(--text-3)">「保存してPDFダウンロード」→ ブラウザの印刷ダイアログでPDFを保存できます。</span>
+    </div>
+  </div>
+</div>
+
+<div class="cert" style="padding:6mm;color:#111;background:#fff;font-family:var(--font-sans)">
+  <div style="text-align:center;font-size:18px;font-weight:600;margin-bottom:4px">就 労 証 明 書</div>
+  <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:10px"><span>{{ f.atena }} 宛</span><span>証明日：{{ f.certDate }}</span></div>
+  <table style="margin-bottom:10px">
+    <tr><th style="width:120px">事業所名</th><td>{{ f.company }}</td><th style="width:90px">代表者名</th><td>{{ cert.rep }}</td></tr>
+    <tr><th>所在地</th><td colspan="3">{{ f.addr }}</td></tr>
+    <tr><th>電話番号</th><td>{{ cert.tel }}</td><th>担当者名</th><td>{{ cert.tanto }}</td></tr>
+    <tr><th>業種</th><td colspan="3">{{ f.industry }}</td></tr>
+  </table>
+  <table style="margin-bottom:10px">
+    <tr><th style="width:120px">氏名</th><td>{{ cert.name }}（{{ cert.kana }}）</td><th style="width:90px">生年月日</th><td>{{ f.birth }}</td></tr>
+    <tr><th>雇用形態</th><td>{{ f.koyou }}</td><th>雇用開始日</th><td>{{ f.empStart }}</td></tr>
+    <tr><th>就労先事業所</th><td colspan="3">{{ f.workplaceName }}（{{ f.workplaceAddr }}）</td></tr>
+  </table>
+  <table style="margin-bottom:10px">
+    <tr><th style="width:120px">出勤日</th><td colspan="3">{{ cert.weekdays }}</td></tr>
+    <tr><th>月間就労時間</th><td>{{ cert.monthTime }}（休憩 {{ f.monthBreak }} 分）</td><th style="width:90px">月間就労日数</th><td>{{ f.monthDays }} 日</td></tr>
+    <tr><th>一週就労日数</th><td>{{ f.weekDays }} 日</td><th>平日就労時間</th><td>{{ cert.weekdayTime }}</td></tr>
+    <tr><th>土曜就労時間</th><td>{{ cert.satTime }}</td><th>—</th><td></td></tr>
+  </table>
+  <table style="margin-bottom:10px">
+    <tr><th style="width:120px">就労実績</th><td>
+      <sc-for list="{{ records }}" as="r" hint-placeholder-count="3"><div>{{ r.ym }}：{{ r.days }} 日／{{ r.hours }} 時間</div></sc-for>
+    </td></tr>
+    <tr><th>備考</th><td>{{ cert.bikou }}</td></tr>
+  </table>
+  <div style="font-size:10px;color:#555">※ 証明の有効期限は証明日から3か月間です。</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1100, &quot;height&quot;: 980 }
+}">
+class Component extends DCLogic {
+  state = {
+    themeAttr: '',
+    f: {
+      company: '吉田国際特許事務所', industry: '学術研究・専門・技術サービス業',
+      repSei: '吉田', repMei: '雅比呂', addr: '東京都千代田区九段北4-1-5市ヶ谷法曹ビル308',
+      tel1: '03', tel2: '6277', tel3: '7466', tantoSei: '吉田', tantoMei: '雅比呂',
+      atena: '江東区長', certDate: '2026年6月15日',
+      sei: '佐川', mei: '智史', kanaSei: 'サガワ', kanaMei: 'トモフミ', birth: '1984年6月4日',
+      koyou: '正社員', empStart: '2022年5月9日',
+      workplaceName: '吉田国際特許事務所', workplaceAddr: '東京都千代田区九段北4-1-5市ヶ谷法曹ビル308',
+      monthH: '168', monthM: '0', monthBreak: '1260', monthDays: '21', weekDays: '6',
+      wkStart: '09:00', wkEnd: '19:00', wkBreak: '60', satStart: '09:00', satEnd: '17:00', satBreak: '0',
+      bikou: '',
+    },
+    week: { mon: true, tue: true, wed: true, thu: true, fri: true, sat: true, sun: false, hol: false },
+    rec: [
+      { ym: '2026年5月', days: '18', hours: '179' },
+      { ym: '2026年4月', days: '21', hours: '192' },
+      { ym: '2026年3月', days: '21', hours: '212' },
+    ],
+    leave: { sanzen: '該当なし', ikuji: '該当なし', other: '該当なし', fukushoku: '該当なし' },
+    publish: '公開しない',
+  };
+
+  nav = [
+    ['ダッシュボード', 'layout-dashboard', '給与ダッシュボード.dc.html', false],
+    ['従業員', 'users', '従業員.dc.html', false],
+    ['勤怠', 'clock', '勤怠.dc.html', false],
+    ['休暇・有給', 'palmtree', '休暇・有給.dc.html', false],
+    ['給与計算', 'calculator', '給与計算.dc.html', false],
+    ['明細チェック', 'clipboard-check', '明細チェック.dc.html', false],
+    ['賞与', 'gift', '賞与.dc.html', false],
+    ['年末調整', 'file-text', '年末調整.dc.html', false],
+    ['書類', 'folder', '書類.dc.html', true],
+    ['設定', 'settings', '設定.dc.html', false],
+  ];
+
+  weekDefs = [['mon', '月曜日'], ['tue', '火曜日'], ['wed', '水曜日'], ['thu', '木曜日'], ['fri', '金曜日'], ['sat', '土曜日'], ['sun', '日曜日'], ['hol', '祝日']];
+  leaveDefs = [
+    ['sanzen', '産前・産後休業の取得', ['該当なし', '取得予定', '取得中']],
+    ['ikuji', '育児休業の取得', ['該当なし', '取得予定', '取得中', '取得済み']],
+    ['other', '産休・育休以外の休業', ['該当なし', '取得予定', '取得中', '取得済み']],
+    ['fukushoku', '復職（予定）年月日', ['該当なし', '復職予定', '復職済み']],
+  ];
+
+  componentDidMount() { this._icons(); }
+  componentDidUpdate() { this._icons(); }
+  _icons() { if (!window.lucide || !window.lucide.createIcons) { setTimeout(() => this._icons(), 140); return; } try { window.lucide.createIcons(); } catch (e) {} }
+
+  toggleTheme = () => this.setState(s => ({ themeAttr: s.themeAttr === 'dark' ? 'light' : 'dark' }));
+  _set = (k, v) => this.setState(s => ({ f: { ...s.f, [k]: v } }));
+  _toggleWeek = (k) => this.setState(s => ({ week: { ...s.week, [k]: !s.week[k] } }));
+  _setRec = (i, k, v) => this.setState(s => { const rec = s.rec.map(r => ({ ...r })); rec[i][k] = v; return { rec }; });
+  _setLeave = (g, v) => this.setState(s => ({ leave: { ...s.leave, [g]: v } }));
+  onDownload = () => { if (typeof window !== 'undefined' && window.print) window.print(); };
+
+  renderVals() {
+    const navItems = this.nav.map(([label, icon, href, active]) => ({
+      label, icon, href,
+      style: `display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;text-decoration:none;font-size:14px;cursor:pointer;${active ? 'background:var(--accent-soft);color:var(--accent);font-weight:500' : 'color:var(--text-2);font-weight:400'}`,
+    }));
+
+    const fkeys = Object.keys(this.state.f);
+    const on = {};
+    fkeys.forEach(k => { on[k] = (e) => this._set(k, e.target.value); });
+    const f = this.state.f;
+
+    const weekdays = this.weekDefs.map(([k, label]) => ({ label, checked: this.state.week[k], onToggle: () => this._toggleWeek(k) }));
+
+    const records = this.state.rec.map((r, i) => ({
+      label: '就労実績' + (i + 1), ym: r.ym, days: r.days, hours: r.hours,
+      onYm: (e) => this._setRec(i, 'ym', e.target.value), onDays: (e) => this._setRec(i, 'days', e.target.value), onHours: (e) => this._setRec(i, 'hours', e.target.value),
+    }));
+
+    const leaves = this.leaveDefs.map(([name, label, opts]) => ({
+      name, label,
+      options: opts.map(o => ({ label: o, checked: this.state.leave[name] === o, onPick: () => this._setLeave(name, o) })),
+    }));
+
+    const publishOptions = ['公開しない', '公開する'].map(o => ({ label: o, checked: this.state.publish === o, onPick: () => this.setState({ publish: o }) }));
+
+    const checkedWeek = this.weekDefs.filter(([k]) => this.state.week[k]).map(([k, l]) => l.replace('曜日', '')).join('・');
+    const cert = {
+      rep: `${f.repSei} ${f.repMei}`, tanto: `${f.tantoSei} ${f.tantoMei}`,
+      tel: `${f.tel1}-${f.tel2}-${f.tel3}`, name: `${f.sei} ${f.mei}`, kana: `${f.kanaSei} ${f.kanaMei}`,
+      weekdays: checkedWeek, monthTime: `${f.monthH}時間${f.monthM}分`,
+      weekdayTime: `${f.wkStart}〜${f.wkEnd}（休憩${f.wkBreak}分）`, satTime: `${f.satStart}〜${f.satEnd}（休憩${f.satBreak}分）`,
+      bikou: f.bikou || '—',
+    };
+
+    return {
+      themeAttr: this.state.themeAttr,
+      themeIcon: this.state.themeAttr === 'dark' ? 'sun' : 'moon',
+      toggleTheme: this.toggleTheme,
+      navItems, f, on, weekdays, records, leaves, publishOptions, cert,
+      onDownload: this.onDownload, noop: () => {},
+    };
+  }
+}
+</script>
+</body>
+</html>
