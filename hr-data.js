@@ -18,8 +18,13 @@
       care: 0.0159,        // 介護保険料率（労使合計・40〜64歳）
       childCare: 0.00115,  // 子ども・子育て支援金（本人負担・対標準報酬）
       pension: 0.183,      // 厚生年金保険料率（労使合計）
-      employment: 0.006,   // 雇用保険料率（本人負担分）
+      employment: 0.006,   // 雇用保険料率（本人負担分）※年度で変動（令和6年度0.6%）。要・年度確認
       taxYear: 'R8',       // 所得税の適用年度（payroll-calc の TAX_TABLES のキー）
+      // 割増率（労働基準法）
+      overtimeMult: 1.25,  // 時間外（法定外）の割増
+      nightAdd: 0.25,      // 深夜（22:00-翌5:00）の加算
+      holidayMult: 1.35,   // 法定休日労働の割増
+      over60Mult: 1.50,    // 月60時間超の時間外の割増
     },
   };
 })(typeof window !== 'undefined' ? window : this);

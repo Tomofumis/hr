@@ -18,7 +18,10 @@
       pension: hr.pension != null ? hr.pension : DEFAULT_RATES.pension,
       employment: hr.employment != null ? hr.employment : DEFAULT_RATES.employment,
       workHours: wh,        // 月所定労働時間（hr-data の workHoursMonth）
-      overtimeMult: 1.25,   // 時間外割増率（法定内・通常時間外）
+      overtimeMult: hr.overtimeMult != null ? hr.overtimeMult : 1.25,   // 時間外（法定外）
+      nightAdd: hr.nightAdd != null ? hr.nightAdd : 0.25,               // 深夜加算
+      holidayMult: hr.holidayMult != null ? hr.holidayMult : 1.35,      // 法定休日
+      over60Mult: hr.over60Mult != null ? hr.over60Mult : 1.50,         // 月60時間超
     };
   }
   var RATES = rates();   // モジュール読込時のスナップショット（公開用）
@@ -116,7 +119,13 @@
     var unit = emp.type === '時給'
       ? (emp.hourly || 0)
       : ((emp.base || 0) / r.workHours);
-    var overtime = R(unit * r.overtimeMult * ((emp.overtimeMin || 0) / 60));
+    // 残業手当（割増は hr-data の料率）。深夜・法定休日・60時間超は内訳があれば加算。
+    //   時間外（法定外）×1.25 ＋ 深夜帯 ×+0.25 ＋ 60h超分 ×(1.50-1.25) ＋ 法定休日 ×1.35（別枠）
+    var overtime =
+      R(unit * r.overtimeMult * ((emp.overtimeMin || 0) / 60))
+      + R(unit * r.nightAdd * ((emp.nightMin || 0) / 60))
+      + R(unit * (r.over60Mult - r.overtimeMult) * ((emp.over60Min || 0) / 60))
+      + R(unit * r.holidayMult * ((emp.holidayMin || 0) / 60));
 
     // 社会保険（本人負担＝労使折半。子育て支援金は本人負担分）
     var health = applicable ? R(sm * r.health / 2) : 0;
@@ -130,10 +139,11 @@
     var employment = R(wageForEmp * r.employment);
 
     // 所得税：甲欄は電算特例で計算（課税対象＝基本給＋残業−社会保険料、通勤は非課税）。
-    //         乙欄は別表が複雑なため登録値を参照。
+    //   乙欄は 88,000円未満を税額表どおり 3.063% で計算。88,000円以上は別表（月額表・乙）
+    //   が必要なため登録値（emp.incomeTax）を参照。※高額帯は要・公式乙欄表の取込。
     var taxableAfterSI = Math.max(0, base + overtime - social);
     var incomeTax = emp.taxColumn === '乙'
-      ? (emp.incomeTax || 0)
+      ? (taxableAfterSI < 88000 ? Math.floor(taxableAfterSI * 0.03063) : (emp.incomeTax || 0))
       : incomeTaxKou(taxableAfterSI, emp.dependents || 0);
     // 住民税は市区町村の通知額をマスタ登録して参照
     var residentTax = emp.residentTax || 0;
@@ -152,15 +162,16 @@
       // 検算の根拠文（画面表示用）
       basis: {
         base: emp.type === '時給' ? '時給 × 勤務時間' : 'マスタ正規額',
-        overtime: emp.type === '時給'
+        overtime: (emp.type === '時給'
           ? '時給 × ' + r.overtimeMult + ' × 残業時間'
-          : '月給 ÷ ' + r.workHours + 'h × ' + r.overtimeMult + ' × 残業時間',
+          : '月給 ÷ ' + r.workHours + 'h × ' + r.overtimeMult + ' × 残業時間')
+          + ((emp.nightMin || emp.holidayMin || emp.over60Min) ? '（＋深夜+' + (r.nightAdd * 100) + '%／法定休日×' + r.holidayMult + '／60h超×' + r.over60Mult + '）' : ''),
         social: applicable
           ? '標準報酬 ' + sm.toLocaleString('ja-JP') + ' × 料率（健保' + (r.health * 100) + '%/厚年' + (r.pension * 100) + '%ほか・折半）'
           : '社会保険の加入対象外',
         employment: '（基本給＋残業＋通勤）× ' + (r.employment * 100) + '%',
         incomeTax: emp.taxColumn === '乙'
-          ? '乙欄・税額表（登録値を参照）'
+          ? (taxableAfterSI < 88000 ? '乙欄・税額表 3.063%（88,000円未満）' : '乙欄・税額表（88,000円以上は登録値を参照）')
           : '甲欄・電算特例 ' + TAX_TABLES[taxYear()].label + '（給与所得控除→基礎→扶養' + (emp.dependents ? '×' + emp.dependents + '人' : '') + '→税率）',
         residentTax: '通知額をマスタ登録（特別徴収）',
         commute: 'マスタ区間額',
