@@ -27,4 +27,15 @@
       over60Mult: 1.50,    // 月60時間超の時間外の割増
     },
   };
+
+  // 設定画面の保存値（localStorage）があれば上書き → 全画面の計算に反映
+  try {
+    if (global.localStorage) {
+      var saved = JSON.parse(global.localStorage.getItem('hr_settings') || 'null');
+      if (saved) {
+        if (saved.rates) for (var k in saved.rates) { if (saved.rates[k] != null) global.HRData.rates[k] = saved.rates[k]; }
+        if (saved.office) for (var k2 in saved.office) { if (saved.office[k2] != null) global.HRData.office[k2] = saved.office[k2]; }
+      }
+    }
+  } catch (e) {}
 })(typeof window !== 'undefined' ? window : this);

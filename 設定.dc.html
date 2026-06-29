@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/styles.css">
 <script src="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/_ds_bundle.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="./hr-data.js"></script>
 <link rel="stylesheet" href="app-theme.css">
 </helmet>
 
@@ -170,14 +171,38 @@ class Component extends DCLogic {
     ['設定', 'settings', '設定.dc.html', true],
   ];
 
-  componentDidMount() { this._icons(); }
+  componentDidMount() { this._icons(); this._loadSaved(); }
   componentDidUpdate() { this._icons(); }
   _icons() { if (!window.lucide || !window.lucide.createIcons) { setTimeout(() => this._icons(), 140); return; } try { window.lucide.createIcons(); } catch (e) {} }
+
+  // 起動時に localStorage の保存値をフォームへ反映（hr-data.js も同じ値を読む）
+  _loadSaved() {
+    try {
+      const s = JSON.parse(window.localStorage.getItem('hr_settings') || 'null');
+      if (!s) return;
+      const f = { ...this.state.form };
+      if (s.rates) { const m = { health: 'health', pension: 'pension', employment: 'emp', care: 'care', childCare: 'childCare' }; Object.keys(m).forEach(k => { if (s.rates[k] != null) f[m[k]] = (s.rates[k] * 100).toString(); }); }
+      if (s.office) { if (s.office.name) f.company = s.office.name; if (s.office.rep) f.rep = s.office.rep; if (s.office.addr) f.addr = s.office.addr; if (s.office.corpNumber) f.corp = s.office.corpNumber; }
+      this.setState({ form: f, saved: { ...f } });
+    } catch (e) {}
+  }
 
   toggleTheme = () => this.setState(s => ({ themeAttr: s.themeAttr === 'dark' ? 'light' : 'dark' }));
   cycleMonth = () => this.setState(s => ({ monthIndex: (s.monthIndex + 1) % this.months.length }));
   setField = (k, v) => this.setState(s => ({ form: { ...s.form, [k]: v } }));
-  onSave = () => this.setState(s => ({ saved: { ...s.form } }));
+  onSave = () => {
+    const f = this.state.form;
+    try {
+      const pc = (v) => { const n = parseFloat(v); return isNaN(n) ? 0 : n / 100; };
+      const payload = {
+        rates: { health: pc(f.health), pension: pc(f.pension), employment: pc(f.emp), care: pc(f.care), childCare: pc(f.childCare) },
+        office: { name: f.company, rep: f.rep, addr: f.addr, corpNumber: f.corp },
+      };
+      window.localStorage.setItem('hr_settings', JSON.stringify(payload));
+      if (window.HRData) { Object.assign(window.HRData.rates, payload.rates); Object.assign(window.HRData.office, payload.office); }
+    } catch (e) {}
+    this.setState(s => ({ saved: { ...s.form } }));
+  };
   onCancel = () => this.setState(s => ({ form: { ...s.saved } }));
 
   renderVals() {
