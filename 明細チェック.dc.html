@@ -123,6 +123,28 @@
       </section>
 
       <sc-if value="{{ hasSelected }}" hint-placeholder-val="{{ true }}">
+        <section style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+            <i data-lucide="sliders-horizontal" width="16" height="16" style="color:var(--text-3)"></i>
+            <span style="font-size:15px;font-weight:500">{{ selName }} の基準値マスタ</span>
+            <span style="font-size:12px;color:var(--text-3)">編集すると下の検算が即時に再計算されます（実績＝当初の明細値で固定）</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
+            <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:12px;color:var(--text-3)">{{ ed.baseLabel }}</label><input type="text" inputmode="numeric" value="{{ ed.baseVal }}" onInput="{{ ed.onBase }}" style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;outline:none;width:100%"></div>
+            <sc-if value="{{ ed.isHourly }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:12px;color:var(--text-3)">勤務時間（h）</label><input type="text" inputmode="numeric" value="{{ ed.hours }}" onInput="{{ ed.onHours }}" style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;outline:none;width:100%"></div>
+            </sc-if>
+            <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:12px;color:var(--text-3)">標準報酬月額</label><input type="text" inputmode="numeric" value="{{ ed.sm }}" onInput="{{ ed.onSm }}" style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;outline:none;width:100%"></div>
+            <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:12px;color:var(--text-3)">扶養親族等の数</label><input type="text" inputmode="numeric" value="{{ ed.deps }}" onInput="{{ ed.onDeps }}" style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;outline:none;width:100%"></div>
+            <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:12px;color:var(--text-3)">通勤手当</label><input type="text" inputmode="numeric" value="{{ ed.commute }}" onInput="{{ ed.onCommute }}" style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;outline:none;width:100%"></div>
+            <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:12px;color:var(--text-3)">住民税（通知額）</label><input type="text" inputmode="numeric" value="{{ ed.resident }}" onInput="{{ ed.onResident }}" style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;outline:none;width:100%"></div>
+            <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:12px;color:var(--text-3)">残業（分）</label><input type="text" inputmode="numeric" value="{{ ed.ot }}" onInput="{{ ed.onOt }}" style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text-1);font-family:inherit;font-size:13px;outline:none;width:100%"></div>
+            <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:12px;color:var(--text-3)">税区分</label><div style="display:flex;gap:6px"><button onClick="{{ ed.onKou }}" style="{{ ed.kouStyle }}">甲</button><button onClick="{{ ed.onOtsu }}" style="{{ ed.otsuStyle }}">乙</button></div></div>
+          </div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ hasSelected }}" hint-placeholder-val="{{ true }}">
         <section style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:16px 20px;border-bottom:1px solid var(--border-hairline)">
             <span style="font-size:16px;font-weight:500">{{ selName }} の検算内訳</span>
@@ -160,7 +182,7 @@
   &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;株式会社 山田製作所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
 }">
 class Component extends DCLogic {
-  state = { themeAttr: '', monthIndex: 1, selected: 2, warnOnly: false };
+  state = { themeAttr: '', monthIndex: 1, selected: 2, warnOnly: false, master: null };
   months = ['2026年5月度', '2026年6月度', '2026年7月度'];
 
   nav = [
@@ -198,6 +220,12 @@ class Component extends DCLogic {
   cycleMonth = () => this.setState(s => ({ monthIndex: (s.monthIndex + 1) % this.months.length }));
   toggleWarnOnly = () => this.setState(s => ({ warnOnly: !s.warnOnly }));
   select = (i) => this.setState({ selected: i });
+  _num = (e) => { const v = parseInt(e.target.value, 10); return isNaN(v) ? 0 : v; };
+  _editField = (i, field, val) => {
+    const master = (this.state.master || this.empMaster).map(m => ({ ...m }));
+    master[i] = { ...master[i], [field]: val };
+    this.setState({ master });
+  };
 
   _fmt = (n) => Number(n).toLocaleString('ja-JP');
   _hm = (min) => { const h = Math.floor(min / 60), m = min % 60; return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m; };
@@ -210,45 +238,50 @@ class Component extends DCLogic {
   }
   _empWarns(e) { return this.cats.filter(c => e.chk[c] && e.chk[c].s === 'warn').length; }
 
-  // payroll-calc.js を使って期待値を計算し、実績と突合した chk を作る
-  _buildChk(e) {
+  // 当初の明細（実績）を seed マスタから一度だけ算出して固定する。
+  // actualDelta は「実績が計算値とどれだけズレているか」（検証デモ用）。
+  _seedActual(e) {
+    const C = window.PayrollCalc;
+    if (!C) return null;
+    const x = C.calc(e);
+    const act = { base: x.base, overtime: x.overtime, social: x.social, employment: x.employment, incomeTax: x.incomeTax, residentTax: x.residentTax, commute: x.commute };
+    const map = { '基本給': 'base', '残業': 'overtime', '社保': 'social', '雇保': 'employment', '所得税': 'incomeTax', '住民税': 'residentTax', '通勤': 'commute' };
+    const d = e.actualDelta || {};
+    Object.keys(d).forEach(k => { if (map[k] != null) act[map[k]] += d[k]; });
+    act.net = (act.base + act.overtime + act.commute) - (act.social + act.employment + act.incomeTax + act.residentTax);
+    return act;
+  }
+
+  // マスタ m から期待値を計算し、固定された実績 act と突合した chk を作る
+  _buildChk(m, act) {
     const C = window.PayrollCalc;
     const f = this._fmt;
-    if (!C) { const o = {}; this.cats.forEach(c => o[c] = { s: 'info', note: '—', actual: '—', expected: '—', basis: '計算モジュール読込中', _act: null }); return o; }
-    const x = C.calc(e);
-    const ov = e.actual || {}, ovd = e.actualDelta || {};
-    const cmp = (cat, expected, basis) => {
-      let act = expected;
-      if (ov[cat] != null) act = ov[cat];
-      else if (ovd[cat] != null) act = expected + ovd[cat];
+    if (!C || !act) { const o = {}; this.cats.forEach(c => o[c] = { s: 'info', note: '—', actual: '—', expected: '—', basis: '計算モジュール読込中' }); return o; }
+    const x = C.calc(m);
+    const cmp = (expected, actual, basis) => {
       let s = 'ok', note = null;
-      if (act !== expected) { s = 'warn'; const d = act - expected; note = (d > 0 ? '+' : '') + f(d); }
-      return { s, note, actual: f(act), expected: f(expected), basis, _act: act };
+      if (actual !== expected) { s = 'warn'; const d = actual - expected; note = (d > 0 ? '+' : '') + f(d); }
+      return { s, note, actual: f(actual), expected: f(expected), basis };
     };
     const chk = {};
-    chk['基本給'] = e.type === '時給'
-      ? { s: 'info', note: '時給', actual: f(x.base), expected: '時給 ' + f(e.hourly), basis: x.basis.base, _act: x.base }
-      : cmp('基本給', x.base, x.basis.base);
-    let ot = cmp('残業', x.overtime, x.basis.overtime);
-    if ((e.overtimeMin || 0) > C.MAX_OVERTIME_MIN) ot = { s: 'warn', note: this._hm(e.overtimeMin), actual: this._hm(e.overtimeMin), expected: '≤ 45:00', basis: '36協定の上限（月45h）超過 — 要確認', _act: x.overtime };
+    chk['基本給'] = m.type === '時給'
+      ? { s: 'info', note: '時給', actual: f(act.base), expected: '時給 ' + f(m.hourly), basis: x.basis.base }
+      : cmp(x.base, act.base, x.basis.base);
+    let ot = cmp(x.overtime, act.overtime, x.basis.overtime);
+    if ((m.overtimeMin || 0) > C.MAX_OVERTIME_MIN) ot = { s: 'warn', note: this._hm(m.overtimeMin), actual: this._hm(m.overtimeMin), expected: '≤ 45:00', basis: '36協定の上限（月45h）超過 — 要確認' };
     chk['残業'] = ot;
-    chk['社保'] = e.socialApplicable === false
-      ? { s: 'info', note: '対象外', actual: '0', expected: '0', basis: x.basis.social, _act: 0 }
-      : cmp('社保', x.social, x.basis.social);
-    chk['雇保'] = cmp('雇保', x.employment, x.basis.employment);
-    chk['所得税'] = e.taxColumn === '乙'
-      ? { s: 'info', note: '乙欄', actual: f(x.incomeTax), expected: '乙欄', basis: x.basis.incomeTax, _act: x.incomeTax }
-      : cmp('所得税', x.incomeTax, x.basis.incomeTax);
-    if (x.residentTax === 0) chk['住民税'] = { s: 'info', note: '普徴', actual: '0', expected: '0', basis: '普通徴収（給与天引きなし）', _act: 0 };
-    else if ((e.prevResidentTax || 0) === 0 && x.residentTax > 0) chk['住民税'] = { s: 'warn', note: '+' + f(x.residentTax), actual: f(x.residentTax), expected: f(x.residentTax), basis: '前月 0 → 今月から特別徴収を開始 — 要確認', _act: x.residentTax };
-    else chk['住民税'] = cmp('住民税', x.residentTax, x.basis.residentTax);
-    chk['通勤'] = cmp('通勤', x.commute, x.basis.commute);
-    const a = (cat, fb) => chk[cat] && chk[cat]._act != null ? chk[cat]._act : fb;
-    const aNet = (a('基本給', x.base) + a('残業', x.overtime) + a('通勤', x.commute))
-      - (a('社保', x.social) + a('雇保', x.employment) + a('所得税', x.incomeTax) + a('住民税', x.residentTax));
-    chk['差引'] = aNet === x.net
-      ? { s: 'ok', note: null, actual: f(aNet), expected: f(x.net), basis: x.basis.net, _act: aNet }
-      : { s: 'warn', note: (aNet - x.net > 0 ? '+' : '') + f(aNet - x.net), actual: f(aNet), expected: f(x.net), basis: '上流項目のズレが差引に波及 — 要確認', _act: aNet };
+    chk['社保'] = m.socialApplicable === false
+      ? { s: 'info', note: '対象外', actual: f(act.social), expected: '0', basis: x.basis.social }
+      : cmp(x.social, act.social, x.basis.social);
+    chk['雇保'] = cmp(x.employment, act.employment, x.basis.employment);
+    chk['所得税'] = m.taxColumn === '乙'
+      ? { s: 'info', note: '乙欄', actual: f(act.incomeTax), expected: '乙欄', basis: x.basis.incomeTax }
+      : cmp(x.incomeTax, act.incomeTax, x.basis.incomeTax);
+    if (x.residentTax === 0) chk['住民税'] = { s: 'info', note: '普徴', actual: f(act.residentTax), expected: '0', basis: '普通徴収（給与天引きなし）' };
+    else if ((m.prevResidentTax || 0) === 0 && x.residentTax > 0) chk['住民税'] = { s: 'warn', note: '特徴開始', actual: f(act.residentTax), expected: f(x.residentTax), basis: '前月 0 → 今月から特別徴収を開始 — 要確認' };
+    else chk['住民税'] = cmp(x.residentTax, act.residentTax, x.basis.residentTax);
+    chk['通勤'] = cmp(x.commute, act.commute, x.basis.commute);
+    chk['差引'] = cmp(x.net, act.net, x.basis.net);
     return chk;
   }
 
@@ -259,7 +292,9 @@ class Component extends DCLogic {
       style: `display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;text-decoration:none;font-size:14px;cursor:pointer;${active ? 'background:var(--accent-soft);color:var(--accent);font-weight:500' : 'color:var(--text-2);font-weight:400'}`,
     }));
 
-    const emps = this.empMaster.map(e => ({ name: e.name, code: e.code, chk: this._buildChk(e) }));
+    const master = this.state.master || this.empMaster;
+    const actuals = this.empMaster.map(e => this._seedActual(e));
+    const emps = master.map((m, i) => ({ name: m.name, code: m.code, chk: this._buildChk(m, actuals[i]) }));
 
     const warnOnly = this.state.warnOnly;
     const visible = emps
@@ -278,6 +313,26 @@ class Component extends DCLogic {
         rowStyle: `display:grid;grid-template-columns:176px repeat(8,1fr);gap:8px;align-items:center;padding:11px 20px;border-bottom:1px solid var(--border-hairline);cursor:pointer;${selected ? 'background:var(--accent-soft)' : ''}`,
       };
     });
+
+    const mi = this.state.selected;
+    const cm = master[mi] || master[0];
+    const btn = (active) => `padding:7px 14px;border-radius:8px;font-family:inherit;font-size:13px;cursor:pointer;border:1px solid ${active ? 'var(--accent-soft-border)' : 'var(--border)'};${active ? 'background:var(--accent-soft);color:var(--accent);font-weight:500' : 'background:var(--surface);color:var(--text-2)'}`;
+    const ed = {
+      isHourly: cm.type === '時給',
+      baseLabel: cm.type === '時給' ? '時給（円）' : '基本給（円）',
+      baseVal: cm.type === '時給' ? (cm.hourly || 0) : (cm.base || 0),
+      onBase: (e) => this._editField(mi, cm.type === '時給' ? 'hourly' : 'base', this._num(e)),
+      hours: cm.workedHours || 0, onHours: (e) => this._editField(mi, 'workedHours', this._num(e)),
+      sm: cm.standardMonthly || 0, onSm: (e) => this._editField(mi, 'standardMonthly', this._num(e)),
+      deps: cm.dependents || 0, onDeps: (e) => this._editField(mi, 'dependents', this._num(e)),
+      commute: cm.commute || 0, onCommute: (e) => this._editField(mi, 'commute', this._num(e)),
+      resident: cm.residentTax || 0, onResident: (e) => this._editField(mi, 'residentTax', this._num(e)),
+      ot: cm.overtimeMin || 0, onOt: (e) => this._editField(mi, 'overtimeMin', this._num(e)),
+      onKou: () => this._editField(mi, 'taxColumn', '甲'),
+      onOtsu: () => this._editField(mi, 'taxColumn', '乙'),
+      kouStyle: btn(cm.taxColumn !== '乙'),
+      otsuStyle: btn(cm.taxColumn === '乙'),
+    };
 
     const sel = emps[this.state.selected] || null;
     const selRows = sel ? this.cats.map(c => {
@@ -319,7 +374,7 @@ class Component extends DCLogic {
       okCount: emps.length - warnCount, warnCount,
       itemCount: emps.length * this.cats.length, zureCount,
       hasSelected: !!sel, selName: sel ? sel.name : '', selCode: sel ? sel.code : '',
-      selRows, selBadges,
+      selRows, selBadges, ed,
     };
   }
 }
