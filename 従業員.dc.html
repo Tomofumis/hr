@@ -133,7 +133,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{
   &quot;$preview&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 860 },
-  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;株式会社 山田製作所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
+  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;吉田国際特許事務所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
 }">
 class Component extends DCLogic {
   state = { themeAttr: '', monthIndex: 1, filter: 'all', query: '' };
@@ -153,18 +153,18 @@ class Component extends DCLogic {
   ];
 
   employees = [
-    { name: '山田太郎', code: 'E-1001', dept: '営業部', kubun: '正社員', joined: '2018/04/01', salary: 280000, status: '在籍' },
-    { name: '佐藤花子', code: 'E-1002', dept: '製造部', kubun: '正社員', joined: '2019/07/16', salary: 255000, status: '在籍' },
-    { name: '鈴木一郎', code: 'E-1003', dept: '開発部', kubun: '正社員', joined: '2016/04/01', salary: 360000, status: '在籍' },
-    { name: '田中美咲', code: 'E-1004', dept: '管理部', kubun: '契約', joined: '2021/10/01', salary: 220000, status: '在籍' },
-    { name: '高橋健太', code: 'E-1005', dept: '営業部', kubun: '正社員', joined: '2020/04/01', salary: 262000, status: '在籍' },
-    { name: '渡辺さくら', code: 'E-1006', dept: '製造部', kubun: 'パート', joined: '2022/06/01', salary: 168000, status: '在籍' },
-    { name: '伊藤大輔', code: 'E-1007', dept: '開発部', kubun: '正社員', joined: '2017/09/01', salary: 345000, status: '在籍' },
-    { name: '山本由美', code: 'E-1008', dept: '管理部', kubun: '正社員', joined: '2015/04/01', salary: 298000, status: '休職' },
-    { name: '中村翔', code: 'E-1009', dept: '営業部', kubun: '契約', joined: '2023/01/16', salary: 240000, status: '在籍' },
-    { name: '小林麻衣', code: 'E-1010', dept: '製造部', kubun: 'パート', joined: '2021/03/01', salary: 152000, status: '在籍' },
-    { name: '加藤遼', code: 'E-1011', dept: '開発部', kubun: '正社員', joined: '2019/11/01', salary: 312000, status: '在籍' },
-    { name: '吉田直樹', code: 'E-1012', dept: '営業部', kubun: '正社員', joined: '2014/04/01', salary: 330000, status: '在籍' },
+    { name: '山田太郎', code: 'A-001', dept: '営業部', kubun: '正社員', joined: '2018/04/01', salary: 280000, status: '在籍' },
+    { name: '佐藤花子', code: 'A-002', dept: '製造部', kubun: '正社員', joined: '2019/07/16', salary: 255000, status: '在籍' },
+    { name: '鈴木一郎', code: 'A-003', dept: '開発部', kubun: '正社員', joined: '2016/04/01', salary: 360000, status: '在籍' },
+    { name: '田中美咲', code: 'A-004', dept: '管理部', kubun: '契約', joined: '2021/10/01', salary: 220000, status: '在籍' },
+    { name: '高橋健太', code: 'A-005', dept: '営業部', kubun: '正社員', joined: '2020/04/01', salary: 262000, status: '在籍' },
+    { name: '渡辺さくら', code: 'A-006', dept: '製造部', kubun: 'パート', joined: '2022/06/01', salary: 168000, status: '在籍' },
+    { name: '伊藤大輔', code: 'A-007', dept: '開発部', kubun: '正社員', joined: '2017/09/01', salary: 345000, status: '在籍' },
+    { name: '山本由美', code: 'A-008', dept: '管理部', kubun: '正社員', joined: '2015/04/01', salary: 298000, status: '休職' },
+    { name: '中村翔', code: 'A-009', dept: '営業部', kubun: '契約', joined: '2023/01/16', salary: 240000, status: '在籍' },
+    { name: '小林麻衣', code: 'A-010', dept: '製造部', kubun: 'パート', joined: '2021/03/01', salary: 152000, status: '在籍' },
+    { name: '加藤遼', code: 'A-011', dept: '開発部', kubun: '正社員', joined: '2019/11/01', salary: 312000, status: '在籍' },
+    { name: '吉田直樹', code: 'A-012', dept: '営業部', kubun: '正社員', joined: '2014/04/01', salary: 330000, status: '在籍' },
   ];
 
   componentDidMount() { this._icons(); }
@@ -236,7 +236,7 @@ class Component extends DCLogic {
       themeAttr: this.state.themeAttr,
       themeIcon: this.state.themeAttr === 'dark' ? 'sun' : 'moon',
       toggleTheme: this.toggleTheme,
-      companyName: p.companyName ?? '株式会社 山田製作所',
+      companyName: p.companyName ?? '吉田国際特許事務所',
       monthLabel: this.months[this.state.monthIndex],
       cycleMonth: this.cycleMonth,
       navItems,

@@ -105,6 +105,8 @@
           <x-import component-from-global-scope="ToriokiDesignSystem_4ced92.Input" label="健康保険料率（%）" value="{{ f_health }}" onChange="{{ on_health }}" hint-size="100%,auto"></x-import>
           <x-import component-from-global-scope="ToriokiDesignSystem_4ced92.Input" label="厚生年金保険料率（%）" value="{{ f_pension }}" onChange="{{ on_pension }}" hint-size="100%,auto"></x-import>
           <x-import component-from-global-scope="ToriokiDesignSystem_4ced92.Input" label="雇用保険料率（%）" value="{{ f_emp }}" onChange="{{ on_emp }}" hint-size="100%,auto"></x-import>
+          <x-import component-from-global-scope="ToriokiDesignSystem_4ced92.Input" label="介護保険料率（%）" value="{{ f_care }}" onChange="{{ on_care }}" hint-size="100%,auto"></x-import>
+          <x-import component-from-global-scope="ToriokiDesignSystem_4ced92.Input" label="子ども・子育て支援金率（%）" value="{{ f_childCare }}" onChange="{{ on_childCare }}" hint-size="100%,auto"></x-import>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:4px;border-top:1px solid var(--border-hairline);margin-top:2px;padding-top:16px">
           <div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:500">住民税の特別徴収</span><span style="font-size:13px;color:var(--text-2)">毎月の給与から住民税を控除します</span></div>
@@ -146,9 +148,9 @@
 }">
 class Component extends DCLogic {
   defaults = {
-    company: '株式会社 山田製作所', corp: '1234567890123', rep: '山田 一郎', addr: '東京都品川区西五反田 1-2-3',
+    company: '吉田国際特許事務所', corp: '1234567890123', rep: '吉田 雅比呂', addr: '東京都千代田区九段北4-1-5市ヶ谷法曹ビル308',
     closing: '15日', pay: '当月25日', method: '銀行振込',
-    health: '9.98', pension: '18.30', emp: '0.60', resident: true,
+    health: '9.98', pension: '18.30', emp: '0.60', care: '1.59', childCare: '0.115', resident: true,
     notifyAnomaly: true, notifyApproval: true, notifyMonthly: false,
   };
 
@@ -215,6 +217,8 @@ class Component extends DCLogic {
       f_health: f.health, on_health: ev('health'),
       f_pension: f.pension, on_pension: ev('pension'),
       f_emp: f.emp, on_emp: ev('emp'),
+      f_care: f.care, on_care: ev('care'),
+      f_childCare: f.childCare, on_childCare: ev('childCare'),
       f_resident: f.resident, on_resident: bv('resident'),
       notifs,
 

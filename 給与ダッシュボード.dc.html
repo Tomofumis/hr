@@ -259,7 +259,7 @@
   &quot;$preview&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 920 },
   &quot;scenario&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;異常あり&quot;, &quot;異常なし&quot;], &quot;default&quot;: &quot;異常あり&quot;, &quot;tsType&quot;: &quot;'異常あり' | '異常なし'&quot;, &quot;section&quot;: &quot;状態&quot; },
   &quot;loading&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;状態&quot; },
-  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;株式会社 山田製作所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
+  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;吉田国際特許事務所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
 }">
 class Component extends DCLogic {
   state = { themeAttr: '', monthIndex: 1, resolved: {}, expanded: null, confirmed: false };
@@ -368,7 +368,7 @@ class Component extends DCLogic {
       themeAttr: this.state.themeAttr,
       themeIcon: this.state.themeAttr === 'dark' ? 'sun' : 'moon',
       toggleTheme: this.toggleTheme,
-      companyName: p.companyName ?? '株式会社 山田製作所',
+      companyName: p.companyName ?? '吉田国際特許事務所',
       monthLabel: this.months[this.state.monthIndex],
       periodLabel: this.periods[this.state.monthIndex],
       cycleMonth: this.cycleMonth,

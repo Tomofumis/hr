@@ -78,7 +78,7 @@
               <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:2px">
                 <span style="display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:500;background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-soft-border)">正社員</span>
                 <span style="display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:500;background:var(--ok-bg);color:var(--ok-fg);border:1px solid var(--ok-border)"><i data-lucide="check" width="12" height="12"></i>在籍</span>
-                <span style="display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:12px;background:var(--surface-sunken);color:var(--text-2);border:1px solid var(--border);font-family:var(--font-mono);white-space:nowrap">E-1001</span>
+                <span style="display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:12px;background:var(--surface-sunken);color:var(--text-2);border:1px solid var(--border);font-family:var(--font-mono);white-space:nowrap">A-001</span>
                 <span style="display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:12px;background:var(--surface-sunken);color:var(--text-2);border:1px solid var(--border)">営業部</span>
               </div>
             </div>
@@ -120,7 +120,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{
   &quot;$preview&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 920 },
-  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;株式会社 山田製作所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
+  &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;吉田国際特許事務所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
 }">
 class Component extends DCLogic {
   state = { themeAttr: '', monthIndex: 1 };
@@ -142,7 +142,7 @@ class Component extends DCLogic {
   secs = [
     { title: '基本情報', icon: 'user-round', fields: [
       ['氏名', '山田 太郎'], ['フリガナ', 'ヤマダ タロウ'], ['表示名', '山田 太郎'],
-      ['従業員番号', 'E-1001'], ['入社日', '2018/04/01'], ['勤続年数', '8年2ヶ月'],
+      ['従業員番号', 'A-001'], ['入社日', '2018/04/01'], ['勤続年数', '8年2ヶ月'],
       ['生年月日', '1988/06/12'], ['年齢', '38歳'], ['性別', '男性'], ['配偶者', '有'],
       ['雇用形態', '正社員'], ['締め日・支払日', '15日締め / 当月25日払い'], ['ログインメール', 't.yamada@example.co.jp'],
     ] },
@@ -168,7 +168,7 @@ class Component extends DCLogic {
     { title: '社会保険・労働保険', icon: 'shield', fields: [
       ['健康保険', '協会けんぽ（東京）'], ['健康保険資格取得日', '2018/04/01'], ['健康保険標準報酬月額', '¥300,000'],
       ['厚生年金保険', '加入'], ['厚生年金資格取得日', '2018/04/01'], ['厚生年金標準報酬月額', '¥300,000'],
-      ['雇用保険', '加入'], ['雇用保険資格取得日', '2018/04/01'], ['労働保険設定', '一般の事業'], ['事業所名称', '株式会社 山田製作所 本社'],
+      ['雇用保険', '加入'], ['雇用保険資格取得日', '2018/04/01'], ['労働保険設定', '一般の事業'], ['事業所名称', '吉田国際特許事務所 本社'],
     ] },
     { title: '振込先・配賦', icon: 'landmark', fields: [
       ['振込先銀行', 'みずほ銀行 五反田支店'], ['口座番号', '普通 1234567'], ['給与振込方法', '全額振込'],
@@ -212,7 +212,7 @@ class Component extends DCLogic {
       themeAttr: this.state.themeAttr,
       themeIcon: this.state.themeAttr === 'dark' ? 'sun' : 'moon',
       toggleTheme: this.toggleTheme,
-      companyName: p.companyName ?? '株式会社 山田製作所',
+      companyName: p.companyName ?? '吉田国際特許事務所',
       monthLabel: this.months[this.state.monthIndex],
       cycleMonth: this.cycleMonth,
       navItems,
