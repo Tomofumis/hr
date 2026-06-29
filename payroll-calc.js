@@ -181,7 +181,9 @@
     // 所得税：甲欄は電算特例で計算（課税対象＝基本給＋残業−社会保険料、通勤は非課税）。
     //   乙欄は 88,000円未満を税額表どおり 3.063% で計算。88,000円以上は別表（月額表・乙）
     //   が必要なため登録値（emp.incomeTax）を参照。※高額帯は要・公式乙欄表の取込。
-    var taxableAfterSI = Math.max(0, base + overtime - social);
+    // 通勤手当は月15万円まで非課税。超過分のみ課税対象に算入。
+    var commuteTaxable = Math.max(0, (emp.commute || 0) - 150000);
+    var taxableAfterSI = Math.max(0, base + overtime + commuteTaxable - social);
     var incomeTax = emp.taxColumn === '乙'
       ? (taxableAfterSI < 88000 ? Math.floor(taxableAfterSI * 0.03063) : (emp.incomeTax || 0))
       : incomeTaxKou(taxableAfterSI, emp.dependents || 0);
