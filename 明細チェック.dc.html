@@ -70,7 +70,7 @@
       <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
         <div style="display:flex;flex-direction:column;gap:3px">
           <h1 style="margin:0;font-size:24px;font-weight:500;letter-spacing:-0.01em">明細チェック</h1>
-          <p style="margin:0;font-size:14px;color:var(--text-3)">基準値マスタ × 当月実績を自動計算で突合（残業・社保・雇保・差引は計算、税はマスタ参照）・ 2026年6月25日支払い分</p>
+          <p style="margin:0;font-size:14px;color:var(--text-3)">基準値マスタ × 当月実績を自動計算で突合（残業・社保・雇保・所得税(甲)・差引は計算、住民税と乙欄はマスタ参照）・ 2026年6月25日支払い分</p>
         </div>
         <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
           <a href="#" class="ghost-link" style="display:inline-flex;align-items:center;gap:5px;color:var(--text-2);font-size:13px;text-decoration:none">基準値マスタ<i data-lucide="chevron-right" width="14" height="14"></i></a>
@@ -134,7 +134,7 @@
           <div style="overflow-x:auto">
             <div style="min-width:760px">
               <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr 2.2fr 0.9fr;gap:10px;padding:10px 20px;border-bottom:1px solid var(--border);background:var(--surface-sunken);font-size:12px;color:var(--text-3)">
-                <span>項目</span><span style="text-align:right">実績</span><span style="text-align:right">期待値（計算）</span><span>根拠</span><span style="text-align:center">判定</span>
+                <span>項目</span><span style="text-align:right">実績</span><span style="text-align:right">期待値</span><span>根拠</span><span style="text-align:center">判定</span>
               </div>
               <sc-for list="{{ selRows }}" as="d" hint-placeholder-count="8">
                 <div style="{{ d.rowStyle }}">
@@ -182,12 +182,12 @@ class Component extends DCLogic {
   // 人別マスタ＋当月実績。期待値は payroll-calc.js が計算し、実績と突合する。
   // actualDelta: 実績が計算値とどれだけズレているか（検証デモ用）。無ければ計算値どおり＝OK。
   empMaster = [
-    { name: '山田 太郎', code: 'E-1001', type: '月給', base: 360000, standardMonthly: 530000, care: true,  socialApplicable: true,  taxColumn: '甲', incomeTax: 15410, residentTax: 47800, prevResidentTax: 47800, commute: 12000, overtimeMin: 1295 },
-    { name: '佐藤 花子', code: 'E-1002', type: '月給', base: 255000, standardMonthly: 380000, care: true,  socialApplicable: true,  taxColumn: '甲', incomeTax: 6750,  residentTax: 20000, prevResidentTax: 20000, commute: 9800,  overtimeMin: 2870 },
+    { name: '山田 太郎', code: 'E-1001', type: '月給', base: 360000, standardMonthly: 530000, care: true,  socialApplicable: true,  taxColumn: '甲', dependents: 2, residentTax: 47800, prevResidentTax: 47800, commute: 12000, overtimeMin: 1295 },
+    { name: '佐藤 花子', code: 'E-1002', type: '月給', base: 255000, standardMonthly: 380000, care: true,  socialApplicable: true,  taxColumn: '甲', dependents: 1,  residentTax: 20000, prevResidentTax: 20000, commute: 9800,  overtimeMin: 2870 },
     { name: '鈴木 一郎', code: 'E-1003', type: '月給', base: 250000, standardMonthly: 360000, care: true,  socialApplicable: true,  taxColumn: '乙', incomeTax: 11800, residentTax: 15400, prevResidentTax: 0,     commute: 14000, overtimeMin: 920 },
-    { name: '田中 美咲', code: 'E-1004', type: '月給', base: 230000, standardMonthly: 340000, care: false, socialApplicable: true,  taxColumn: '甲', incomeTax: 5210,  residentTax: 11500, prevResidentTax: 11500, commute: 8400,  overtimeMin: 640, actualDelta: { '社保': 2400 } },
-    { name: '渡辺 さくら', code: 'E-1006', type: '時給', hourly: 2000, workedHours: 82.45, standardMonthly: 0, care: false, socialApplicable: false, taxColumn: '甲', incomeTax: 0, residentTax: 0, prevResidentTax: 0, commute: 6200, overtimeMin: 0 },
-    { name: '中村 翔', code: 'E-1009', type: '時給', hourly: 2000, workedHours: 100, standardMonthly: 280000, care: false, socialApplicable: true, taxColumn: '甲', incomeTax: 5940, residentTax: 13200, prevResidentTax: 13200, commute: 12000, overtimeMin: 645, actualDelta: { '通勤': 3000 } },
+    { name: '田中 美咲', code: 'E-1004', type: '月給', base: 230000, standardMonthly: 340000, care: false, socialApplicable: true,  taxColumn: '甲', dependents: 0,  residentTax: 11500, prevResidentTax: 11500, commute: 8400,  overtimeMin: 640, actualDelta: { '社保': 2400 } },
+    { name: '渡辺 さくら', code: 'E-1006', type: '時給', hourly: 2000, workedHours: 82.45, standardMonthly: 0, care: false, socialApplicable: false, taxColumn: '甲', dependents: 0, residentTax: 0, prevResidentTax: 0, commute: 6200, overtimeMin: 0 },
+    { name: '中村 翔', code: 'E-1009', type: '時給', hourly: 2000, workedHours: 100, standardMonthly: 280000, care: false, socialApplicable: true, taxColumn: '甲', dependents: 0, residentTax: 13200, prevResidentTax: 13200, commute: 12000, overtimeMin: 645, actualDelta: { '通勤': 3000 } },
   ];
 
   componentDidMount() { this._icons(); }

@@ -1,7 +1,7 @@
 /* 給与デスク — 給与計算ロジック（プロトタイプ）
-   社会保険・残業・雇用保険・差引を実際に計算する小さなエンジン。
-   住民税は市区町村からの通知額をマスタ登録して参照（設計どおり）。
-   所得税はマスタ参照（源泉徴収税額表は未実装）。
+   社会保険・残業・雇用保険・所得税（甲欄）・差引を実際に計算する小さなエンジン。
+   所得税の甲欄は国税庁「電算機計算の特例（月額表）」で計算。乙欄は別表が複雑な
+   ため登録値を参照。住民税は市区町村からの通知額をマスタ登録して参照（設計どおり）。
    window.PayrollCalc.calc(emp) で各項目の期待値を返す。 */
 (function (global) {
   // 設定画面の料率に対応（健保・厚年・雇用は設定値、介護・子育ては概算）
@@ -17,9 +17,43 @@
 
   var R = Math.round;
 
+  /* 所得税（甲欄）＝国税庁「電算機計算の特例（月額表）」
+     ※下記の定数は令和6年分。年次で別表（給与所得控除・基礎控除・税率）が
+       変わるため、運用前に最新の国税庁別表で要確認。 */
+  var BASIC_MONTHLY = 40000;   // 基礎控除（月額）= 48万 ÷ 12
+  var DEP_MONTHLY = 31667;     // 扶養親族等控除（月額/人）= 38万 ÷ 12
+  // 給与所得控除（月額）別表第一
+  function kyuyoKojo(a) {
+    if (a <= 135416) return 45834;
+    if (a < 150000) return a * 0.40 - 8333;
+    if (a < 300000) return a * 0.30 + 6667;
+    if (a < 550000) return a * 0.20 + 36667;
+    if (a < 708331) return a * 0.10 + 91667;
+    return 162500;
+  }
+  // 課税給与所得金額 → 税率/控除額 別表第三（復興特別所得税2.1%込み）
+  var TAX_BRACKETS = [
+    [162500, 0.05105, 0],
+    [275000, 0.10210, 8296],
+    [579166, 0.20420, 36374],
+    [750000, 0.23483, 54113],
+    [1500000, 0.33693, 130688],
+    [3333333, 0.40840, 237893],
+    [Infinity, 0.45945, 408061],
+  ];
+  // 甲欄：その月の社会保険料等控除後の金額 a と扶養親族等の数 deps から税額を計算
+  function incomeTaxKou(a, deps) {
+    var ti = a - kyuyoKojo(a) - BASIC_MONTHLY - DEP_MONTHLY * (deps || 0);
+    if (ti <= 0) return 0;
+    for (var i = 0; i < TAX_BRACKETS.length; i++) {
+      if (ti < TAX_BRACKETS[i][0]) return Math.max(0, Math.floor(ti * TAX_BRACKETS[i][1] - TAX_BRACKETS[i][2]));
+    }
+    return 0;
+  }
+
   // emp: { type:'月給'|'時給', base, hourly, workedHours, standardMonthly,
-  //        care:bool, socialApplicable:bool, taxColumn:'甲'|'乙',
-  //        incomeTax, residentTax, commute, overtimeMin }
+  //        care:bool, socialApplicable:bool, taxColumn:'甲'|'乙', dependents,
+  //        incomeTax(乙欄の登録値), residentTax, commute, overtimeMin }
   function calc(emp) {
     var r = RATES;
     var sm = emp.standardMonthly || 0;
@@ -47,8 +81,13 @@
     var wageForEmp = base + overtime + (emp.commute || 0);
     var employment = R(wageForEmp * r.employment);
 
-    // 所得税・住民税はマスタ参照（税額表は未実装）
-    var incomeTax = emp.incomeTax || 0;
+    // 所得税：甲欄は電算特例で計算（課税対象＝基本給＋残業−社会保険料、通勤は非課税）。
+    //         乙欄は別表が複雑なため登録値を参照。
+    var taxableAfterSI = Math.max(0, base + overtime - social);
+    var incomeTax = emp.taxColumn === '乙'
+      ? (emp.incomeTax || 0)
+      : incomeTaxKou(taxableAfterSI, emp.dependents || 0);
+    // 住民税は市区町村の通知額をマスタ登録して参照
     var residentTax = emp.residentTax || 0;
     var commute = emp.commute || 0;
 
@@ -72,7 +111,9 @@
           ? '標準報酬 ' + sm.toLocaleString('ja-JP') + ' × 料率（健保' + (r.health * 100) + '%/厚年' + (r.pension * 100) + '%ほか・折半）'
           : '社会保険の加入対象外',
         employment: '（基本給＋残業＋通勤）× ' + (r.employment * 100) + '%',
-        incomeTax: emp.taxColumn === '乙' ? '乙欄・源泉徴収税額表（マスタ参照）' : '甲欄・源泉徴収税額表（マスタ参照）',
+        incomeTax: emp.taxColumn === '乙'
+          ? '乙欄・税額表（登録値を参照）'
+          : '甲欄・電算特例（給与所得控除→基礎→扶養' + (emp.dependents ? '×' + emp.dependents + '人' : '') + '→税率）',
         residentTax: '通知額をマスタ登録（特別徴収）',
         commute: 'マスタ区間額',
         net: '総支給 − 控除計',
