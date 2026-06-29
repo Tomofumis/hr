@@ -29,7 +29,7 @@
       <span style="font-size:17px;font-weight:500;letter-spacing:-0.01em">給与デスク</span>
     </div>
     <nav style="display:flex;flex-direction:column;gap:2px;padding:6px 12px;flex:1;overflow:auto">
-      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="9">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="10">
         <a href="{{ item.href }}" class="nav-link" style="{{ item.style }}">
           <i data-lucide="{{ item.icon }}" width="18" height="18" style="flex:0 0 auto"></i>
           <span>{{ item.label }}</span>
@@ -97,17 +97,27 @@
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:12px">
+      <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:12px;flex-wrap:wrap">
         <span style="font-size:14px;font-weight:500">月次勤怠締め申請</span>
-        <span style="display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:500;background:var(--surface-sunken);color:var(--text-3);border:1px solid var(--border)">未申請</span>
-        <x-import component-from-global-scope="ToriokiDesignSystem_4ced92.Button" variant="secondary" size="sm" onClick="{{ noop }}" hint-size="auto,34px" style="margin-left:auto">締め申請する</x-import>
+        <span style="{{ submitBadgeStyle }}">{{ submitBadge }}</span>
+        <sc-if value="{{ hasSubmitMsg }}" hint-placeholder-val="{{ false }}">
+          <span style="font-size:12px;color:var(--sev-warn-fg)">{{ submitMsg }}</span>
+        </sc-if>
+        <button onClick="{{ onSubmit }}" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-on);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer">締め申請する</button>
       </div>
 
-      <div style="display:flex;align-items:center;gap:12px;padding:13px 18px;background:var(--sev-warn-bg);border:1px solid var(--sev-warn-border);border-radius:12px">
-        <i data-lucide="triangle-alert" width="18" height="18" style="color:var(--sev-warn-fg);flex:0 0 auto"></i>
-        <span style="font-size:14px;color:var(--sev-warn-fg);font-weight:500">申請または修正が必要な勤怠が 2 日あります。</span>
-        <button class="ghost-link" onClick="{{ noop }}" style="margin-left:auto;background:transparent;border:none;color:var(--text-2);font-family:inherit;font-size:13px;cursor:pointer;padding:4px 6px">閉じる</button>
-      </div>
+      <sc-if value="{{ hasIssues }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;align-items:center;gap:12px;padding:13px 18px;background:var(--sev-warn-bg);border:1px solid var(--sev-warn-border);border-radius:12px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--sev-warn-fg);flex:0 0 auto"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+          <span style="font-size:14px;color:var(--sev-warn-fg);font-weight:500">{{ bannerText }}</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ allClear }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:12px;padding:13px 18px;background:var(--ok-bg);border:1px solid var(--ok-border);border-radius:12px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ok-fg);flex:0 0 auto"><path d="M21.801 10A10 10 0 1 1 17 3.335"></path><path d="m9 11 3 3L22 4"></path></svg>
+          <span style="font-size:14px;color:var(--ok-fg);font-weight:500">勤怠アラートはありません。締め申請できます。</span>
+        </div>
+      </sc-if>
 
       <section style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:18px 16px">
         <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="11">
@@ -148,13 +158,13 @@
             <sc-for list="{{ days }}" as="d" hint-placeholder-count="10">
               <div>
               <div style="{{ d.rowStyle }}">
-                <span style="padding:0 6px;display:flex;align-items:center;justify-content:center"><sc-if value="{{ d.alert }}" hint-placeholder-val="{{ false }}"><i data-lucide="triangle-alert" width="15" height="15" style="color:var(--sev-vio-fg)" title="{{ d.alertText }}"></i></sc-if></span>
+                <span style="padding:0 6px;display:flex;align-items:center;justify-content:center"><sc-if value="{{ d.alert }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--sev-vio-fg)"><title>{{ d.alertText }}</title><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></sc-if></span>
                 <span style="padding:11px 6px;font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;color:{{ d.dateColor }}">{{ d.date }}</span>
                 <span style="padding:11px 6px;font-size:12px;color:var(--text-2)">{{ d.kind }}</span>
                 <span style="padding:11px 6px;font-size:12px;color:var(--text-3);font-family:var(--font-mono)">{{ d.plan }}</span>
                 <span style="padding:11px 6px;font-size:12px;color:var(--text-2)">{{ d.type }}</span>
-                <span style="padding:7px 6px;display:flex;align-items:center;justify-content:center"><sc-if value="{{ d.worked }}" hint-placeholder-val="{{ true }}"><input defaultValue="{{ d.in }}" style="width:64px;padding:5px 4px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text-1);font-family:var(--font-mono);font-size:12px;text-align:center;outline:none"></sc-if></span>
-                <span style="padding:7px 6px;display:flex;align-items:center;justify-content:center"><sc-if value="{{ d.worked }}" hint-placeholder-val="{{ true }}"><input defaultValue="{{ d.out }}" style="{{ d.outInputStyle }}"></sc-if></span>
+                <span style="padding:7px 6px;display:flex;align-items:center;justify-content:center"><sc-if value="{{ d.worked }}" hint-placeholder-val="{{ true }}"><input value="{{ d.in }}" onInput="{{ d.onIn }}" placeholder="--:--" style="width:64px;padding:5px 4px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text-1);font-family:var(--font-mono);font-size:12px;text-align:center;outline:none"></sc-if></span>
+                <span style="padding:7px 6px;display:flex;align-items:center;justify-content:center"><sc-if value="{{ d.worked }}" hint-placeholder-val="{{ true }}"><input value="{{ d.out }}" onInput="{{ d.onOut }}" placeholder="--:--" style="{{ d.outInputStyle }}"></sc-if></span>
                 <span style="padding:11px 6px;text-align:center;font-size:12px;color:var(--text-2);font-family:var(--font-mono)">{{ d.start }}</span>
                 <span style="padding:11px 6px;text-align:center;font-size:12px;color:var(--text-2);font-family:var(--font-mono)">{{ d.end }}</span>
                 <span style="padding:11px 6px;text-align:right;font-size:12px;color:var(--text-2);font-family:var(--font-mono)">{{ d.regular }}</span>
@@ -172,7 +182,7 @@
             </sc-for>
           </div>
         </div>
-        <div style="padding:11px 18px;border-top:1px solid var(--border-hairline);font-size:12px;color:var(--text-3)">打刻欄をクリックすると修正できます。修正後は「締め申請する」で確定します。</div>
+        <div style="padding:11px 18px;border-top:1px solid var(--border-hairline);font-size:12px;color:var(--text-3)">打刻欄（出勤・退勤）を直接編集すると、始業/終業・所定内/時間外・深夜とアラートが自動で再計算されます。修正後は「締め申請する」で確定します。</div>
       </section>
 
     </main>
@@ -185,8 +195,11 @@
   &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;株式会社 山田製作所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
 }">
 class Component extends DCLogic {
-  state = { themeAttr: '', monthIndex: 1, view: 'table' };
+  state = { themeAttr: '', monthIndex: 1, view: 'table', days: null, submitted: false, submitMsg: '' };
   months = ['2026年5月度', '2026年6月度', '2026年7月度'];
+
+  // 所定：09:00-18:00、休憩60分、1日8時間（所定＝法定）。深夜22:00-翌5:00。
+  SCHED_START = 540; SCHED_END = 1080; LEGAL = 480; NIGHT_START = 1320; NIGHT_END = 1740; OT_LIMIT_MIN = 45 * 60;
 
   nav = [
     ['ダッシュボード', 'layout-dashboard', '給与ダッシュボード.dc.html', false],
@@ -203,32 +216,18 @@ class Component extends DCLogic {
 
   tabDefs = [['従業員', '従業員詳細.dc.html', false], ['勤怠', '#', true], ['休暇', '休暇・有給.dc.html', false], ['給与', '給与計算.dc.html', false], ['賞与', '賞与.dc.html', false]];
 
-  tileDefs = [
-    ['労働日数', '22', '日', null],
-    ['総勤務時間', '178:23', '', null],
-    ['所定内労働', '147:00', '', 'var(--accent)'],
-    ['法定内残業', '14:00', '', '#7fbeb7'],
-    ['時間外労働', '24:23', '', 'var(--accent-700)'],
-    ['法定休日労働', '0:00', '', 'var(--sev-warn-fg)'],
-    ['深夜労働', '4:00', '', '#3a4a66'],
-    ['欠勤日数', '0', '日', null],
-    ['有休取得数', '1', '日', null],
-    ['有休残数', '12', '日', null],
-    ['遅刻早退時間', '0:00', '', null],
-  ];
-
-  // [date, dow, kind, plan, type, in, out, start, end, regular, lateOt, overtime, night, alert, alertText, holiday]
+  // [date, dow, kind, in, out, breakMin]  kind: 所定労働日 / 所定休日 / 法定休日
   dayDefs = [
-    ['6/1', '月', '所定労働日', '09:00-18:00', '通常勤務', '08:50', '18:05', '09:00', '18:05', '8:00', '0:05', '0:00', '0:00', false, '', false],
-    ['6/2', '火', '所定労働日', '09:00-18:00', '打刻欠け', '08:48', '', '08:48', '—', '—', '—', '—', '—', true, '退勤打刻がありません。実働時間を確認し、退勤時刻を入力してください。', false],
-    ['6/3', '水', '所定労働日', '09:00-18:00', '通常勤務', '08:45', '19:30', '08:45', '19:30', '8:00', '0:00', '1:30', '0:00', true, '休憩不足：実働8時間超の勤務ですが、休憩が60分未満（45分）です。休憩を60分以上に修正してください。', false],
-    ['6/4', '木', '所定労働日', '09:00-18:00', '通常勤務', '08:55', '18:10', '08:55', '18:10', '8:00', '0:10', '0:00', '0:00', false, '', false],
-    ['6/5', '金', '所定労働日', '09:00-18:00', '通常勤務', '08:52', '20:48', '08:52', '20:48', '8:00', '0:00', '2:48', '1:00', false, '', false],
-    ['6/6', '土', '所定休日', '', '所定休日', '', '', '', '', '', '', '', '', false, '', false],
-    ['6/7', '日', '法定休日', '', '法定休日', '', '', '', '', '', '', '', '', false, '', true],
-    ['6/8', '月', '所定労働日', '09:00-18:00', '通常勤務', '08:49', '18:30', '08:49', '18:30', '8:00', '0:30', '0:00', '0:00', false, '', false],
-    ['6/9', '火', '所定労働日', '09:00-18:00', '通常勤務', '08:58', '19:15', '08:58', '19:15', '8:00', '0:00', '1:15', '0:00', false, '', false],
-    ['6/10', '水', '所定労働日', '09:00-18:00', '通常勤務', '08:47', '18:02', '08:47', '18:02', '8:00', '0:02', '0:00', '0:00', false, '', false],
+    ['6/1', '月', '所定労働日', '08:50', '18:05', 60],
+    ['6/2', '火', '所定労働日', '08:48', '', 60],
+    ['6/3', '水', '所定労働日', '08:45', '19:30', 45],
+    ['6/4', '木', '所定労働日', '08:55', '18:10', 60],
+    ['6/5', '金', '所定労働日', '08:52', '20:48', 60],
+    ['6/6', '土', '所定休日', '', '', 0],
+    ['6/7', '日', '法定休日', '', '', 0],
+    ['6/8', '月', '所定労働日', '08:49', '18:30', 60],
+    ['6/9', '火', '所定労働日', '08:58', '19:15', 60],
+    ['6/10', '水', '所定労働日', '08:47', '18:02', 60],
   ];
 
   componentDidMount() { this._icons(); }
@@ -239,21 +238,97 @@ class Component extends DCLogic {
   cycleMonth = () => this.setState(s => ({ monthIndex: (s.monthIndex + 1) % this.months.length }));
   setView = (v) => this.setState({ view: v });
 
+  _parse(s) { if (!s) return null; const m = String(s).trim().match(/^(\d{1,2}):?(\d{2})$/); if (!m) return null; const h = +m[1], mi = +m[2]; if (h > 47 || mi > 59) return null; return h * 60 + mi; }
+  _clock(min) { if (min == null) return '—'; const h = Math.floor(min / 60), m = min % 60; return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m; }
+  _dur(min) { if (min == null) return '—'; const h = Math.floor(min / 60), m = min % 60; return h + ':' + (m < 10 ? '0' : '') + m; }
+
+  _days() {
+    if (this.state.days) return this.state.days;
+    return this.dayDefs.map(([date, dow, kind, tin, tout, brk]) => ({
+      date, dow, kind, scheduled: kind === '所定労働日', holiday: kind.indexOf('休日') >= 0,
+      plan: kind === '所定労働日' ? '09:00-18:00' : '', in: tin, out: tout, breakMin: brk,
+    }));
+  }
+
+  _editDay = (i, field, val) => {
+    const days = this._days().map(d => ({ ...d }));
+    days[i] = { ...days[i], [field]: val };
+    this.setState({ days, submitted: false, submitMsg: '' });
+  };
+
+  // 打刻から各時間とアラートを計算
+  _computeAll(days) {
+    const S0 = this.SCHED_START, S1 = this.SCHED_END, L = this.LEGAL, N0 = this.NIGHT_START, N1 = this.NIGHT_END;
+    let totWork = 0, totReg = 0, totOt = 0, totNight = 0, totLate = 0, laborDays = 0, absent = 0, dayAlerts = 0;
+    const rows = days.map(d => {
+      if (!d.scheduled) return { ...d, worked: false, type: d.kind, start: '', end: '', regular: '', lateOt: '', overtime: '', night: '', alert: false };
+      const inM = this._parse(d.in), outM = this._parse(d.out);
+      if (inM == null || outM == null) {
+        dayAlerts++;
+        if (inM == null && outM == null) absent++;
+        return {
+          ...d, worked: true, type: '打刻欠け',
+          start: inM != null ? this._clock(Math.max(inM, S0)) : '—', end: outM != null ? this._clock(outM) : '—',
+          regular: '—', lateOt: '—', overtime: '—', night: '—',
+          alert: true, alertTag: '要確認',
+          alertText: outM == null ? '退勤打刻がありません。実働時間を確認し、退勤時刻を入力してください。' : '出勤打刻がありません。出勤時刻を入力してください。',
+        };
+      }
+      const start = Math.max(inM, S0), end = outM;
+      const span = Math.max(0, end - start);
+      const work = Math.max(0, span - d.breakMin);
+      const reg = Math.min(work, L);
+      const ot = Math.max(0, work - L);
+      const night = Math.max(0, Math.min(end, N1) - Math.max(start, N0));
+      const late = Math.max(0, inM - S0);
+      const early = Math.max(0, S1 - end);
+      totWork += work; totReg += reg; totOt += ot; totNight += night; totLate += late + early; laborDays++;
+      let alert = false, tag = '', text = '';
+      if (work > L && d.breakMin < 60) { alert = true; tag = '違反'; text = `休憩不足：実働8時間超の勤務ですが、休憩が60分未満（${d.breakMin}分）です。休憩を60分以上に修正してください。`; dayAlerts++; }
+      return {
+        ...d, worked: true, type: '通常勤務',
+        start: this._clock(start), end: this._clock(end),
+        regular: this._dur(reg), lateOt: this._dur(0), overtime: this._dur(ot), night: this._dur(night),
+        otActive: ot > 0, alert, alertTag: tag, alertText: text,
+      };
+    });
+    return { rows, totWork, totReg, totOt, totNight, totLate, laborDays, absent, dayAlerts, over36: totOt > this.OT_LIMIT_MIN };
+  }
+
+  onSubmit = () => {
+    const c = this._computeAll(this._days());
+    if (c.dayAlerts > 0 || c.over36) this.setState({ submitted: false, submitMsg: '未解決のアラートがあります。修正してから申請してください。' });
+    else this.setState({ submitted: true, submitMsg: '' });
+  };
+
   renderVals() {
     const p = this.props || {};
     const navItems = this.nav.map(([label, icon, href, active]) => ({
       label, icon, href,
       style: `display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;text-decoration:none;font-size:14px;cursor:pointer;${active ? 'background:var(--accent-soft);color:var(--accent);font-weight:500' : 'color:var(--text-2);font-weight:400'}`,
     }));
-
     const tabs = this.tabDefs.map(([label, href, active]) => ({
       label, href,
       style: `padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;cursor:pointer;${active ? 'background:var(--accent);color:var(--accent-on)' : 'color:var(--text-2);background:transparent'}`,
     }));
 
-    const tiles = this.tileDefs.map(([label, value, unit, dot]) => ({
-      label, value, unit,
-      hasDot: !!dot,
+    const c = this._computeAll(this._days());
+
+    const tileData = [
+      ['労働日数', String(c.laborDays), '日', null],
+      ['総勤務時間', this._dur(c.totWork), '', null],
+      ['所定内労働', this._dur(c.totReg), '', 'var(--accent)'],
+      ['法定内残業', '0:00', '', '#7fbeb7'],
+      ['時間外労働', this._dur(c.totOt), '', 'var(--accent-700)'],
+      ['法定休日労働', '0:00', '', 'var(--sev-warn-fg)'],
+      ['深夜労働', this._dur(c.totNight), '', '#3a4a66'],
+      ['欠勤日数', String(c.absent), '日', null],
+      ['有休取得数', '1', '日', null],
+      ['有休残数', '12', '日', null],
+      ['遅刻早退時間', this._dur(c.totLate), '', null],
+    ];
+    const tiles = tileData.map(([label, value, unit, dot]) => ({
+      label, value, unit, hasDot: !!dot,
       dotStyle: dot ? `width:9px;height:9px;border-radius:2px;background:${dot}` : '',
     }));
 
@@ -264,20 +339,25 @@ class Component extends DCLogic {
         style: `display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:8px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;border:none;${active ? 'background:var(--accent);color:var(--accent-on)' : 'background:transparent;color:var(--text-2)'}` };
     });
 
-    const days = this.dayDefs.map(([date, dow, kind, plan, type, tin, tout, start, end, regular, lateOt, overtime, night, alert, alertText, holiday]) => {
-      const worked = !!start;
-      const dateColor = dow === '日' || holiday ? 'var(--sev-vio-fg)' : (dow === '土' ? 'var(--accent)' : 'var(--text-1)');
-      const otActive = overtime && overtime !== '0:00' && overtime !== '—';
+    const cols = '44px 92px 100px 110px 100px 80px 80px 80px 80px 72px 84px 72px 64px';
+    const days = c.rows.map((d, i) => {
+      const dateColor = d.dow === '日' || d.holiday ? 'var(--sev-vio-fg)' : (d.dow === '土' ? 'var(--accent)' : 'var(--text-1)');
+      const missingOut = d.worked && this._parse(d.out) == null;
       return {
-        date: `${date}(${dow})`, dateColor, kind, plan, type,
-        worked, in: tin, out: tout, start, end, regular, lateOt, overtime, night,
-        alert, alertText,
-        alertTag: type === '打刻欠け' ? '要確認' : '違反',
-        otColor: otActive ? 'var(--accent-700)' : 'var(--text-2)',
-        rowStyle: `display:grid;grid-template-columns:44px 92px 100px 110px 100px 80px 80px 80px 80px 72px 84px 72px 64px;gap:0;padding:0 4px;border-bottom:1px solid var(--border-hairline);align-items:center;${alert ? 'background:var(--sev-vio-bg)' : (holiday || dow === '土' ? 'background:var(--surface-sunken)' : '')}`,
-        outInputStyle: `width:64px;padding:5px 4px;border:1px solid ${tout ? 'var(--border)' : 'var(--sev-vio-border)'};border-radius:7px;background:${tout ? 'var(--surface)' : 'var(--sev-vio-bg)'};color:var(--text-1);font-family:var(--font-mono);font-size:12px;text-align:center;outline:none`,
+        ...d, date: `${d.date}(${d.dow})`, dateColor,
+        otColor: d.otActive ? 'var(--accent-700)' : 'var(--text-2)',
+        onIn: (e) => this._editDay(i, 'in', e.target.value),
+        onOut: (e) => this._editDay(i, 'out', e.target.value),
+        rowStyle: `display:grid;grid-template-columns:${cols};gap:0;padding:0 4px;border-bottom:1px solid var(--border-hairline);align-items:center;${d.alert ? 'background:var(--sev-vio-bg)' : (d.holiday || d.dow === '土' ? 'background:var(--surface-sunken)' : '')}`,
+        outInputStyle: `width:64px;padding:5px 4px;border:1px solid ${missingOut ? 'var(--sev-vio-border)' : 'var(--border)'};border-radius:7px;background:${missingOut ? 'var(--sev-vio-bg)' : 'var(--surface)'};color:var(--text-1);font-family:var(--font-mono);font-size:12px;text-align:center;outline:none`,
       };
     });
+
+    const issues = c.dayAlerts > 0 || c.over36;
+    let bannerText = '';
+    if (c.dayAlerts > 0) bannerText = `申請または修正が必要な勤怠が ${c.dayAlerts} 日あります。`;
+    if (c.over36) bannerText += (bannerText ? ' ' : '') + `時間外労働が月45時間を超えています（${this._dur(c.totOt)}／36協定）。`;
+    const submitted = this.state.submitted && !issues;
 
     return {
       themeAttr: this.state.themeAttr,
@@ -287,7 +367,11 @@ class Component extends DCLogic {
       monthLabel: this.months[this.state.monthIndex],
       cycleMonth: this.cycleMonth,
       navItems, tabs, tiles, views, days,
-      noop: () => {},
+      hasIssues: issues, allClear: !issues, bannerText,
+      onSubmit: this.onSubmit,
+      submitBadge: submitted ? '申請済' : '未申請',
+      submitBadgeStyle: `display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:500;${submitted ? 'background:var(--ok-bg);color:var(--ok-fg);border:1px solid var(--ok-border)' : 'background:var(--surface-sunken);color:var(--text-3);border:1px solid var(--border)'}`,
+      submitMsg: this.state.submitMsg, hasSubmitMsg: !!this.state.submitMsg,
     };
   }
 }
