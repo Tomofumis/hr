@@ -79,7 +79,10 @@
             <h1 style="margin:0;font-size:22px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap">山田 太郎</h1>
           </div>
         </div>
-        <button onClick="{{ toggleLock }}" style="display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-2);font-family:inherit;font-size:12px;cursor:pointer"><i data-lucide="{{ lockIcon }}" width="14" height="14"></i>{{ lockToggleLabel }}</button>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <button onClick="{{ toggleClamp }}" style="{{ clampStyle }}"><i data-lucide="alarm-clock" width="14" height="14"></i>{{ clampLabel }}</button>
+          <button onClick="{{ toggleLock }}" style="display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text-2);font-family:inherit;font-size:12px;cursor:pointer"><i data-lucide="{{ lockIcon }}" width="14" height="14"></i>{{ lockToggleLabel }}</button>
+        </div>
       </div>
 
       <section style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:18px 14px">
@@ -261,7 +264,7 @@
   &quot;companyName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;吉田国際特許事務所&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;事業所&quot; }
 }">
 class Component extends DCLogic {
-  state = { themeAttr: '', monthIndex: 1, days: null, submitted: false, locked: false, editing: null, modal: null };
+  state = { themeAttr: '', monthIndex: 1, days: null, submitted: false, locked: false, editing: null, modal: null, clampEarly: false };
   months = ['2026年5月度', '2026年6月度', '2026年7月度'];
 
   S_IN = 540; S_OUT = 1020; S_WORK = 420; LEGAL = 480; NIGHT0 = 1320; NIGHT1 = 1740; OT_LIMIT = 45 * 60;
@@ -325,6 +328,8 @@ class Component extends DCLogic {
   toggleTheme = () => this.setState(s => ({ themeAttr: s.themeAttr === 'dark' ? 'light' : 'dark' }));
   cycleMonth = () => this.setState(s => ({ monthIndex: (s.monthIndex + 1) % this.months.length }));
   toggleLock = () => this.setState(s => ({ locked: !s.locked, editing: null, modal: null }));
+  toggleClamp = () => this.setState(s => ({ clampEarly: !s.clampEarly }));
+  _effIn(d) { return this.state.clampEarly ? Math.max(d.effIn, this.S_IN) : d.effIn; }
 
   _parse(s) { if (!s) return null; const m = String(s).trim().match(/^(\d{1,2}):?(\d{2})$/); if (!m) return null; const h = +m[1], mi = +m[2]; if (h > 47 || mi > 59) return null; return h * 60 + mi; }
   _clock(min) { if (min == null) return '—'; const h = Math.floor(min / 60), m = min % 60; return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m; }
@@ -345,11 +350,15 @@ class Component extends DCLogic {
     if (d.type === '有休') { r.regular = this.S_WORK; r.total = this.S_WORK; r.paidLeave = true; return r; }
     if (d.type === '欠勤') { r.absent = true; r.lateEarly = this.S_WORK; return r; }
     if (d.effIn == null || d.effOut == null) { r.alert = true; r.tag = '要確認'; r.text = d.effOut == null ? '退勤打刻がありません。実働時間を確認し、退勤時刻を入力してください。' : '出勤打刻がありません。出勤時刻を入力してください。'; r.missing = true; return r; }
-    const work = Math.max(0, d.effOut - d.effIn - d.breakMin);
+    // 始業：早出クランプONなら所定始業(09:00)に丸める。退勤が始業より前なら翌日跨ぎとして+24h正規化。
+    const inM = this._effIn(d);
+    let outM = d.effOut; if (outM < inM) outM += 1440;
+    const work = Math.max(0, outM - inM - d.breakMin);
     r.total = work;
     if (d.kind === '法定休日') { r.holidayWork = work; }
     else { r.regular = Math.min(work, this.S_WORK); r.legalOt = Math.max(0, Math.min(work, this.LEGAL) - this.S_WORK); r.ot = Math.max(0, work - this.LEGAL); }
-    r.night = Math.max(0, Math.min(d.effOut, this.NIGHT1) - Math.max(d.effIn, this.NIGHT0));
+    // 深夜：22:00-翌5:00（1320〜1740）。正規化した退勤で連続1バンドとして算出。
+    r.night = Math.max(0, Math.min(outM, this.NIGHT1) - Math.max(inM, this.NIGHT0));
     r.lateEarly = Math.max(0, this.S_WORK - work);
     if (work > this.LEGAL && d.breakMin < 60) { r.alert = true; r.tag = '違反'; r.text = `休憩不足：実働8時間超の勤務ですが、休憩が60分未満（${d.breakMin}分）です。休憩を60分以上に修正してください。`; }
     else if (work > 360 && d.breakMin < 45) { r.alert = true; r.tag = '違反'; r.text = `休憩不足：実働6時間超の勤務ですが、休憩が45分未満（${d.breakMin}分）です。`; }
@@ -366,7 +375,7 @@ class Component extends DCLogic {
       if (!d.scheduled || c.missing) { return; }
       labor++; total += c.total; reg += c.regular; legal += c.legalOt; ot += c.ot; holi += c.holidayWork; night += c.night; late += c.lateEarly;
     });
-    return { labor, total, reg, legal, ot, holi, night, late, absent, leave, alerts, over36: ot > this.OT_LIMIT };
+    return { labor, total, reg, legal, ot, holi, night, late, absent, leave, alerts, over36: ot > this.OT_LIMIT, over80: ot > 80 * 60 };
   }
 
   openDay = (i) => {
@@ -451,7 +460,7 @@ class Component extends DCLogic {
         date: `${d.date}(${d.dow})`, dateColor, kind: d.kind, plan: d.plan, type: d.type,
         rawIn: d.rawIn || '', rawOut: d.rawOut || '', rawOutColor: mark ? 'var(--accent-700)' : 'var(--text-2)',
         hasReq: !!mark, req: mark && mark[0] === '修' ? '修正' : '自動',
-        start: c.missing ? this._clock(d.effIn) : (c.paidLeave ? '有休' : (c.absent ? '欠勤' : (blank ? '' : this._clock(d.effIn)))),
+        start: c.missing ? this._clock(d.effIn) : (c.paidLeave ? '有休' : (c.absent ? '欠勤' : (blank ? '' : this._clock(this._effIn(d))))),
         end: c.missing ? '—' : (c.paidLeave || c.absent || blank ? '' : this._clock(d.effOut)),
         regular: c.regular ? this._dur(c.regular) : (blank ? '' : '0:00'),
         legalOt: c.legalOt ? this._dur(c.legalOt) : (blank || c.missing || c.paidLeave || c.absent ? '' : '0:00'),
@@ -471,6 +480,7 @@ class Component extends DCLogic {
     let bannerText = '';
     if (t.alerts > 0) bannerText = `申請または修正が必要な勤怠が ${t.alerts} 日あります。`;
     if (t.over36) bannerText += (bannerText ? ' ' : '') + `時間外労働が月45時間を超えています（${this._dur(t.ot)}／36協定）。`;
+    if (t.over80) bannerText += `［単月80時間超：複数月平均（2〜6ヶ月）の上限と年720時間にも注意］`;
     const submitted = this.state.submitted && !issues;
 
     const hours = Array.from({ length: 30 }, (_, i) => ({ v: String(i), l: (i < 10 ? '0' : '') + i }));
@@ -519,6 +529,9 @@ class Component extends DCLogic {
       hasIssues: issues, bannerText,
       locked, toggleLock: this.toggleLock,
       lockIcon: locked ? 'lock-open' : 'lock', lockToggleLabel: locked ? '確定を解除（デモ）' : '給与を確定（デモ）',
+      toggleClamp: this.toggleClamp,
+      clampLabel: this.state.clampEarly ? '早出を所定始業に丸める：ON' : '早出を所定始業に丸める：OFF',
+      clampStyle: `display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:10px;font-family:inherit;font-size:12px;cursor:pointer;border:1px solid ${this.state.clampEarly ? 'var(--accent-soft-border)' : 'var(--border)'};${this.state.clampEarly ? 'background:var(--accent-soft);color:var(--accent)' : 'background:var(--surface);color:var(--text-2)'}`,
       onSubmit: this.onSubmit,
       submitBadge: submitted ? '申請済' : '未申請',
       submitBadgeStyle: `display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:500;${submitted ? 'background:var(--ok-bg);color:var(--ok-fg);border:1px solid var(--ok-border)' : 'background:var(--surface-sunken);color:var(--text-3);border:1px solid var(--border)'}`,
