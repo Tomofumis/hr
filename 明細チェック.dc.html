@@ -74,7 +74,7 @@
           <p style="margin:0;font-size:14px;color:var(--text-3)">基準値マスタ × 当月実績を自動計算で突合（残業・社保・雇保・所得税(甲)・差引は計算、住民税と乙欄はマスタ参照）・ 2026年6月25日支払い分</p>
         </div>
         <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
-          <a href="#" class="ghost-link" style="display:inline-flex;align-items:center;gap:5px;color:var(--text-2);font-size:13px;text-decoration:none">基準値マスタ<i data-lucide="chevron-right" width="14" height="14"></i></a>
+          <a onClick="{{ onScrollMaster }}" class="ghost-link" style="display:inline-flex;align-items:center;gap:5px;color:var(--text-2);font-size:13px;text-decoration:none;cursor:pointer">基準値マスタ<i data-lucide="chevron-right" width="14" height="14"></i></a>
           <button onClick="{{ toggleWarnOnly }}" style="display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border:1px solid {{ warnOnlyBorder }};border-radius:10px;background:{{ warnOnlyBg }};color:{{ warnOnlyFg }};font-family:inherit;font-size:13px;cursor:pointer"><i data-lucide="alert-triangle" width="15" height="15"></i>要確認のみ</button>
         </div>
       </div>
@@ -124,7 +124,7 @@
       </section>
 
       <sc-if value="{{ hasSelected }}" hint-placeholder-val="{{ true }}">
-        <section style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 20px">
+        <section id="master-edit" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 20px;scroll-margin-top:80px">
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px">
             <i data-lucide="sliders-horizontal" width="16" height="16" style="color:var(--text-3)"></i>
             <span style="font-size:15px;font-weight:500">{{ selName }} の基準値マスタ</span>
@@ -365,6 +365,7 @@ class Component extends DCLogic {
       monthLabel: this.months[this.state.monthIndex],
       cycleMonth: this.cycleMonth,
       navItems, cats: this.cats,
+      onScrollMaster: () => { try { document.getElementById('master-edit').scrollIntoView({ behavior: 'smooth' }); } catch (e) {} },
       toggleWarnOnly: this.toggleWarnOnly,
       warnOnlyBg: warnOnly ? 'var(--sev-warn-bg)' : 'var(--surface)',
       warnOnlyFg: warnOnly ? 'var(--sev-warn-fg)' : 'var(--text-1)',
