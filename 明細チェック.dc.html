@@ -206,9 +206,10 @@ class Component extends DCLogic {
   // actualDelta: 実績が計算値とどれだけズレているか（検証デモ用）。無ければ計算値どおり＝OK。
   // 人別マスタは共通マスタ hr-data.js（HRData.employees）を参照（単一の真実）。
   get empMaster() {
-    return (typeof window !== 'undefined' && window.HRData && window.HRData.employees && window.HRData.employees.length)
-      ? window.HRData.employees
-      : [];
+    const HR = typeof window !== 'undefined' && window.HRData;
+    if (!HR || !HR.employees || !HR.employees.length) return [];
+    // 勤怠編集で確定した残業（時間外・深夜・法定休日）があれば反映（勤怠→給与の連携）
+    return HR.employeeWithAttendance ? HR.employees.map(e => HR.employeeWithAttendance(e)) : HR.employees;
   }
 
   componentDidMount() { this._icons(); }

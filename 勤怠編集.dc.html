@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/styles.css">
 <script src="_ds/torioki-design-system-4ced921d-d027-4ce0-a389-3c2bafa05800/_ds_bundle.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="./hr-data.js"></script>
 <link rel="stylesheet" href="app-theme.css">
 </helmet>
 
@@ -73,10 +74,10 @@
 
       <div style="display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
         <div style="display:flex;align-items:center;gap:16px;min-width:0">
-          <span style="width:52px;height:52px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:21px;font-weight:500;flex:0 0 auto">山</span>
+          <span style="width:52px;height:52px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:21px;font-weight:500;flex:0 0 auto">佐</span>
           <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
             <span style="font-size:12px;color:var(--text-3);font-family:var(--font-mono)">A-001</span>
-            <h1 style="margin:0;font-size:22px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap">山田 太郎</h1>
+            <h1 style="margin:0;font-size:22px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap">佐川 智史</h1>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -419,7 +420,12 @@ class Component extends DCLogic {
   };
   onSubmit = () => {
     const t = this._totals(this._days());
-    this.setState({ submitted: !(t.alerts > 0 || t.over36) });
+    const ok = !(t.alerts > 0 || t.over36);
+    // 締め確定できたら、当月の残業（時間外）・深夜・法定休日を共通ストアへ保存し給与へ連携
+    if (ok && typeof window !== 'undefined' && window.HRData && window.HRData.saveAttendance) {
+      window.HRData.saveAttendance('A-001', { overtimeMin: t.ot, nightMin: t.night, holidayMin: t.holi });
+    }
+    this.setState({ submitted: ok });
   };
 
   renderVals() {

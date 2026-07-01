@@ -42,6 +42,34 @@
     ],
   };
 
+  // 勤怠の確定値ストア（localStorage）。勤怠編集が締め申請時に保存し、給与計算・
+  // 明細チェックが従業員コードで参照して残業手当の計算に反映する（勤怠→給与の連携）。
+  global.HRData.saveAttendance = function (code, data) {
+    try {
+      if (!global.localStorage) return;
+      var all = JSON.parse(global.localStorage.getItem('hr_attendance') || '{}');
+      all[code] = data;
+      global.localStorage.setItem('hr_attendance', JSON.stringify(all));
+    } catch (e) {}
+  };
+  global.HRData.attendanceOf = function (code) {
+    try {
+      if (!global.localStorage) return null;
+      var all = JSON.parse(global.localStorage.getItem('hr_attendance') || '{}');
+      return all[code] || null;
+    } catch (e) { return null; }
+  };
+  // マスタに勤怠の確定値（残業・深夜・法定休日）を上書きした従業員オブジェクトを返す
+  global.HRData.employeeWithAttendance = function (emp) {
+    var a = global.HRData.attendanceOf(emp.code);
+    if (!a) return emp;
+    var m = {}; for (var k in emp) m[k] = emp[k];
+    if (a.overtimeMin != null) m.overtimeMin = a.overtimeMin;
+    if (a.nightMin != null) m.nightMin = a.nightMin;
+    if (a.holidayMin != null) m.holidayMin = a.holidayMin;
+    return m;
+  };
+
   // 設定画面の保存値（localStorage）があれば上書き → 全画面の計算に反映
   try {
     if (global.localStorage) {
