@@ -180,7 +180,8 @@ class Component extends DCLogic {
     const C = typeof window !== 'undefined' && window.PayrollCalc;
     const emps = (typeof window !== 'undefined' && window.HRData && window.HRData.employees) || [];
     return emps.map(e => {
-      const x = C ? C.calc(e) : {};
+      const em = (window.HRData && window.HRData.employeeWithAttendance) ? window.HRData.employeeWithAttendance(e) : e;
+      const x = C ? C.calc(em) : {};
       return [e.name, x.gross || 0, (x.social || 0) + (x.employment || 0), x.incomeTax || 0, x.residentTax || 0];
     });
   }
